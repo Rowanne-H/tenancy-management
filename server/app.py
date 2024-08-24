@@ -311,6 +311,23 @@ class ExpenseByID(Resource):
             return make_response(jsonify({'message': 'Expense not found'}), 404)
         return make_response(jsonify(expense.to_dict()), 200)
     
+    def patch(self, id):
+        expense = Expense.query.filter_by(id=id).first()
+        if expense is None:
+            return make_response(jsonify({'message': 'Expense not found'}), 404)
+        data = request.get_json()
+        for attr, value in data.items():
+            if attr == 'property_id':
+               property = Property.query.filter_by(id=value).first()
+               if property is None:
+                    return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
+            if attr == 'created_at' or attr == 'payment_date':
+                value=getDate(value)
+            setattr(expense, attr, value)
+        db.session.add(expense)
+        db.session.commit()
+        return make_response(expense.to_dict(), 200)
+    
 
 api.add_resource(Users, '/users')
 api.add_resource(UserByID, '/users/<int:id>')
