@@ -273,10 +273,36 @@ class RentalByID(Resource):
         db.session.commit()
         return make_response(rental.to_dict(), 200)
     
+    def delete(self, id):
+        rental = Rental.query.filter_by(id=id).first()
+        if rental is None:
+            return make_response(jsonify({'message': 'Rental not found'}), 404)   
+        db.session.delete(rental)
+        db.session.commit()
+        return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
+    
 class Expenses(Resource):
     def get(self):
         expenses = [expense.to_dict() for expense in Expense.query.all()]
         return make_response(jsonify(expenses), 200)
+    
+    def post(self):
+        data = request.get_json()
+        property = Property.query.filter_by(id=data['property_id']).first()
+        if property is None:
+            return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
+        created_at = getDate(data.get('created_at')) if data.get('created_at') else datetime.today()
+        payment_date = getDate(data['payment_date'])
+        new_expense = Expense(
+            amount=data['amount'],
+            created_at=created_at,
+            payment_date=payment_date,
+            description=data.get('description', 'expense'),
+            property_id=data['property_id'] 
+        )
+        db.session.add(new_expense)
+        db.session.commit()
+        return make_response(new_expense.to_dict(), 201)
     
 class ExpenseByID(Resource):
     def get(self, id):
