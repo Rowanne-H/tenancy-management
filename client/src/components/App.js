@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './Home';
 import NavBar from './NavBar';
+import Users from './Users';
 import SignupForm from './SignupForm';
 
 
 function App() {
   const [users, setUsers] = useState([]);
+  useEffect(() => {
+    console.log("FETCH! ");
+    fetch("/users")
+      .then(r => r.json())
+      .then(users => {
+        setUsers(users);
+        console.log(users);
+      });
+  }, []);
+
+  if (users === []) return <h3>Loading...</h3>
+
   return (
     <Router>
       <div className="App">
@@ -17,6 +30,9 @@ function App() {
           </Route>
           <Route exact path="/signup">
             <SignupForm />
+          </Route>
+          <Route exact path="/users">
+            <Users users={users}/>
           </Route>
         </Switch>
       </div>

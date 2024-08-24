@@ -6,6 +6,7 @@ function Navbar() {
         <nav>
             <NavLink className="navbar" to="/" exact>Home</NavLink>
             <NavLink className="navbar" to="/signup" exact>Sign Up</NavLink>
+            <NavLink className="navbar" to="/users" exact>Users</NavLink>
         </nav>
     )
 }
