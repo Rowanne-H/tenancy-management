@@ -6,6 +6,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import MetaData 
 from config import db, bcrypt
+from datetime import date, datetime
 
 metadata = MetaData(naming_convention={ 
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s", 
@@ -40,8 +41,9 @@ def validate_date(value):
     return value
 
 def validate_date_format(value):
-    if not isinstance(value, date):
-        raise ValueError("Invalid date format")
+    if value:
+        if not isinstance(value, date):
+            raise ValueError("Invalid date format")
     return value
 
 def validate_ref(value):
@@ -53,7 +55,6 @@ def validate_amount(value):
     if not value or value<0:
         raise ValueError("Amount must be more than 0")
     return value
-
 
 
 class BaseModel(db.Model):
@@ -75,19 +76,19 @@ class BaseModel(db.Model):
     def validate_address(self, key, value):
         return validate_address(value)
     
-    @validates('managment_commencement_date')
+    @validates('management_commencement_date')
     @validates('lease_start_date')
     @validates('lease_end_date')
     @validates('payment_date')
     def validate_date(self, key, value):
         return validate_date(value)
     def validate_date_format(self, key, value):
-        return validate_date(value)
+        return validate_date_format(value)
     
-    @validates('managment_end_date')
+    @validates('management_end_date')
     @validates('vacating_date')
     def validate_date_format(self, key, value):
-        return validate_date(value)
+        return validate_date_format(value)
     
     @validates('ref')
     def validate_ref(self, key, value):
@@ -151,11 +152,9 @@ class Owner(BaseModel, SerializerMixin):
     mobile = db.Column(db.String(10), nullable=False)
     address = db.Column(db.String, nullable=False)
     note = db.Column(db.String)
-    managment_commencement_date = db.Column(db.Date, nullable=False) 
-    managment_end_date = db.Column(db.Date) 
+    management_commencement_date = db.Column(db.Date, nullable=False) 
+    management_end_date = db.Column(db.Date) 
     is_active = db.Column(db.Boolean, default=True, nullable=False)
-
-
 
     properties = db.relationship('Property', backref='owner') 
     users = association_proxy('properties', 'user', 
@@ -172,8 +171,8 @@ class Owner(BaseModel, SerializerMixin):
             'mobile': self.mobile,
             'address': self.address,
             'note': self.note,
-            'managment_end_date': self.managment_end_date,
-            'managment_commencement_date': self.managment_commencement_date,
+            'management_end_date': self.management_end_date,
+            'management_commencement_date': self.management_commencement_date,
             'is_active ': self.is_active 
         }
     
@@ -188,11 +187,6 @@ class Property(BaseModel, SerializerMixin):
     address = db.Column(db.String, nullable=False)
     commission = db.Column(db.Float, default=0.05, nullable=False)
     letting_fee = db.Column(db.Float, default=1, nullable=False)
-    lease_term = db.Column(db.Float, nullable=False)
-    lease_start_date = db.Column(db.Date, nullable=False) 
-    lease_end_date = db.Column(db.Date, nullable=False)
-    rent = db.Column(db.Float, nullable=False)
-    vacating_date = db.Column(db.Date)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
 
@@ -200,7 +194,6 @@ class Property(BaseModel, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     tenants = db.relationship('Tenant', backref='property') 
-    rentals = db.relationship('Rental', backref='property')
     expenses = db.relationship('Expense', backref='property')
 
     @validates('commission')
@@ -214,6 +207,18 @@ class Property(BaseModel, SerializerMixin):
         if not value or value<=0 or value>=2:
             raise ValueError("comission must be between 0 and 2")
         return value
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'ref': self.ref,
+            'address': self.address,
+            'commission': self.commission,
+            'letting_fee': self.letting_fee,
+            'user_id': self.user_id,
+            'owner_id': self.owner_id,
+            'is_active ': self.is_active 
+        }
 
     def __repr__(self):
         return f'Property(id={self.id})'
@@ -245,10 +250,13 @@ class Tenant(BaseModel, SerializerMixin):
             'name': self.name,
             'email': self.email,
             'mobile': self.mobile,
-            'address': self.property.address,
             'note': self.note,
             'lease_term': self.lease_term,
-            'lease_start_date': self.managment_end_date,
+            'lease_start_date': self.lease_start_date,
+            'lease_end_date': self.lease_end_date,
+            'rent': self.rent,
+            'vacating_date': self.vacating_date,
+            'property_id': self.property_id,
             'is_active ': self.is_active 
         }
 
@@ -266,7 +274,16 @@ class Rental(BaseModel, SerializerMixin):
     description = db.Column(db.String, nullable=False, default='rent')
 
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'amount': self.amount,
+            'created_at': self.created_at,
+            'payment_date': self.payment_date,
+            'description': self.description,
+            'tenant_id': self.tenant_id
+        }
 
     def __repr__(self):
         return f'Rental(id={self.id})'
@@ -281,6 +298,16 @@ class Expense(BaseModel, SerializerMixin):
     description = db.Column(db.String, nullable=False, default='expense')
 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id'))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'amount': self.amount,
+            'created_at': self.created_at,
+            'payment_date': self.payment_date,
+            'description': self.description,
+            'property_id': self.property_id,
+        }
 
     def __repr__(self):
         return f'Expense(id={self.id})'

@@ -61,13 +61,13 @@ def create_owners():
     owners = []
     #management has been terminated
     inactive_owner = Owner(
-        name=fake.unique.name(),
         ref=fake.word(),
+        name=fake.unique.name(),        
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         address=fake.unique.address(),
-        managment_commencement_date=generate_a_date()-timedelta(days=30),
-        managment_end_date=datetime.today() - timedelta(days=7),
+        management_commencement_date=generate_a_date()-timedelta(days=30),
+        management_end_date=datetime.today() - timedelta(days=7),
         is_active=False
     )
     owners.append(inactive_owner)
@@ -78,7 +78,7 @@ def create_owners():
             email=fake.unique.email(),
             mobile=generate_mobile_number(),
             address=fake.unique.address(),
-            managment_commencement_date=generate_a_date()-timedelta(days=30)
+            management_commencement_date=generate_a_date()-timedelta(days=30)
         )
         owners.append(owner)
     db.session.add_all(owners)
@@ -95,26 +95,17 @@ def create_properties(users, owners):
         address=fake.unique.address(),
         commission=0.05,
         letting_fee=1,
-        rent=500,
-        lease_term=12,        
-        lease_start_date=datetime.today()+timedelta(days=10),
-        lease_end_date=datetime.today()+timedelta(days=375),
         user=rc(property_managers),
         owner=inactive_owner,
         is_active=False
     )
     properties.append(inactive_property)
     for owner in active_owners:
-        date = generate_a_date()
         property = Property(
             ref=fake.word(),
             address=fake.unique.address(),
             commission=0.05,
             letting_fee=1,
-            rent=randint(3, 10)*100,
-            lease_term=12,
-            lease_start_date=date,
-            lease_end_date=date+timedelta(days=365),
             user=rc(property_managers),
             owner=owner
         )
@@ -132,24 +123,25 @@ def create_tenants(properties):
         ref=fake.word(),
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
-        lease_term=12,
-        lease_start_date=inactive_property.lease_start_date,
-        lease_end_date=inactive_property.lease_end_date,
-        rent=inactive_property.rent,
+        rent=500,
+        lease_term=12,        
+        lease_start_date=datetime.today()+timedelta(days=10),
+        lease_end_date=datetime.today()+timedelta(days=375),
         property=inactive_property,
         is_active=False
     )
     tenants.append(inactive_tenant)
     for property in active_properties:
+        date = generate_a_date()
         tenant = Tenant(
             name=fake.unique.name(),
             ref=fake.word(),
             email=fake.unique.email(),
             mobile=generate_mobile_number(),
+            rent=randint(3, 10)*100,
             lease_term=12,
-            lease_start_date=property.lease_start_date,
-            lease_end_date=property.lease_end_date,
-            rent=property.rent,
+            lease_start_date=date,
+            lease_end_date=date+timedelta(days=365),
             property=property
         )
         tenants.append(tenant)
@@ -167,8 +159,7 @@ def create_rentals(tenants):
                 amount=tenant.rent,
                 created_at=payment_date,
                 payment_date=payment_date,
-                tenant=tenant,
-                property=tenant.property
+                tenant=tenant
             )
             rentals.append(rental)
             db.session.add(rental)
@@ -176,26 +167,27 @@ def create_rentals(tenants):
             payment_date += timedelta(days=7)
     return rentals
 
-def create_expenses(properties, rentals):
+def create_expenses(tenants, rentals):
     expenses = []
-    active_properties = [property for property in properties if property.is_active==True]
-    for property in active_properties: 
+    active_tenants = [tenant for tenant in tenants if tenant.is_active==True]
+    for tenant in active_tenants: 
         expense = Expense(
-            amount=property.rent,
-            created_at=property.lease_start_date,
+            amount=tenant.rent,
+            created_at=tenant.lease_start_date,
             payment_date=datetime.today(),
-            property=property,
+            property_id=tenant.property_id,
             description='letting fee'           
         )
         expenses.append(expense)
         db.session.add(expense)
         db.session.commit()
     for rental in rentals: 
+        tenant = [tenant for tenant in tenants if tenant.id==rental.tenant_id][0]
         expense = Expense(
             amount=rental.amount*0.05,
             created_at=rental.created_at,
-            payment_date=datetime.today(),
-            property_id=rental.property_id,
+            payment_date=rental.created_at,
+            property_id=tenant.property_id,
             description='commission'          
         )
         expenses.append(expense)
@@ -213,5 +205,5 @@ if __name__ == '__main__':
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
         rentals = create_rentals(tenants)
-        expenses = create_expenses(properties, rentals)
+        expenses = create_expenses(tenants, rentals)
 

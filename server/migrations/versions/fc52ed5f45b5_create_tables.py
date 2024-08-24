@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 24d492d16ba1
+Revision ID: fc52ed5f45b5
 Revises: 
-Create Date: 2024-08-20 23:53:51.115555
+Create Date: 2024-08-24 18:14:07.574956
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '24d492d16ba1'
+revision = 'fc52ed5f45b5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,8 +26,8 @@ def upgrade():
     sa.Column('mobile', sa.String(length=10), nullable=False),
     sa.Column('address', sa.String(), nullable=False),
     sa.Column('note', sa.String(), nullable=True),
-    sa.Column('managment_commencement_date', sa.Date(), nullable=False),
-    sa.Column('managment_end_date', sa.Date(), nullable=True),
+    sa.Column('management_commencement_date', sa.Date(), nullable=False),
+    sa.Column('management_end_date', sa.Date(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -47,11 +47,6 @@ def upgrade():
     sa.Column('address', sa.String(), nullable=False),
     sa.Column('commission', sa.Float(), nullable=False),
     sa.Column('letting_fee', sa.Float(), nullable=False),
-    sa.Column('lease_term', sa.Float(), nullable=False),
-    sa.Column('lease_start_date', sa.Date(), nullable=False),
-    sa.Column('lease_end_date', sa.Date(), nullable=False),
-    sa.Column('rent', sa.Float(), nullable=False),
-    sa.Column('vacating_date', sa.Date(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -93,8 +88,6 @@ def upgrade():
     sa.Column('payment_date', sa.Date(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('tenant_id', sa.Integer(), nullable=True),
-    sa.Column('property_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_rentals_property_id_properties')),
     sa.ForeignKeyConstraint(['tenant_id'], ['tenants.id'], name=op.f('fk_rentals_tenant_id_tenants')),
     sa.PrimaryKeyConstraint('id')
     )
