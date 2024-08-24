@@ -328,6 +328,13 @@ class ExpenseByID(Resource):
         db.session.commit()
         return make_response(expense.to_dict(), 200)
     
+    def delete(self, id):
+        expense = Expense.query.filter_by(id=id).first()
+        if expense is None:
+            return make_response(jsonify({'message': 'Expense not found'}), 404)
+        db.session.delete(expense)
+        db.session.commit()
+        return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
 
 api.add_resource(Users, '/users')
 api.add_resource(UserByID, '/users/<int:id>')
