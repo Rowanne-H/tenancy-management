@@ -256,6 +256,23 @@ class RentalByID(Resource):
             return make_response(jsonify({'message': 'Rental not found'}), 404)
         return make_response(jsonify(rental.to_dict()), 200)
     
+    def patch(self, id):
+        rental = Rental.query.filter_by(id=id).first()
+        if rental is None:
+            return make_response(jsonify({'message': 'Rental not found'}), 404)
+        data = request.get_json()
+        for attr, value in data.items():
+            if attr == 'tenant_id':
+               tenant = Tenant.query.filter_by(id=value).first()
+               if tenant is None:
+                   return make_response(jsonify({'message': 'Please input a valid tenant id'}), 404)
+            if attr == 'created_at' or attr == 'payment_date':
+                value=getDate(value)
+            setattr(rental, attr, value)
+        db.session.add(rental)
+        db.session.commit()
+        return make_response(rental.to_dict(), 200)
+    
 class Expenses(Resource):
     def get(self):
         expenses = [expense.to_dict() for expense in Expense.query.all()]
