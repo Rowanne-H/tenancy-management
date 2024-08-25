@@ -34,7 +34,7 @@ def create_users():
        mobile=generate_mobile_number(),
        is_accounts=True
     )
-    accounts.password_hash = fake.password()
+    accounts.password_hash = '123456'
     users.append(accounts)
     for i in range(2):
         user = User(

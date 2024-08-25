@@ -41,7 +41,7 @@ class Signup(Resource):
         data = request.get_json()
         existing_user = User.query.filter_by(email=data['email']).first()
         if existing_user:
-            return make_response(jsonify({'error': 'Email already taken'}), 400)
+            return make_response(jsonify({'message': 'Email already taken'}), 400)
         user = User(
             email=data['email'],
             name=data['name'],
@@ -49,11 +49,41 @@ class Signup(Resource):
             is_accounts=data.get('is_accounts', False)
         )
         user.password_hash = data['password']
-        session['user_id'] = user.id
         db.session.add(user)
         db.session.commit()
-        return make_response(user.to_dict(), 201)          
+        session['user_id'] = user.id
+        return make_response(user.to_dict(), 201)
 
+class CheckSession(Resource):
+    def get(self):
+        user = User.query.filter_by(id=session.get('user_id')).first()
+        if user: 
+            return make_response(jsonify(user.to_dict()))
+        else:
+            return make_response(jsonify({'message': 'No user is loggoed in'}), 404)  
+
+class Login(Resource):
+    def post(self):
+        data = request.get_json()
+        if not data or 'email' not in data or 'password' not in data:
+            return make_response(jsonify({'message': 'Missing email or password'}), 400)
+        email = data['email']
+        user = User.query.filter_by(email=email).first()  
+        if user is None:
+            return make_response(jsonify({'message': 'User not found'}), 404)
+        password = data['password']
+        if user.authenticate(password):
+            session['user_id'] = user.id 
+            return make_response(jsonify(user.to_dict()), 200) 
+        return make_response(jsonify({'message': 'Password is incorrect'}), 400)    
+
+class Logout(Resource):
+    def delete(self):
+        if 'user_id' not in session or session['user_id'] is None:
+            return make_response(jsonify({'message': 'Unauthorized'}), 401)
+        session.pop('user_id', None)
+        return {}, 204
+    
 class Users(Resource):
     def get(self): 
         users = [user.to_dict() for user in User.query.all()]
@@ -356,6 +386,9 @@ class ExpenseByID(Resource):
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
 
 api.add_resource(Signup, '/signup')
+api.add_resource(CheckSession, '/check_session')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 api.add_resource(Users, '/users')
 api.add_resource(UserByID, '/users/<int:id>')
 api.add_resource(Owners, '/owners')
