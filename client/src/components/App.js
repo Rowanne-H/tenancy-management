@@ -18,6 +18,10 @@ function App() {
       });
   }, []);
 
+  function addNewUser(newUser) {
+    setUsers([...users, newUser])
+  }
+
   if (users === []) return <h3>Loading...</h3>
 
   return (
@@ -29,7 +33,7 @@ function App() {
             <Home />
           </Route>
           <Route exact path="/signup">
-            <SignupForm users={users} />
+            <SignupForm onAddNewUser={addNewUser} />
           </Route>
           <Route exact path="/users">
             <Users users={users} />

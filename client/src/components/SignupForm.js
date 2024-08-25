@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-function SignupForm({ users }) {
+function SignupForm({ users, onAddNewUser }) {
     const formSchema = yup.object().shape({
         email: yup.string().email("Invalid email").required("Must enter email"),
         password: yup.string().required("must enter a password"),
@@ -34,7 +34,7 @@ function SignupForm({ users }) {
                     throw new Error('Network response was not ok.');
                 }
             }).then(user => {
-                console.log(user);
+                onAddNewUser(user);
             })
             formik.resetForm();
         }
