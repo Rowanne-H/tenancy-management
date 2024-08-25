@@ -105,7 +105,7 @@ class User(BaseModel, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     mobile = db.Column(db.String(10), nullable=False)
     is_accounts = db.Column(db.Boolean, default=False)
 
@@ -140,7 +140,6 @@ class User(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'User {self.email}, ID {self.id}'
-    
     
 class Owner(BaseModel, SerializerMixin):
     __tablename__ = 'owners'

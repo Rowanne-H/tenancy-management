@@ -10,8 +10,7 @@ function User({ user }) {
             <td>{email}</td>
             <td>{name}</td>
             <td>{mobile}</td>
-            <td>{mobile}</td>
-            <td>{is_accounts}</td>
+            <td>{is_accounts? 'Yes' : 'No'}</td>
         </tr>
     )
 }

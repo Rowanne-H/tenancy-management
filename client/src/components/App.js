@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import './App.css';
 import Home from './Home';
 import NavBar from './NavBar';
 import Users from './Users';
@@ -9,7 +10,6 @@ import SignupForm from './SignupForm';
 function App() {
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    console.log("FETCH! ");
     fetch("/users")
       .then(r => r.json())
       .then(users => {
@@ -29,10 +29,10 @@ function App() {
             <Home />
           </Route>
           <Route exact path="/signup">
-            <SignupForm />
+            <SignupForm users={users} />
           </Route>
           <Route exact path="/users">
-            <Users users={users}/>
+            <Users users={users} />
           </Route>
         </Switch>
       </div>

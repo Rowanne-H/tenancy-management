@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Resource
 from datetime import date, datetime
@@ -18,6 +18,7 @@ from models import db, User, Owner, Property, Tenant, Rental, Expense
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tenancy_management.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'my-very-secret-key' 
 app.json.compact = False
 
 migrate = Migrate(app, db)
@@ -34,6 +35,24 @@ def getDate(value):
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
+
+class Signup(Resource):
+    def post(self):
+        data = request.get_json()
+        existing_user = User.query.filter_by(email=data['email']).first()
+        if existing_user:
+            return make_response(jsonify({'error': 'Email already taken'}), 400)
+        user = User(
+            email=data['email'],
+            name=data['name'],
+            mobile=data['mobile'],
+            is_accounts=data.get('is_accounts', False)
+        )
+        user.password_hash = data['password']
+        session['user_id'] = user.id
+        db.session.add(user)
+        db.session.commit()
+        return make_response(user.to_dict(), 201)          
 
 class Users(Resource):
     def get(self): 
@@ -336,6 +355,7 @@ class ExpenseByID(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
 
+api.add_resource(Signup, '/signup')
 api.add_resource(Users, '/users')
 api.add_resource(UserByID, '/users/<int:id>')
 api.add_resource(Owners, '/owners')
