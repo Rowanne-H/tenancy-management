@@ -4,11 +4,24 @@ import './App.css';
 import Home from './Home';
 import NavBar from './NavBar';
 import Users from './Users';
+import Login from "./Login";
 import SignupForm from './SignupForm';
 
 
 function App() {
+  const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // auto-login
+    fetch("/check_session")
+      .then((r) => {
+        if (r.ok) {
+          r.json().then(user => setUser(user));
+        }
+      });
+  }, []);
+
   useEffect(() => {
     fetch("/users")
       .then(r => r.json())
@@ -22,18 +35,15 @@ function App() {
     setUsers([...users, newUser])
   }
 
-  if (users === []) return <h3>Loading...</h3>
+  if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser}/>;  
 
   return (
     <Router>
       <div className="App">
-        <NavBar />
+        <NavBar user={user} setUser={setUser} />
         <Switch>
           <Route exact path="/">
             <Home />
-          </Route>
-          <Route exact path="/signup">
-            <SignupForm onAddNewUser={addNewUser} />
           </Route>
           <Route exact path="/users">
             <Users users={users} />
