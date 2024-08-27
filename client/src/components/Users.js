@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import User from './User';
 
-function Users({ users }) {
+function Users({ users, deleteUser }) {
 
     return (
         <div>
@@ -13,8 +13,9 @@ function Users({ users }) {
                         <th>Name</th>
                         <th>Mobile</th>
                         <th>Is Accounts</th>
+                        <th>More</th>
                     </tr>
-                    {users.map(user => <User key={user.id} user={user} />)}
+                    {users.map(user => <User key={user.id} user={user} onDeleteUser={deleteUser} />)}
                 </tbody>
             </table>
         </div>

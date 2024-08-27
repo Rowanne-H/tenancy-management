@@ -18,12 +18,13 @@ function LoginForm({ onLogin }) {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
+            console.log(values)
             fetch("/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(values, null, 2),
+                body: JSON.stringify(values)
             }).then(r => {
                 if (r.ok) {
                     return r.json()
@@ -32,6 +33,7 @@ function LoginForm({ onLogin }) {
                 }
             }).then(user => {
                 onLogin(user);
+                console.log(user)
             })
             formik.resetForm();
         }

@@ -5,7 +5,7 @@ import Home from './Home';
 import NavBar from './NavBar';
 import Users from './Users';
 import Login from "./Login";
-import SignupForm from './SignupForm';
+import UserForm from './UserForm';
 
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
       .then((r) => {
         if (r.ok) {
           r.json().then(user => setUser(user));
+          console.log(user)
         }
       });
   }, []);
@@ -35,18 +36,31 @@ function App() {
     setUsers([...users, newUser])
   }
 
+  function updateUser(updatedUser) {
+    setUsers(users.map(user=>user.id===updatedUser ? updatedUser : user))
+  }
+
+  function deleteUser(id) {
+    setUsers(users.filter(user => user.id !== id))
+  }
+
+
+
   if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser}/>;  
 
   return (
     <Router>
       <div className="App">
-        <NavBar user={user} setUser={setUser} />
+        <NavBar setUser={setUser} />
         <Switch>
           <Route exact path="/">
             <Home />
           </Route>
           <Route exact path="/users">
-            <Users users={users} />
+            <Users users={users} deleteUser={deleteUser} />
+          </Route>
+          <Route exact path="/users/:id/edit">
+            <UserForm onUpdateUser={updateUser} />
           </Route>
         </Switch>
       </div>

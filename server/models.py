@@ -204,7 +204,7 @@ class Property(BaseModel, SerializerMixin):
     @validates('letting_fee')
     def validate_letting_fee(self, key, value):
         if not value or value<=0 or value>=2:
-            raise ValueError("comission must be between 0 and 2")
+            raise ValueError("letting_fee must be between 0 and 2")
         return value
     
     def to_dict(self):

@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useHistory } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-function SignupForm({ onAddNewUser, onLogin }) {
+function UserForm({ onAddNewUser, onLogin, onUpdateUser }) {
+    const [userToEdit, setUserToEdit] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
+
+    const { id } = useParams();
+    const history = useHistory();
+
+    useEffect(() => {
+        if (id) {
+            fetch(`/users/${id}`)
+                .then(r => r.json())
+                .then(user => setUserToEdit(user))
+        }
+    }, [id]);
 
     const formSchema = yup.object().shape({
         email: yup.string().email("Invalid email").required("Must enter email"),
@@ -15,17 +28,18 @@ function SignupForm({ onAddNewUser, onLogin }) {
 
     const formik = useFormik({
         initialValues: {
-            email: "",
-            password: "",
-            name: "",
-            mobile: "",
-            is_accounts: false
+            email: userToEdit?.email || "",
+            password: userToEdit?.password ||"",
+            name: userToEdit?.name ||"",
+            mobile: userToEdit?.mobile ||"",
+            is_accounts: userToEdit?.is_accounts ||false
         },
         validationSchema: formSchema,
         enableReinitialize: true,
         onSubmit: (values) => {
-            fetch("/signup", {
-                method: "POST",
+            const url = userToEdit ? `/users/${userToEdit.id}` : "/signup"
+            fetch(url, {
+                method: userToEdit ? "PATCH" : "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -38,8 +52,14 @@ function SignupForm({ onAddNewUser, onLogin }) {
                 }
             }).then(user => {
                 console.log(user)
-                onLogin(user);
-                onAddNewUser(user);           
+                if (!userToEdit) {
+                    onLogin(user);
+                    onAddNewUser(user);
+                    history.push(`/`);
+                } else {
+                    onUpdateUser(user);
+                    history.push(`/users/${id}`);
+                }              
             })
             formik.resetForm();
         }
@@ -47,7 +67,7 @@ function SignupForm({ onAddNewUser, onLogin }) {
 
     return (
         <div>
-            <h1>Sign Up</h1>
+            <h1>{userToEdit ? "Edit User" : "Sign Up"}</h1>
             <form onSubmit={formik.handleSubmit}>
                 <label>Email Address
                     <input id="email" name="email" onChange={formik.handleChange} value={formik.values.email} />
@@ -80,4 +100,4 @@ function SignupForm({ onAddNewUser, onLogin }) {
     )
 }
 
-export default SignupForm;
+export default UserForm;

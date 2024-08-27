@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-function Navbar({ user, setUser }) {
+function Navbar({ setUser }) {
     const [errorMessage, setErrorMessage] = useState("");
 
     function handleLogoutClick() {

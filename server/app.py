@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Resource
 from datetime import date, datetime
+from flask_cors import CORS
 
 # Local imports
 from config import app, db, api
@@ -25,6 +26,7 @@ migrate = Migrate(app, db)
 db.init_app(app)
 
 api = Api(app)
+CORS(app)
 
 
 # Views go here!
@@ -35,6 +37,13 @@ def getDate(value):
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
+
+@app.before_request
+def check_if_logged_in():
+    if request.endpoint in ['signup', 'login', 'check_session']:
+        return
+    if 'user_id' not in session:
+        return make_response(jsonify({'message': 'Unauthorized'}), 401)
 
 class Signup(Resource):
     def post(self):
@@ -65,6 +74,7 @@ class CheckSession(Resource):
 class Login(Resource):
     def post(self):
         data = request.get_json()
+        print(data)
         if not data or 'email' not in data or 'password' not in data:
             return make_response(jsonify({'message': 'Missing email or password'}), 400)
         email = data['email']
@@ -73,6 +83,7 @@ class Login(Resource):
             return make_response(jsonify({'message': 'User not found'}), 404)
         password = data['password']
         if user.authenticate(password):
+            print('set-session')
             session['user_id'] = user.id 
             return make_response(jsonify(user.to_dict()), 200) 
         return make_response(jsonify({'message': 'Password is incorrect'}), 400)    
@@ -88,13 +99,46 @@ class Users(Resource):
     def get(self): 
         users = [user.to_dict() for user in User.query.all()]
         return make_response(jsonify(users), 200)
-    
+ 
 class UserByID(Resource):
     def get(self, id):
         user = User.query.filter_by(id=id).first()
         if user is None:
             return make_response(jsonify({'message': 'User not found'}), 404)
-        return make_response(jsonify(user.to_dict()), 200)
+        return make_response(jsonify(user.to_dict()), 200) 
+
+    def patch(self, id):
+        current_user = User.query.filter_by(id=session.get('user_id')).first()
+        if not current_user.is_accounts:
+            return make_response(jsonify({'message': 'Only accounts can edit an user record'}), 403)
+        user = User.query.filter_by(id=id).first()
+        if user is None:
+            return make_response(jsonify({'message': 'User not found'}), 404)
+        data = request.get_json()
+        for attr, value in data.items():
+            if attr == 'password':
+                user.password_hash = data['password']
+            else:
+                setattr(user, attr, value)
+        db.session.add(user)
+        db.session.commit()
+        return make_response(user.to_dict(), 200)
+    
+    def delete(self, id):
+        current_user = User.query.filter_by(id=session.get('user_id')).first()
+        if not current_user.is_accounts:
+            return make_response(jsonify({'message': 'Only accounts can delete an user record'}), 403) 
+        user = User.query.filter_by(id=id).first()
+        if user is None:
+            return make_response(jsonify({'message': 'User not found'}), 404) 
+        if user.id==current_user.id:
+            return make_response(jsonify({'message': 'Accounts can not delete himself/herself'}), 400) 
+        property = Property.query.filter_by(user_id=id).first()
+        if property:
+            return make_response(jsonify({'message': 'User who manage one or more properties cannot be deleted'}), 400)      
+        db.session.delete(user)
+        db.session.commit()
+        return make_response(jsonify({'message': 'User successfully deleted'}), 200)
     
 class Owners(Resource):
     def get(self):
@@ -385,22 +429,22 @@ class ExpenseByID(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
 
-api.add_resource(Signup, '/signup')
-api.add_resource(CheckSession, '/check_session')
-api.add_resource(Login, '/login')
-api.add_resource(Logout, '/logout')
-api.add_resource(Users, '/users')
-api.add_resource(UserByID, '/users/<int:id>')
-api.add_resource(Owners, '/owners')
-api.add_resource(OwnerByID, '/owners/<int:id>')
-api.add_resource(Properties, '/properties')
-api.add_resource(PropertyByID, '/properties/<int:id>')
-api.add_resource(Tenants, '/tenants')
-api.add_resource(TenantByID, '/tenants/<int:id>')
-api.add_resource(Rentals, '/rentals')
-api.add_resource(RentalByID, '/rentals/<int:id>')
-api.add_resource(Expenses, '/expenses')
-api.add_resource(ExpenseByID, '/expenses/<int:id>')
+api.add_resource(Signup, '/signup', endpoint='signup')
+api.add_resource(CheckSession, '/check_session', endpoint='check_session')
+api.add_resource(Login, '/login', endpoint='login')
+api.add_resource(Logout, '/logout', endpoint='logout')
+api.add_resource(Users, '/users', endpoint='users')
+api.add_resource(UserByID, '/users/<int:id>', endpoint='show_user')
+api.add_resource(Owners, '/owners', endpoint='owners')
+api.add_resource(OwnerByID, '/owners/<int:id>', endpoint='show_owner')
+api.add_resource(Properties, '/properties', endpoint='properties')
+api.add_resource(PropertyByID, '/properties/<int:id>', endpoint='show_property')
+api.add_resource(Tenants, '/tenants', endpoint='/tenants')
+api.add_resource(TenantByID, '/tenants/<int:id>', endpoint='show_tenant')
+api.add_resource(Rentals, '/rentals', endpoint='/rentals')
+api.add_resource(RentalByID, '/rentals/<int:id>', endpoint='show_rental')
+api.add_resource(Expenses, '/expenses', endpoint='expenses')
+api.add_resource(ExpenseByID, '/expenses/<int:id>', endpoint='show_expense')
 
 
 if __name__ == '__main__':

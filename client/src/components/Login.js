@@ -2,15 +2,8 @@ import { useState } from "react";
 import LoginForm from "./LoginForm";
 import SignupForm from './SignupForm';
 
-function Login({ onAddNewUser,onLogin }) {
+function Login({ onAddNewUser, onLogin }) {
     const [showLogin, setShowLogin] = useState(true);
-
-    function maskInput() {
-        const input = document.getElementById('password');
-        const value = input.value;
-        const maskedValue = '*'.repeat(value.length);
-        input.value = maskedValue;
-    }
 
     return (
         <div>
