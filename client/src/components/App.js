@@ -6,6 +6,7 @@ import NavBar from './NavBar';
 import Users from './Users';
 import Login from "./Login";
 import UserForm from './UserForm';
+import DisplayData from "./DisplayData";
 
 
 function App() {
@@ -37,30 +38,31 @@ function App() {
   }
 
   function updateUser(updatedUser) {
-    setUsers(users.map(user=>user.id===updatedUser ? updatedUser : user))
+    setUsers(users.map(user => user.id === updatedUser ? updatedUser : user))
   }
 
   function deleteUser(id) {
     setUsers(users.filter(user => user.id !== id))
   }
 
-
-
-  if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser}/>;  
+  if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser} />;
 
   return (
     <Router>
       <div className="App">
-        <NavBar setUser={setUser} />
+        <NavBar user={user} setUser={setUser} />
         <Switch>
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/users">
-            <Users users={users} deleteUser={deleteUser} />
+          <Route exact path="/users/:id/">
+            <DisplayData type="user" />
           </Route>
           <Route exact path="/users/:id/edit">
             <UserForm onUpdateUser={updateUser} />
+          </Route>
+          <Route exact path="/users">
+            <Users users={users} deleteUser={deleteUser} />
           </Route>
         </Switch>
       </div>

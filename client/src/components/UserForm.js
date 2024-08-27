@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-function UserForm({ onAddNewUser, onLogin, onUpdateUser }) {
+function UserForm({ onUpdateUser }) {
     const [userToEdit, setUserToEdit] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -29,37 +29,30 @@ function UserForm({ onAddNewUser, onLogin, onUpdateUser }) {
     const formik = useFormik({
         initialValues: {
             email: userToEdit?.email || "",
-            password: userToEdit?.password ||"",
-            name: userToEdit?.name ||"",
-            mobile: userToEdit?.mobile ||"",
-            is_accounts: userToEdit?.is_accounts ||false
+            password: userToEdit?.password || "",
+            name: userToEdit?.name || "",
+            mobile: userToEdit?.mobile || "",
+            is_accounts: userToEdit?.is_accounts || false
         },
         validationSchema: formSchema,
         enableReinitialize: true,
         onSubmit: (values) => {
-            const url = userToEdit ? `/users/${userToEdit.id}` : "/signup"
-            fetch(url, {
-                method: userToEdit ? "PATCH" : "POST",
+            fetch(`/users/${id}`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(values),
             }).then(r => {
                 if (r.ok) {
-                    return r.json();
+                    r.json().then(user => {
+                        console.log(user)
+                        onUpdateUser(user);
+                        history.push(`/users/${id}`);
+                    });
                 } else {
-                    r.json().then(err=>setErrorMessage(err.message));
+                    r.json().then(err => setErrorMessage(err.message));
                 }
-            }).then(user => {
-                console.log(user)
-                if (!userToEdit) {
-                    onLogin(user);
-                    onAddNewUser(user);
-                    history.push(`/`);
-                } else {
-                    onUpdateUser(user);
-                    history.push(`/users/${id}`);
-                }              
             })
             formik.resetForm();
         }

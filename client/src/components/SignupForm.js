@@ -32,14 +32,14 @@ function SignupForm({ onAddNewUser, onLogin }) {
                 body: JSON.stringify(values),
             }).then(r => {
                 if (r.ok) {
-                    return r.json();
+                    r.json().then(user => {
+                        console.log(user)
+                        onLogin(user);
+                        onAddNewUser(user);
+                    });
                 } else {
-                    r.json().then(err=>setErrorMessage(err.message));
+                    r.json().then(err => setErrorMessage(err.message));
                 }
-            }).then(user => {
-                console.log(user)
-                onLogin(user);
-                onAddNewUser(user);           
             })
             formik.resetForm();
         }

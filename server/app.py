@@ -83,7 +83,6 @@ class Login(Resource):
             return make_response(jsonify({'message': 'User not found'}), 404)
         password = data['password']
         if user.authenticate(password):
-            print('set-session')
             session['user_id'] = user.id 
             return make_response(jsonify(user.to_dict()), 200) 
         return make_response(jsonify({'message': 'Password is incorrect'}), 400)    
@@ -108,12 +107,14 @@ class UserByID(Resource):
         return make_response(jsonify(user.to_dict()), 200) 
 
     def patch(self, id):
-        current_user = User.query.filter_by(id=session.get('user_id')).first()
-        if not current_user.is_accounts:
-            return make_response(jsonify({'message': 'Only accounts can edit an user record'}), 403)
         user = User.query.filter_by(id=id).first()
+        print(session.get('user_id'))
         if user is None:
             return make_response(jsonify({'message': 'User not found'}), 404)
+        if session.get('user_id') != user.id:
+            print(f"Authorization failed: current_user.id  != user.id ({user.id})")
+   
+            return make_response(jsonify({'message': 'You do not have permission to edit this record. You can only edit your own records.'}), 403)
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'password':

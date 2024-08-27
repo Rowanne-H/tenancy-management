@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-function Navbar({ setUser }) {
+function Navbar({ user, setUser }) {
     const [errorMessage, setErrorMessage] = useState("");
 
     function handleLogoutClick() {
@@ -18,6 +18,7 @@ function Navbar({ setUser }) {
 
     return (
         <nav>
+            <p className="user">{user? user.email : null}</p>
             <NavLink className="navbar" to="/" exact>Home</NavLink>
             <NavLink className="navbar" to="/users" exact>Users</NavLink>
             <button className="navbar-button" onClick={handleLogoutClick}>Logout</button>
