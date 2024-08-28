@@ -18,7 +18,6 @@ function LoginForm({ onLogin }) {
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
-            console.log(values)
             fetch("/login", {
                 method: "POST",
                 headers: {

@@ -8,7 +8,6 @@ import Login from "./Login";
 import UserForm from './UserForm';
 import DisplayData from "./DisplayData";
 
-
 function App() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -18,23 +17,20 @@ function App() {
     fetch("/check_session")
       .then((r) => {
         if (r.ok) {
-          r.json().then(user => setUser(user));
-          console.log(user)
+          r.json().then(user => {
+            fetch("/users")
+            .then(r => r.json())
+            .then(users => {
+              setUsers(users);
+            });
+          });
         }
       });
-  }, []);
+  }, [user]);
 
-  useEffect(() => {
-    fetch("/users")
-      .then(r => r.json())
-      .then(users => {
-        setUsers(users);
-        console.log(users);
-      });
-  }, []);
-
+ 
   function addNewUser(newUser) {
-    setUsers([...users, newUser])
+    setUsers([...users, newUser])    
   }
 
   function updateUser(updatedUser) {
@@ -57,6 +53,9 @@ function App() {
           </Route>
           <Route exact path="/users/:id/">
             <DisplayData type="user" />
+          </Route>
+          <Route exact path="/properties/:id/">
+            <DisplayData type="property" />
           </Route>
           <Route exact path="/users/:id/edit">
             <UserForm onUpdateUser={updateUser} />

@@ -33,9 +33,7 @@ function SignupForm({ onAddNewUser, onLogin }) {
             }).then(r => {
                 if (r.ok) {
                     r.json().then(user => {
-                        console.log(user)
                         onLogin(user);
-                        onAddNewUser(user);
                     });
                 } else {
                     r.json().then(err => setErrorMessage(err.message));

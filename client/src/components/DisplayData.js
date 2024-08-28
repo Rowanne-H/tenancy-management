@@ -1,21 +1,21 @@
 // DisplayComponent.js
 import React, { useEffect, useState } from 'react';
-
 import { useParams} from 'react-router-dom';
 
 // Define a mapping of object types to their fetch endpoints
 const ENDPOINTS = {
-  property: '/properties/',
   user: '/users/',
-  owner: '/api/owners/',
-  tenant: '/api/tenants/',
+  owner: '/owners/',
+  property: '/properties/',
+  tenant: '/tenants/',
+  rental: '/rentals/',
+  expenses: '/expenses/',
 };
 
 const DisplayData = ({ type }) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  
   const { id } = useParams();
 
   useEffect(() => {
@@ -37,13 +37,28 @@ const DisplayData = ({ type }) => {
 
   // Define field mappings as in the previous example
   const FIELD_MAPPINGS = {
-    property: ['id', 'address', 'price'],
-    user: ['id', 'name', 'email', 'mobile'],
-    owner: ['id', 'name', 'contact'],
-    tenant: ['id', 'name', 'leaseStart', 'leaseEnd'],
+    user: ['id', 'name', 'email', 'mobile', 'is_accounts'],
+    owner: ['id', 'ref', 'name', 'email', 'mobile', 'address', 'note', 
+      'management_end_date', 'management_commencement_date', 'is_active' ],
+    property: ['id', 'ref', 'address', 'commission', 'letting_fee', 
+      'user_id', 'owner_id', 'is_active' ],
+    tenant: ['id', 'ref', 'name', 'email', 'mobile', 'note', 'lease_term', 
+      'lease_start_date', 'lease_end_date', 'rent', 'vacating_date', 
+      'property_id', 'is_active'],
+    rental: ['id', 'amount', 'created_at', 'payment_date',
+            'description', 'tenant_id'],
+    expense: ['id', 'amount', 'created_at', 'payment_date',
+      'description', 'tenant_id'] 
   };
 
   const fields = FIELD_MAPPINGS[type];
+
+  const formatValue = (field, value) => {
+    if (field === 'is_accounts' || field === 'is_active') {
+      return value ? 'Yes' : 'No';
+    }
+    return value;
+  }
 
   return (
     <div>
@@ -51,7 +66,7 @@ const DisplayData = ({ type }) => {
       <ul>
         {fields.map(field => (
           <li key={field}>
-            <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {data[field]}
+            <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> {formatValue(field, data[field])}
           </li>
         ))}
       </ul>
