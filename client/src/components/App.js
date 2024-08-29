@@ -6,11 +6,13 @@ import NavBar from './NavBar';
 import Users from './Users';
 import Login from "./Login";
 import UserForm from './UserForm';
+import Owners from './Owners';
 import DisplayData from "./DisplayData";
 
 function App() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const [owners, setOwners] = useState([])
 
   useEffect(() => {
     // auto-login
@@ -22,6 +24,11 @@ function App() {
             .then(r => r.json())
             .then(users => {
               setUsers(users);
+            });
+            fetch("/owners")
+            .then(r => r.json())
+            .then(owners => {
+              setOwners(owners);
             });
           });
         }
@@ -41,6 +48,10 @@ function App() {
     setUsers(users.filter(user => user.id !== id))
   }
 
+  function deleteOwner(id) {
+    setOwners(owners.filter(owner => owner.id !== id))
+  }
+
   if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser} />;
 
   return (
@@ -51,17 +62,23 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/users/:id/">
-            <DisplayData type="user" />
+          <Route exact path="/users">
+            <Users users={users} deleteUser={deleteUser} />
           </Route>
-          <Route exact path="/properties/:id/">
-            <DisplayData type="property" />
+          <Route exact path="/users/:id/">
+            <DisplayData type="users"/>
           </Route>
           <Route exact path="/users/:id/edit">
             <UserForm onUpdateUser={updateUser} />
           </Route>
-          <Route exact path="/users">
-            <Users users={users} deleteUser={deleteUser} />
+          <Route exact path="/owners">
+            <Owners owners={owners} deleteOwner={deleteOwner} />
+          </Route>
+          <Route exact path="/owners/:id/">
+            <DisplayData  type="owners" />
+          </Route>
+          <Route exact path="/properties/:id/">
+            <DisplayData type="properties" />
           </Route>
         </Switch>
       </div>

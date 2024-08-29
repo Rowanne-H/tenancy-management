@@ -172,7 +172,7 @@ class Owner(BaseModel, SerializerMixin):
             'note': self.note,
             'management_end_date': self.management_end_date,
             'management_commencement_date': self.management_commencement_date,
-            'is_active ': self.is_active 
+            'is_active': self.is_active 
         }
     
     def __repr__(self):
@@ -216,7 +216,7 @@ class Property(BaseModel, SerializerMixin):
             'letting_fee': self.letting_fee,
             'user_id': self.user_id,
             'owner_id': self.owner_id,
-            'is_active ': self.is_active 
+            'is_active': self.is_active 
         }
 
     def __repr__(self):
@@ -256,7 +256,7 @@ class Tenant(BaseModel, SerializerMixin):
             'rent': self.rent,
             'vacating_date': self.vacating_date,
             'property_id': self.property_id,
-            'is_active ': self.is_active 
+            'is_active': self.is_active 
         }
 
     def __repr__(self):

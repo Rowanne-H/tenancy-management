@@ -4,11 +4,11 @@ import { useParams} from 'react-router-dom';
 
 // Define a mapping of object types to their fetch endpoints
 const ENDPOINTS = {
-  user: '/users/',
-  owner: '/owners/',
-  property: '/properties/',
-  tenant: '/tenants/',
-  rental: '/rentals/',
+  users: '/users/',
+  owners: '/owners/',
+  properties: '/properties/',
+  tenants: '/tenants/',
+  rentals: '/rentals/',
   expenses: '/expenses/',
 };
 
@@ -37,17 +37,17 @@ const DisplayData = ({ type }) => {
 
   // Define field mappings as in the previous example
   const FIELD_MAPPINGS = {
-    user: ['id', 'name', 'email', 'mobile', 'is_accounts'],
-    owner: ['id', 'ref', 'name', 'email', 'mobile', 'address', 'note', 
+    users: ['id', 'name', 'email', 'mobile', 'is_accounts'],
+    owners: ['id', 'ref', 'name', 'email', 'mobile', 'address', 'note', 
       'management_end_date', 'management_commencement_date', 'is_active' ],
-    property: ['id', 'ref', 'address', 'commission', 'letting_fee', 
+    properties: ['id', 'ref', 'address', 'commission', 'letting_fee', 
       'user_id', 'owner_id', 'is_active' ],
-    tenant: ['id', 'ref', 'name', 'email', 'mobile', 'note', 'lease_term', 
+    tenants: ['id', 'ref', 'name', 'email', 'mobile', 'note', 'lease_term', 
       'lease_start_date', 'lease_end_date', 'rent', 'vacating_date', 
       'property_id', 'is_active'],
-    rental: ['id', 'amount', 'created_at', 'payment_date',
+    rentals: ['id', 'amount', 'created_at', 'payment_date',
             'description', 'tenant_id'],
-    expense: ['id', 'amount', 'created_at', 'payment_date',
+    expenses: ['id', 'amount', 'created_at', 'payment_date',
       'description', 'tenant_id'] 
   };
 

@@ -21,6 +21,7 @@ function Navbar({ user, setUser }) {
             <p className="user">{user? user.email : null}</p>
             <NavLink className="navbar" to="/" exact>Home</NavLink>
             <NavLink className="navbar" to="/users" exact>Users</NavLink>
+            <NavLink className="navbar" to="/owners" exact>Owners</NavLink>
             <button className="navbar-button" onClick={handleLogoutClick}>Logout</button>
         </nav>
     )
