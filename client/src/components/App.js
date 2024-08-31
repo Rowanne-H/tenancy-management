@@ -23,14 +23,11 @@ function App() {
           fetch("/users")
             .then((r) => r.json())
             .then((users) => {
-              console.log("users"+users)
               setUsers(users);
             });
           fetch("/owners")
             .then((r) => r.json())
             .then((owners) => {
-              
-              console.log("owners"+owners)
               setOwners(owners);
             });
         });

@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { ENDPOINTS } from "./MappingData";
+import { ENDPOINTS } from "./DataMappingFields";
+import { formatValue } from "./DataDisplayingFunctions";
 
 function DisplayTableRow({ item, onDeleteItem, fields, type }) {
   console.log(type+ENDPOINTS[type] + item.id)
@@ -17,30 +18,6 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
       }
     });
   }
-
-  const formatValue = (field, value) => {
-    if (field === "is_accounts" || field === "is_active") {
-      if (value === true) {
-        return "No";
-      }
-      return "Yes";
-    }
-    if (!value) {
-      return "null";
-    } 
-    if (
-      field === "created_at" ||
-      field === "payment_date" ||
-      field === "management_start_date" ||
-      field === "management_end_date" ||
-      field === "lease_start_date" ||
-      field === "lease_end_date"
-    ) {
-      const date = new Date(value).toISOString().split("T")[0];
-      return date;
-    }
-    return value;
-  };
 
   return (
     <tr>

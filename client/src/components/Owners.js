@@ -1,6 +1,6 @@
 import React from "react";
 import DisplayTable from "./DisplayTable";
-import { FIELD_MAPPINGS } from "./MappingData";
+import { FIELD_MAPPINGS } from "./DataMappingFields";
 
 function Owners({ owners, deleteOwner }) {
   const fields = FIELD_MAPPINGS["owners"]

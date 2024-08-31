@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export const formatValue = (field, value) => {
   if (field === "is_accounts" || field === "is_active") {
     return value ? "Yes" : "No";
