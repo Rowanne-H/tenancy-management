@@ -1,61 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import './App.css';
-import Home from './Home';
-import NavBar from './NavBar';
-import Users from './Users';
-import Login from './Login';
-import UserForm from './UserForm';
-import Owners from './Owners';
-import DisplayData from './DisplayData'
-import EditDataForm from './EditDataForm';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
+import Home from "./Home";
+import NavBar from "./NavBar";
+import Users from "./Users";
+import Login from "./Login";
+import UserForm from "./UserForm";
+import Owners from "./Owners";
+import DisplayData from "./DisplayData";
+import EditDataForm from "./EditDataForm";
 
 function App() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
-  const [owners, setOwners] = useState([])
+  const [owners, setOwners] = useState([]);
 
   useEffect(() => {
     // auto-login
-    fetch('/check_session')
-      .then((r) => {
-        if (r.ok) {
-          r.json().then(user => {
-            fetch('/users')
-              .then(r => r.json())
-              .then(users => {
-                setUsers(users);
-              });
-            fetch('/owners')
-              .then(r => r.json())
-              .then(owners => {
-                setOwners(owners);
-              });
-          });
-        }
-      });
+    fetch("/check_session").then((r) => {
+      if (r.ok) {
+        r.json().then((user) => {
+          fetch("/users")
+            .then((r) => r.json())
+            .then((users) => {
+              setUsers(users);
+            });
+          fetch("/owners")
+            .then((r) => r.json())
+            .then((owners) => {
+              setOwners(owners);
+            });
+        });
+      }
+    });
   }, [user]);
 
-
   function addNewUser(newUser) {
-    setUsers([...users, newUser])
+    setUsers([...users, newUser]);
   }
-
   function updateUser(updatedUser) {
-    setUsers(users.map(user => user.id === updatedUser ? updatedUser : user))
+    setUsers(
+      users.map((user) => (user.id === updatedUser ? updatedUser : user)),
+    );
   }
-
   function deleteUser(id) {
-    setUsers(users.filter(user => user.id !== id))
+    setUsers(users.filter((user) => user.id !== id));
   }
-
   function deleteOwner(id) {
-    setOwners(owners.filter(owner => owner.id !== id))
+    setOwners(owners.filter((owner) => owner.id !== id));
   }
   function updateOwner(updatedOwner) {
-    setOwners(owners.map(owner => owner.id === updatedOwner ? updatedOwner : owner))
+    setOwners(
+      owners.map((owner) => (owner.id === updatedOwner ? updatedOwner : owner)),
+    );
   }
-
   if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser} />;
 
   return (
@@ -90,7 +88,7 @@ function App() {
         </Switch>
       </div>
     </Router>
-  )
+  );
 }
 
 export default App;
