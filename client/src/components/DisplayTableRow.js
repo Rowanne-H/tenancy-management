@@ -31,12 +31,20 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
         if (field === 'is_accounts' || field === 'is_active') {
           return value ? 'Yes' : 'No';
         }
+        if (field === 'created_at' ||
+            field === 'payment_date' ||
+            field === 'management_end_date' ||
+            field === 'management_commencement_date' ||
+            field === 'lease_start_date' ||
+            field === 'lease_end_date') {
+            return new Date(value).toISOString().split('T')[0];
+        }
         return value;
     }
 
     return (
         <tr>
-             {fields.map(field => (
+            {fields.map(field => (
                 <td key={field}>
                     {formatValue(field, item[field])}
                 </td>

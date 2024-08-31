@@ -3,10 +3,6 @@ import ReactPaginate from 'react-paginate';
 import DisplayTableRow from './DisplayTableRow'
 
 const sortItems = (items, sortBy, sortOrder) => {
-    if (!Array.isArray(items)) {
-        console.error('Expected items to be an array');
-        return [];
-    }
     return [...items].sort((a, b) => {
         if (a[sortBy] < b[sortBy]) return sortOrder === 'asc' ? -1 : 1;
         if (a[sortBy] > b[sortBy]) return sortOrder === 'asc' ? 1 : -1;
@@ -18,14 +14,14 @@ function DisplayTable({
     items,
     deleteItem,
     fields,
-    defaultSortBy = 'name',
+    defaultSortBy = 'id',
     defaultSortOrder = 'asc',
     type
 }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
 
-    const [sortBy, setSortBy] = useState(defaultSortBy); // Default sort by 'name'
+    const [sortBy, setSortBy] = useState(defaultSortBy); 
     const [sortOrder, setSortOrder] = useState(defaultSortOrder); 
 
     const sortedItems = sortItems(items, sortBy, sortOrder);
@@ -54,7 +50,7 @@ function DisplayTable({
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedItems.map(item => <DisplayTableRow key={item.id} item={item} onDelete={deleteItem} fields={fields} type={type}/>)}
+                    {paginatedItems.map(item => <DisplayTableRow key={item.id} item={item} onDelete={deleteItem} fields={fields} type={type} />)}
                 </tbody>
             </table>
             <ReactPaginate

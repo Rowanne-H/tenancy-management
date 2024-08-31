@@ -1,5 +1,4 @@
 import React from 'react';
-import Owner from './Owner';
 import DisplayTable from './DisplayTable';
 
 function Owners({ owners, deleteOwner }) {
@@ -10,7 +9,7 @@ function Owners({ owners, deleteOwner }) {
             items={owners}
             deleteItem={deleteOwner} 
             fields={fields}
-            defaultSortBy="name"
+            defaultSortBy="id"
             type="owners"
         />
     );

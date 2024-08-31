@@ -60,7 +60,7 @@ function UserForm({ onUpdateUser }) {
 
     return (
         <div>
-            <h1>{userToEdit ? "Edit User" : "Sign Up"}</h1>
+            <h1>"Edit User"</h1>
             <form onSubmit={formik.handleSubmit}>
                 <label>Email Address
                     <input id="email" name="email" onChange={formik.handleChange} value={formik.values.email} />

@@ -21,15 +21,15 @@ const DisplayData = ({ type }) => {
   useEffect(() => {
     if (id && type && ENDPOINTS[type]) {
       fetch(ENDPOINTS[type] + id)
-        .then(response => {
-          if (!response.ok) {
+        .then(r => {
+          if (!r.ok) {
             throw new Error('Network response was not ok');
           }
-          return response.json();
+          return r.json();
         })
         .then(data => setData(data))
         .catch(error => setError(error));
-    }
+    }    
   }, [id, type]);
 
   if (error) return <p>Error: {error.message}</p>;
@@ -56,6 +56,14 @@ const DisplayData = ({ type }) => {
   const formatValue = (field, value) => {
     if (field === 'is_accounts' || field === 'is_active') {
       return value ? 'Yes' : 'No';
+    }
+    if (field === 'created_at' ||
+      field === 'payment_date' ||
+      field === 'management_end_date' ||
+      field === 'management_commencement_date' ||
+      field === 'lease_start_date' ||
+      field === 'lease_end_date') {
+      return new Date(value).toISOString().split('T')[0];
     }
     return value;
   }
