@@ -4,7 +4,6 @@ import { ENDPOINTS } from "./DataMappingFields";
 import { formatValue } from "./DataDisplayingFunctions";
 
 function DisplayTableRow({ item, onDeleteItem, fields, type }) {
-  console.log(type+ENDPOINTS[type] + item.id)
   function handleDeleteClick() {
     fetch(ENDPOINTS[type] + item.id, {
       method: "DELETE",

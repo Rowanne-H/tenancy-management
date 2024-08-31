@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
+import { formatValue } from "./DataDisplayingFunctions";
 
 const DisplayData = ({ type }) => {
   const [data, setData] = useState(null);
@@ -26,27 +27,6 @@ const DisplayData = ({ type }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
-
-  const formatValue = (field, value) => {
-    if (field === "is_accounts" || field === "is_active") {
-      return value ? "Yes" : "No";
-    }
-    if (!value) {
-      return "null";
-    }
-    if (
-      field === "created_at" ||
-      field === "payment_date" ||
-      field === "management_end_date" ||
-      field === "management_start_date" ||
-      field === "lease_start_date" ||
-      field === "lease_end_date"
-    ) {
-      const date = new Date(value).toISOString().split("T")[0];
-      return date;
-    }
-    return value;
-  };
 
   return (
     <div>
