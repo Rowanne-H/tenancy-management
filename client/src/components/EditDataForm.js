@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 const ENDPOINTS = {
     users: '/users/',
@@ -16,10 +16,10 @@ const FIELD_MAPPINGS = {
     users: {
         fields: ['id', 'name', 'email', 'mobile', 'is_accounts'],
         validation: yup.object().shape({
-            email: yup.string().email("Invalid email").required("Must enter email"),
-            password: yup.string().required("must enter a password"),
-            name: yup.string().required("Must enter a name").min(2, "Name must be at least 2 characters long"),
-            mobile: yup.string(10).matches(/^04\d{8}$/, "Mobile number must start with '04' and be exactly 10 digits").required("Must enter a mobile"),
+            email: yup.string().email('Invalid email').required('Must enter email'),
+            password: yup.string().required('must enter a password'),
+            name: yup.string().required('Must enter a name').min(2, 'Name must be at least 2 characters long'),
+            mobile: yup.string(10).matches(/^04\d{8}$/, 'Mobile number must start with "04" and be exactly 10 digits').required('Must enter a mobile'),
             is_accounts: yup.boolean()
         })
     },
@@ -27,12 +27,12 @@ const FIELD_MAPPINGS = {
         fields: ['id', 'ref', 'name', 'email', 'mobile', 'address', 'note', 
             'management_end_date', 'management_commencement_date', 'is_active' ],
         validation: yup.object().shape({
-            ref: yup.string().required("Must enter ref").min(2, "Name must be at least 2 characters long"), 
-            name: yup.string().required("Must enter a name").min(2, "Name must be at least 2 characters long"),
-            email: yup.string().email("Invalid email").required("Must enter email"),
-            mobile: yup.string(10).matches(/^04\d{8}$/, "Mobile number must start with '04' and be exactly 10 digits").required("Must enter a mobile"),
-            address:yup.string().required("Must enter ref").min(10, "Name must be at least 10 characters long"), 
-            anagement_commencement_date: yup.string().required("Must enter a date"),
+            ref: yup.string().required('Must enter ref').min(2, 'Name must be at least 2 characters long'), 
+            name: yup.string().required('Must enter a name').min(2, 'Name must be at least 2 characters long'),
+            email: yup.string().email('Invalid email').required('Must enter email'),
+            mobile: yup.string(10).matches(/^04\d{8}$/, 'Mobile number must start with "04" and be exactly 10 digits').required('Must enter a mobile'),
+            address:yup.string().required('Must enter ref').min(10, 'Name must be at least 10 characters long'), 
+            anagement_commencement_date: yup.string().required('Must enter a date'),
             is_active: yup.boolean()
         })
     },
@@ -59,17 +59,13 @@ const FIELD_MAPPINGS = {
 function EditDataForm({ onUpdateData, type }) {
     
     const [dataToEdit, setDataToEdit] = useState([]);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
 
     const { id } = useParams();
     const history = useHistory();
     console.log(ENDPOINTS[type]+id)
     useEffect(() => {
-        if (id && type && ENDPOINTS[type]) {
-            console.log('it is correct')
-            
-    console.log(dataToEdit)
-            
+        if (id && type && ENDPOINTS[type]) {            
           fetch(ENDPOINTS[type] + id)
             .then(r => {
               if (!r.ok) {
@@ -85,10 +81,10 @@ function EditDataForm({ onUpdateData, type }) {
     const { fields, validation } = FIELD_MAPPINGS[type] || { fields: [], validation: yup.object() };
 
     const generateInitialValue = (field, value) => {
-        if (field === "is_accounts" && !value) {
+        if (field === 'is_accounts' && !value) {
             return false;
         }
-        if (field === "is_active" && !value) {
+        if (field === 'is_active' && !value) {
             return true
         }
         return value
@@ -140,9 +136,9 @@ function EditDataForm({ onUpdateData, type }) {
                 }
             });
             fetch(ENDPOINTS[type] + id, {
-                method: "PATCH",
+                method: 'PATCH',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formattedValues),
             }).then(r => {
@@ -162,7 +158,7 @@ function EditDataForm({ onUpdateData, type }) {
 
     return (
         <div>
-            <h1>{"Edit Form"}</h1>
+            <h1>{'Edit ' + type.charAt(0).toUpperCase() + type.slice(1,type.length-1) + ' Form'}</h1>
             <form onSubmit={formik.handleSubmit}>
                 {fields.map(field => (
                     <div>

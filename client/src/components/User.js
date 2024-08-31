@@ -6,12 +6,12 @@ function User({ user, onDeleteUser }) {
 
     function handleDeleteClick() {
         fetch(`/users/${id}`, {
-            method: "DELETE",
+            method: 'DELETE',
         })
             .then(r => {
                 if (r.ok) {
                     onDeleteUser(id);
-                    alert("Account " + email + " has been deleted");
+                    alert('Account ' + email + ' has been deleted');
                     return r.json();
                 } else {
                     r.json().then(err=>alert(err.message));

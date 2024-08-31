@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.css";
-import Home from "./Home";
-import NavBar from "./NavBar";
-import Users from "./Users";
-import Login from "./Login";
-import UserForm from "./UserForm";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import './App.css';
+import Home from './Home';
+import NavBar from './NavBar';
+import Users from './Users';
+import Login from './Login';
+import UserForm from './UserForm';
 import Owners from './Owners';
-import DisplayData from "./DisplayData"
-import EditDataForm from "./EditDataForm";
+import DisplayData from './DisplayData'
+import EditDataForm from './EditDataForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,16 +17,16 @@ function App() {
 
   useEffect(() => {
     // auto-login
-    fetch("/check_session")
+    fetch('/check_session')
       .then((r) => {
         if (r.ok) {
           r.json().then(user => {
-            fetch("/users")
+            fetch('/users')
               .then(r => r.json())
               .then(users => {
                 setUsers(users);
               });
-            fetch("/owners")
+            fetch('/owners')
               .then(r => r.json())
               .then(owners => {
                 setOwners(owners);

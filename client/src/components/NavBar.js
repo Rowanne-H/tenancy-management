@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 function Navbar({ user, setUser }) {
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
 
     function handleLogoutClick() {
-        fetch("/logout", {
-            method: "DELETE"
+        fetch('/logout', {
+            method: 'DELETE'
         }).then(r => {
             if (r.ok) {
                 setUser(null);

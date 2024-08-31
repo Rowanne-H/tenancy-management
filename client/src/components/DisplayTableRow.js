@@ -14,12 +14,12 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
 
     function handleDeleteClick() {
         fetch(ENDPOINTS[type] + item.id, {
-            method: "DELETE",
+            method: 'DELETE',
         })
             .then(r => {
                 if (r.ok) {
                     onDeleteItem(item.id);
-                    alert("Record has been deleted");
+                    alert('Record has been deleted');
                     return r.json(item=>console.log(item));
                 } else {
                     r.json().then(err=>alert(err.message));
