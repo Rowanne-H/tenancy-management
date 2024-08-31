@@ -3,6 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
+import { generateInitialValue, getDate, inputType  } from "./DataDisplayingFunctions";
 
 const validations = {
   users: yup.object().shape({
@@ -54,7 +55,7 @@ function EditDataForm({ onUpdateData, type }) {
 
   const { id } = useParams();
   const history = useHistory();
-  console.log(ENDPOINTS[type] + id);
+
   useEffect(() => {
     if (id && type && ENDPOINTS[type]) {
       fetch(ENDPOINTS[type] + id)
@@ -72,51 +73,7 @@ function EditDataForm({ onUpdateData, type }) {
   const fields = FIELD_MAPPINGS[type]
   const validation = validations[type] 
 
-  const generateInitialValue = (field, value) => {
-    if (field === "is_accounts" && !value) {
-      return false;
-    }
-    if (field === "is_active" && !value) {
-      return true;
-    }
-    return value;
-  };
-  const formatValue = (field, value) => {
-    if (field === "is_accounts" || field === "is_active") {
-      return value ? "Yes" : "No";
-    }
-    return value;
-  };
-  const getDate = (field, value) => {
-    if (
-      value != null &&
-      (field === "created_at" ||
-        field === "payment_date" ||
-        field === "management_end_date" ||
-        field === "management_start_date" ||
-        field === "lease_start_date" ||
-        field === "lease_end_date")
-    ) {
-      const date = new Date(value).toISOString().split("T")[0];
-      return date;
-    }
-  };
-  const inputType = (field) => {
-    if (field === "password") {
-      return "password";
-    }
-    if (
-      field === "created_at" ||
-      field === "payment_date" ||
-      field === "management_end_date" ||
-      field === "management_start_date" ||
-      field === "lease_start_date" ||
-      field === "lease_end_date"
-    ) {
-      return "date";
-    }
-    return "text";
-  };
+ 
 
   const formik = useFormik({
     initialValues: {
