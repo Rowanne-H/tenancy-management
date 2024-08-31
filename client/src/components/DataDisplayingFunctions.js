@@ -12,6 +12,12 @@ export const isDate = (field) => {
   return false;
 }
 
+export const getDate = (value) => {
+  if (!value) {return ""}
+  const date = new Date(value).toISOString().split("T")[0];
+  return date;
+};
+
 export const formatValue = (field, value) => {
   if (field === "is_accounts" || field === "is_active") {
     return value ? "Yes" : "No";
@@ -25,23 +31,16 @@ export const formatValue = (field, value) => {
   return value;
 };
 
-export const generateInitialValue = (field, value) => {
-  if (field === "is_accounts" && !value) {
-    return false;
-  }
-  if (field === "is_active" && !value) {
-    return true;
-  }
-  if (isDate(field)) {
-    return getDate(value)
-  }
-  return value;
-};
-
-export const getDate = (value) => {
-  if (!value) {return null}
-  const date = new Date(value).toISOString().split("T")[0];
-  return date;
+export const generateFormikValues = (dataToEdit) => {
+  const entries = Object.entries(dataToEdit).map(([field, value]) => {
+    if (field === "is_active" || field === "is_accounts") {
+      return [field, value]
+    }
+    if (!value) {return [field, ""]}
+    if (isDate(field)) {return [field, getDate(value)]}
+    return [field, value]
+  })
+  return Object.fromEntries(entries)
 };
 
 export const inputType = (field) => {

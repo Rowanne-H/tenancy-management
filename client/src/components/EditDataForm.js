@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
-import { generateInitialValue, isDate, getDate, inputType  } from "./DataDisplayingFunctions";
+import { generateFormikValues, isDate, getDate, inputType  } from "./DataDisplayingFunctions";
 
 const validations = {
   users: yup.object().shape({
@@ -50,7 +50,7 @@ const validations = {
 };
 
 function EditDataForm({ onUpdateData, type }) {
-  const [dataToEdit, setDataToEdit] = useState([]);
+  const [dataToEdit, setDataToEdit] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
   const { id } = useParams();
@@ -71,43 +71,23 @@ function EditDataForm({ onUpdateData, type }) {
 
   const fields = FIELD_MAPPINGS[type]
   const validation = validations[type] 
+  const initialValues = generateFormikValues(dataToEdit)
+  console.log(initialValues)
 
   const formik = useFormik({
-    initialValues: {
-      ...Object.fromEntries(
-        fields.map((field) => [
-          field,
-          generateInitialValue(field, dataToEdit[field]),
-        ]),
-      ),
-    },
+    initialValues: initialValues,
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log(values);
+      console.log("submit");
 
-      const formattedValues = { ...values };
-      fields.forEach((field) => {
-        if (
-          values[field] != null &&
-          (field === "created_at" ||
-            field === "payment_date" ||
-            field === "management_end_date" ||
-            field === "management_start_date" ||
-            field === "lease_start_date" ||
-            field === "lease_end_date")
-        ) {
-          formattedValues[field] = new Date(values[field])
-            .toISOString()
-            .split("T")[0];
-        }
-      });
+      
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formattedValues),
+        body: JSON.stringify(generateFormikValues(values)),
       }).then((r) => {
         if (r.ok) {
           r.json().then((data) => {
@@ -133,7 +113,7 @@ function EditDataForm({ onUpdateData, type }) {
           <div>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {isDate(field) ? getDate(dataToEdit[field]) : null}
+              {isDate(field) ? getDate(dataToEdit[field]) : ""}
               <input
                 type={inputType(field)}
                 id={field}
