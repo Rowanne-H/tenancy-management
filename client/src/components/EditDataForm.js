@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
-import { generateInitialValue, getDate, inputType  } from "./DataDisplayingFunctions";
+import { generateInitialValue, isDate, getDate, inputType  } from "./DataDisplayingFunctions";
 
 const validations = {
   users: yup.object().shape({
@@ -61,7 +61,6 @@ function EditDataForm({ onUpdateData, type }) {
       fetch(ENDPOINTS[type] + id)
         .then((r) => {
           if (!r.ok) {
-            console.log("backend");
             throw new Error("Network response was not ok");
           }
           return r.json();
@@ -72,8 +71,6 @@ function EditDataForm({ onUpdateData, type }) {
 
   const fields = FIELD_MAPPINGS[type]
   const validation = validations[type] 
-
- 
 
   const formik = useFormik({
     initialValues: {
@@ -136,7 +133,7 @@ function EditDataForm({ onUpdateData, type }) {
           <div>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {getDate(field, dataToEdit[field])}
+              {isDate(field) ? getDate(dataToEdit[field]) : null}
               <input
                 type={inputType(field)}
                 id={field}
