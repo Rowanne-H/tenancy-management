@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { ENDPOINTS } from "./DataMappingFields";
+import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
 
-const FIELD_MAPPINGS = {
-  users: {
-    fields: ["id", "name", "email", "mobile", "is_accounts"],
-    validation: yup.object().shape({
+const validations = {
+  users: yup.object().shape({
       email: yup.string().email("Invalid email").required("Must enter email"),
       password: yup.string().required("must enter a password"),
       name: yup
@@ -23,21 +21,7 @@ const FIELD_MAPPINGS = {
         .required("Must enter a mobile"),
       is_accounts: yup.boolean(),
     }),
-  },
-  owners: {
-    fields: [
-      "id",
-      "ref",
-      "name",
-      "email",
-      "mobile",
-      "address",
-      "note",
-      "management_start_date",
-      "management_end_date",
-      "is_active",
-    ],
-    validation: yup.object().shape({
+  owners: yup.object().shape({
       ref: yup
         .string()
         .required("Must enter ref")
@@ -61,56 +45,7 @@ const FIELD_MAPPINGS = {
       anagement_start_date: yup.string().required("Must enter a date"),
       is_active: yup.boolean(),
     }),
-  },
-  properties: {
-    fields: [
-      "id",
-      "ref",
-      "address",
-      "commission",
-      "letting_fee",
-      "user_id",
-      "owner_id",
-      "is_active",
-    ],
-  },
-  tenants: {
-    fields: [
-      "id",
-      "ref",
-      "name",
-      "email",
-      "mobile",
-      "note",
-      "lease_term",
-      "lease_start_date",
-      "lease_end_date",
-      "rent",
-      "vacating_date",
-      "property_id",
-      "is_active",
-    ],
-  },
-  rentals: {
-    fields: [
-      "id",
-      "amount",
-      "created_at",
-      "payment_date",
-      "description",
-      "tenant_id",
-    ],
-  },
-  expenses: {
-    fields: [
-      "id",
-      "amount",
-      "created_at",
-      "payment_date",
-      "description",
-      "tenant_id",
-    ],
-  },
+  
 };
 
 function EditDataForm({ onUpdateData, type }) {
@@ -134,10 +69,8 @@ function EditDataForm({ onUpdateData, type }) {
     }
   }, [id]);
 
-  const { fields, validation } = FIELD_MAPPINGS[type] || {
-    fields: [],
-    validation: yup.object(),
-  };
+  const fields = FIELD_MAPPINGS[type]
+  const validation = validations[type] 
 
   const generateInitialValue = (field, value) => {
     if (field === "is_accounts" && !value) {
