@@ -1,18 +1,9 @@
 import React from "react";
 import DisplayTable from "./DisplayTable";
+import { FIELD_MAPPINGS } from "./MappingData";
 
 function Owners({ owners, deleteOwner }) {
-  const fields = [
-    "id",
-    "ref",
-    "name",
-    "email",
-    "mobile",
-    "address",
-    "management_start_date",
-    "management_end_date",
-    "is_active",
-  ];
+  const fields = FIELD_MAPPINGS["owners"]
 
   return (
     <DisplayTable

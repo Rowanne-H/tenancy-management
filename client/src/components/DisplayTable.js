@@ -19,7 +19,7 @@ function DisplayTable({
   type,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState();
+  const [pageSize, setPageSize] = useState(5);
 
   const [sortBy, setSortBy] = useState(defaultSortBy);
   const [sortOrder, setSortOrder] = useState(defaultSortOrder);

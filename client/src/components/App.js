@@ -54,6 +54,10 @@ function App() {
       owners.map((owner) => (owner.id === updatedOwner ? updatedOwner : owner)),
     );
   }
+
+  
+
+
   if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser} />;
 
   return (

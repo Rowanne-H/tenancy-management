@@ -32,6 +32,9 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
       }
       return "Yes";
     }
+    if (!value) {
+      return "null";
+    } 
     if (
       field === "created_at" ||
       field === "payment_date" ||
@@ -40,12 +43,8 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
       field === "lease_start_date" ||
       field === "lease_end_date"
     ) {
-      if (!value) {
-        return "";
-      } else {
-        const date = new Date(value).toISOString().split("T")[0];
-        return date;
-      }
+      const date = new Date(value).toISOString().split("T")[0];
+      return date;
     }
     return value;
   };

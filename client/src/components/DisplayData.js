@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-// Define a mapping of object types to their fetch endpoints
-const ENDPOINTS = {
-  users: "/users/",
-  owners: "/owners/",
-  properties: "/properties/",
-  tenants: "/tenants/",
-  rentals: "/rentals/",
-  expenses: "/expenses/",
-};
+import { ENDPOINTS, FIELD_MAPPINGS } from "./MappingData"
 
 const DisplayData = ({ type }) => {
   const [data, setData] = useState(null);
@@ -33,64 +24,6 @@ const DisplayData = ({ type }) => {
 
   if (error) return <p>Error: {error.message}</p>;
   if (!data) return <p>Loading...</p>;
-
-  // Define field mappings as in the previous example
-  const FIELD_MAPPINGS = {
-    users: ["id", "name", "email", "mobile", "is_accounts"],
-    owners: [
-      "id",
-      "ref",
-      "name",
-      "email",
-      "mobile",
-      "address",
-      "note",
-      "management_start_date",
-      "management_end_date",
-      "is_active",
-    ],
-    properties: [
-      "id",
-      "ref",
-      "address",
-      "commission",
-      "letting_fee",
-      "user_id",
-      "owner_id",
-      "is_active",
-    ],
-    tenants: [
-      "id",
-      "ref",
-      "name",
-      "email",
-      "mobile",
-      "note",
-      "lease_term",
-      "lease_start_date",
-      "lease_end_date",
-      "rent",
-      "vacating_date",
-      "property_id",
-      "is_active",
-    ],
-    rentals: [
-      "id",
-      "amount",
-      "created_at",
-      "payment_date",
-      "description",
-      "tenant_id",
-    ],
-    expenses: [
-      "id",
-      "amount",
-      "created_at",
-      "payment_date",
-      "description",
-      "tenant_id",
-    ],
-  };
 
   const fields = FIELD_MAPPINGS[type];
 
