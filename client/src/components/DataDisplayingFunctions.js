@@ -57,5 +57,8 @@ export const inputType = (field) => {
   ) {
     return "date";
   }
+  if (field === "is_active") {
+    return "checkbox"
+  }
   return "text";
 };

@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
-import { generateFormikValues, inputType  } from "./DataDisplayingFunctions";
+import { generateFormikValues, isDate, getDate, inputType  } from "./DataDisplayingFunctions";
 
 const validations = {
   users: yup.object().shape({
@@ -72,12 +72,23 @@ function EditDataForm({ onUpdateData, type }) {
   const fields = FIELD_MAPPINGS[type]
   const validation = validations[type] 
   const initialValues = generateFormikValues(dataToEdit);
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    console.log(name)
+    if (type === "date") {
+      // Handle date input differently
+      formik.setFieldValue(value, getDate(value));
+    } else {
+      // Use Formik's default handleChange
+      formik.handleChange(e);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {...initialValues},
     validationSchema: validation,
     enableReinitialize: true,
-    onSubmit: (values) => {  //somehow this function is not working, create a separate handlesubmit 
+    onSubmit: (values) => {   
       console.log("Submitting form with values:", values);   
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
@@ -100,61 +111,24 @@ function EditDataForm({ onUpdateData, type }) {
     },
   });
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const values = formik.values;
-    console.log(values)
-    fetch(ENDPOINTS[type] + id, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(generateFormikValues(values)),
-    }).then((r) => {
-      if (r.ok) {
-        r.json().then((data) => {
-          console.log(data)
-          onUpdateData(data);
-          history.push(ENDPOINTS[type] + id);
-        });
-      } else {
-        r.json().then((err) => setErrorMessage(err.message));
-      }
-    });
-  }
-
-  const handleChange = (e) => {
-    const { name, type, value, checked } = e.target;
-    formik.setFieldValue(name, checked);
-  };
-
   return (
     <div>
       <h1>
         Edit {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
       </h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         {fields.map((field) => (
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {inputType(field) == "checkbox" ? (
-                <input
-                type="checkbox"
-                id={field}
-                name={field}
-                checked={formik.values[field] === true}
-                onChange={handleChange}
-              />
-              ) : (
-                <input
+              {isDate(field) ? getDate(dataToEdit[field]) : ""}
+              <input
                 type={inputType(field)}
                 id={field}
                 name={field}
-                onChange={formik.handleChange}
+                onChange={handleChange}
                 value={formik.values[field] || ""}
               />
-              )}
             </label>
             {formik.errors[field] ? (
               <p className="errorsMessages">{formik.errors[field]}</p>

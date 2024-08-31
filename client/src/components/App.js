@@ -38,19 +38,20 @@ function App() {
 
   function updateUser(updatedUser) {
     setUsers(
-      users.map((user) => (user.id === updatedUser ? updatedUser : user)),
+      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
     );
   }
   function deleteUser(id) {
     setUsers(users.filter((user) => user.id !== id));
   }
-  function deleteOwner(id) {
-    setOwners(owners.filter((owner) => owner.id !== id));
-  }
+  
   function updateOwner(updatedOwner) {
     setOwners(
-      owners.map((owner) => (owner.id === updatedOwner ? updatedOwner : owner)),
+      owners.map((owner) => (owner.id === updatedOwner.id ? updatedOwner : owner)),
     );
+  }
+  function deleteOwner(id) {
+    setOwners(owners.filter((owner) => owner.id !== id));
   }
 
   

@@ -179,7 +179,10 @@ class OwnerByID(Resource):
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'management_start_date' or attr == 'management_end_date':
-                value=getDate(value)
+                if value == '':
+                    value=None
+                else:
+                    value=getDate(value)                    
             setattr(owner, attr, value)
         db.session.add(owner)
         db.session.commit()
