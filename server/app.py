@@ -148,7 +148,7 @@ class Owners(Resource):
     
     def post(self):
         data = request.get_json()
-        management_commencement_date = getDate(data['management_commencement_date'])
+        management_start_date = getDate(data['management_start_date'])
         management_end_date = getDate(data.get('management_end_date')) if data.get('management_end_date') else None
         new_owner = Owner(
             ref=data['ref'],
@@ -157,7 +157,7 @@ class Owners(Resource):
             mobile=data['mobile'],
             address=data['address'],
             note=data.get('note', ''),
-            management_commencement_date=management_commencement_date,
+            management_start_date=management_start_date,
             management_end_date=management_end_date,
             is_active=data.get('is_active', True) 
         )
@@ -178,7 +178,7 @@ class OwnerByID(Resource):
             return make_response(jsonify({'message': 'Owner not found'}), 404)
         data = request.get_json()
         for attr, value in data.items():
-            if attr == 'management_commencement_date' or attr == 'management_end_date':
+            if attr == 'management_start_date' or attr == 'management_end_date':
                 value=getDate(value)
             setattr(owner, attr, value)
         db.session.add(owner)

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ENDPOINTS, FIELD_MAPPINGS } from "./MappingData"
+import { ENDPOINTS, FIELD_MAPPINGS } from "./MappingData";
 
 const DisplayData = ({ type }) => {
   const [data, setData] = useState(null);

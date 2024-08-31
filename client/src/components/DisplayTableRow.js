@@ -1,16 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
-const ENDPOINTS = {
-  users: "/users/",
-  owners: "/owners/",
-  properties: "/properties/",
-  tenants: "/tenants/",
-  rentals: "/rentals/",
-  expenses: "/expenses/",
-};
+import { ENDPOINTS } from "./MappingData";
 
 function DisplayTableRow({ item, onDeleteItem, fields, type }) {
+  console.log(type+ENDPOINTS[type] + item.id)
   function handleDeleteClick() {
     fetch(ENDPOINTS[type] + item.id, {
       method: "DELETE",

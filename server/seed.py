@@ -66,7 +66,7 @@ def create_owners():
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         address=fake.unique.address(),
-        management_commencement_date=generate_a_date()-timedelta(days=30),
+        management_start_date=generate_a_date()-timedelta(days=30),
         management_end_date=datetime.today() - timedelta(days=7),
         is_active=False
     )
@@ -78,7 +78,7 @@ def create_owners():
             email=fake.unique.email(),
             mobile=generate_mobile_number(),
             address=fake.unique.address(),
-            management_commencement_date=generate_a_date()-timedelta(days=30)
+            management_start_date=generate_a_date()-timedelta(days=30)
         )
         owners.append(owner)
     db.session.add_all(owners)

@@ -76,7 +76,7 @@ class BaseModel(db.Model):
     def validate_address(self, key, value):
         return validate_address(value)
     
-    @validates('management_commencement_date')
+    @validates('management_start_date')
     @validates('lease_start_date')
     @validates('lease_end_date')
     @validates('payment_date')
@@ -151,7 +151,7 @@ class Owner(BaseModel, SerializerMixin):
     mobile = db.Column(db.String(10), nullable=False)
     address = db.Column(db.String, nullable=False)
     note = db.Column(db.String)
-    management_commencement_date = db.Column(db.Date, nullable=False) 
+    management_start_date = db.Column(db.Date, nullable=False) 
     management_end_date = db.Column(db.Date) 
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
@@ -171,7 +171,7 @@ class Owner(BaseModel, SerializerMixin):
             'address': self.address,
             'note': self.note,
             'management_end_date': self.management_end_date,
-            'management_commencement_date': self.management_commencement_date,
+            'management_start_date': self.management_start_date,
             'is_active': self.is_active 
         }
     
