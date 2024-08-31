@@ -35,9 +35,7 @@ function App() {
     });
   }, [user]);
 
-  function addNewUser(newUser) {
-    setUsers([...users, newUser]);
-  }
+
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser ? updatedUser : user)),
@@ -58,7 +56,7 @@ function App() {
   
 
 
-  if (!user) return <Login onLogin={setUser} onAddNewUser={addNewUser} />;
+  if (!user) return <Login onLogin={setUser} />;
 
   return (
     <Router>

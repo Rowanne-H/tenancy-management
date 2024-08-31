@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-function SignupForm({ onAddNewUser, onLogin }) {
+function SignupForm({ onLogin }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const formSchema = yup.object().shape({
