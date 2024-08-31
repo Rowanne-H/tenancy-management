@@ -2,15 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-const ENDPOINTS = {
-  users: "/users/",
-  owners: "/owners/",
-  properties: "/properties/",
-  tenants: "/tenants/",
-  rentals: "/rentals/",
-  expenses: "/expenses/",
-};
+import { ENDPOINTS } from "./DataMappingFields";
 
 const FIELD_MAPPINGS = {
   users: {
