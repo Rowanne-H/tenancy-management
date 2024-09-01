@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import DisplayTableRow from "./DisplayTableRow";
 
@@ -41,6 +42,15 @@ function DisplayTable({
 
   return (
     <div>
+      <div>
+        {type === "users" ? (
+          null
+        ) : (          
+          <NavLink className="more" to={`/${type}/new`}>
+            New {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} 
+          </NavLink>          
+        )}
+      </div>
       <table>
         <thead>
           <tr>
@@ -57,7 +67,7 @@ function DisplayTable({
             <DisplayTableRow
               key={item.id}
               item={item}
-              onDelete={deleteItem}
+              onDeleteItem={deleteItem}
               fields={fields}
               type={type}
             />

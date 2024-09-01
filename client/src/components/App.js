@@ -5,7 +5,7 @@ import Home from "./Home";
 import NavBar from "./NavBar";
 import Users from "./Users";
 import Login from "./Login";
-import UserForm from "./UserForm";
+import EditUserForm from "./EditUserForm";
 import Owners from "./Owners";
 import DisplayData from "./DisplayData";
 import EditDataForm from "./EditDataForm";
@@ -70,7 +70,7 @@ function App() {
               <DisplayData type="users" />
             </Route>
             <Route exact path="/users/:id/edit">
-              <UserForm onUpdateUser={updateUser} />
+              <EditUserForm onUpdateUser={updateUser} />
             </Route>
             <Route exact path="/owners">
               <Owners owners={owners} deleteOwner={deleteOwner} />
