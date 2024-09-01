@@ -1,24 +1,23 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
-import { generateFormikValues, inputType  } from "./DataDisplayingFunctions";
+import { getFormikValues, generateFormikValues, inputType  } from "./DataDisplayingFunctions";
 
 function FormNewData({ type, onAddNewData}) {
+  const [newData, setNewData] = useState({})
   const [errorMessage, setErrorMessage] = useState("");
 
   const fields = FIELD_MAPPINGS[type];
   const validation = validations[type];
-  const initialValues = generateFormikValues()
+  const initialData = fields.reduce((obj, field) => {
+    obj[field] = getFormikValues(field, "");
+    return obj
+  }, {})
+  console.log(initialData)
 
 
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      name: "",
-      mobile: "",
-      is_accounts: false,
-    },
+    initialValues: initialData,
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
