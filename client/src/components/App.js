@@ -15,26 +15,33 @@ function App() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [owners, setOwners] = useState([]);
+  const [tenants, setTenants] = useState([]);
 
   useEffect(() => {
     // auto-login
     fetch("/check_session").then((r) => {
       if (r.ok) {
         r.json().then((user) => {
-          fetch("/users")
+           fetch("/users")
             .then((r) => r.json())
             .then((users) => {
-              setUsers(users);
+             setUsers(users);
             });
           fetch("/owners")
             .then((r) => r.json())
             .then((owners) => {
               setOwners(owners);
             });
+          fetch("/tenants")
+          .then(r => r.json())
+          .then(tenants => {
+            setTenants(tenants);
+          });
         });
       }
     });
   }, [user]);
+  console.log(tenants)
 
 
   function updateUser(updatedUser) {
