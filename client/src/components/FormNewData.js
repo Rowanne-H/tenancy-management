@@ -3,12 +3,10 @@ import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import {
   getFormikValues,
-  generateFormikValues,
   inputType,
 } from "./DataDisplayingFunctions";
 
 function FormNewData({ type, onAddNewData }) {
-  const [newData, setNewData] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
   const fields = FIELD_MAPPINGS[type];
@@ -46,7 +44,7 @@ function FormNewData({ type, onAddNewData }) {
   return (
     <div>
       <h1>
-        New {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
+        New {type === "properties" ? "Property" : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
       </h1>
       <form onSubmit={formik.handleSubmit}>
         {fields.map((field) => (

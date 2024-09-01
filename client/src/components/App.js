@@ -74,6 +74,9 @@ function App() {
   function deleteProperty(id) {
     setOwners(owners.filter((owner) => owner.id !== id));
   }
+  function addNewProperty(newProperty) {
+    setProperties([...properties, newProperty]);
+  }
   
 
   return (
@@ -128,6 +131,13 @@ function App() {
               exact
               path="/properties"
               render={() => <Properties properties={properties} deleteProperty={deleteProperty} />}
+            />
+            <Route
+              exact
+              path="/properties/new"
+              render={() => (
+                <FormNewData type="properties" onAddNewData={addNewProperty} />
+              )}
             />
             <Route
               exact
