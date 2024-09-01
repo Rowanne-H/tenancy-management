@@ -20,6 +20,7 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
 
   return (
     <tr>
+      <td>{item.id}</td>
       {fields.map((field) => (
         <td key={field}>{formatValue(field, item[field])}</td>
       ))}

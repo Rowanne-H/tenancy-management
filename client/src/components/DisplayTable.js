@@ -54,6 +54,7 @@ function DisplayTable({
       <table>
         <thead>
           <tr>
+            <th>Id</th>
             {fields.map((field) => (
               <th key={field} onClick={() => handleSort(field)}>
                 {field.charAt(0).toUpperCase() + field.slice(1)}

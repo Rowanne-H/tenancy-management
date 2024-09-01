@@ -10,9 +10,8 @@ export const ENDPOINTS = {
 };
 
 export const FIELD_MAPPINGS = {
-  users: ["id", "name", "email", "mobile", "is_accounts"],
+  users: ["name", "email", "mobile", "is_accounts"],
   owners: [
-    "id",
     "ref",
     "name",
     "email",
@@ -24,7 +23,6 @@ export const FIELD_MAPPINGS = {
     "is_active",
   ],
   properties: [
-    "id",
     "ref",
     "address",
     "commission",
@@ -34,7 +32,6 @@ export const FIELD_MAPPINGS = {
     "is_active",
   ],
   tenants: [
-    "id",
     "ref",
     "name",
     "email",
@@ -49,7 +46,6 @@ export const FIELD_MAPPINGS = {
     "is_active",
   ],
   rentals: [
-    "id",
     "amount",
     "created_at",
     "payment_date",
@@ -57,7 +53,6 @@ export const FIELD_MAPPINGS = {
     "tenant_id",
   ],
   expenses: [
-    "id",
     "amount",
     "created_at",
     "payment_date",
