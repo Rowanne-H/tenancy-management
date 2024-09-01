@@ -28,6 +28,9 @@ function Navbar({ user, setUser }) {
       <NavLink className="navbar" to="/owners" exact>
         Owners
       </NavLink>
+      <NavLink className="navbar" to="/properties" exact>
+        Properties 
+      </NavLink>
       <button className="navbar-button" onClick={handleLogoutClick}>
         Logout
       </button>

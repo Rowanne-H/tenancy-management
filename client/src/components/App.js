@@ -7,6 +7,7 @@ import Users from "./Users";
 import Login from "./Login";
 import FormEditUser from "./FormEditUser";
 import Owners from "./Owners";
+import Properties from "./Properties";
 import DisplayData from "./DisplayData";
 import FormEditData from "./FormEditData";
 import FormNewData from "./FormNewData";
@@ -70,6 +71,10 @@ function App() {
   function deleteOwner(id) {
     setOwners(owners.filter((owner) => owner.id !== id));
   }
+  function deleteProperty(id) {
+    setOwners(owners.filter((owner) => owner.id !== id));
+  }
+  
 
   return (
     <Router>
@@ -118,6 +123,11 @@ function App() {
               render={() => (
                 <FormEditData type="owners" onUpdateData={updateOwner} />
               )}
+            />
+            <Route
+              exact
+              path="/properties"
+              render={() => <Properties properties={properties} deleteProperty={deleteProperty} />}
             />
             <Route
               exact
