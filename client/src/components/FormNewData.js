@@ -6,7 +6,7 @@ import {
   inputType,
 } from "./DataDisplayingFunctions";
 
-function FormNewData({ type, onAddNewData }) {
+function FormNewData({ type, onAddNewData, users=[], owners=[], properties=[], tenants=[] }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const fields = FIELD_MAPPINGS[type];
@@ -51,7 +51,21 @@ function FormNewData({ type, onAddNewData }) {
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {inputType(field) == "checkbox" ? (
+              {field === "user_id" || field === "owner_id" ? (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Select {field === "user_id" ? "User" : "Owner"}</option>
+                  {(field === "user_id" ? users : owners).map(option => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              ) : field == "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}

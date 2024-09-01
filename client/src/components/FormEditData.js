@@ -66,7 +66,7 @@ function EditDataForm({ onUpdateData, type }) {
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {inputType(field) == "checkbox" ? (
+              {field == "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}

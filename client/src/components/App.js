@@ -136,7 +136,7 @@ function App() {
               exact
               path="/properties/new"
               render={() => (
-                <FormNewData type="properties" onAddNewData={addNewProperty} />
+                <FormNewData type="properties" users={users} owners={owners} onAddNewData={addNewProperty} />
               )}
             />
             <Route
