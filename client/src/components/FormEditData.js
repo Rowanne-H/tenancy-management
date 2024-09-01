@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
-import { generateFormikValues, inputType  } from "./DataDisplayingFunctions";
+import { generateFormikValues, inputType } from "./DataDisplayingFunctions";
 
 function EditDataForm({ onUpdateData, type }) {
   const [dataToEdit, setDataToEdit] = useState({});
@@ -24,16 +24,16 @@ function EditDataForm({ onUpdateData, type }) {
     }
   }, [id]);
 
-  const fields = FIELD_MAPPINGS[type]
-  const validation = validations[type] 
+  const fields = FIELD_MAPPINGS[type];
+  const validation = validations[type];
   const initialValues = generateFormikValues(dataToEdit);
 
   const formik = useFormik({
-    initialValues: {...initialValues},
+    initialValues: { ...initialValues },
     validationSchema: validation,
     enableReinitialize: true,
-    onSubmit: (values) => { 
-      console.log("Submitting form with values:", values);   
+    onSubmit: (values) => {
+      console.log("Submitting form with values:", values);
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {
@@ -43,7 +43,7 @@ function EditDataForm({ onUpdateData, type }) {
       }).then((r) => {
         if (r.ok) {
           r.json().then((data) => {
-            console.log("working")
+            console.log("working");
             onUpdateData(data);
             history.push(ENDPOINTS[type] + id);
           });
@@ -53,12 +53,13 @@ function EditDataForm({ onUpdateData, type }) {
       });
       formik.resetForm();
     },
-  }); 
+  });
 
   return (
     <div>
       <h1>
-        Edit {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
+        Edit {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
+        Form
       </h1>
       <form onSubmit={formik.handleSubmit}>
         {fields.map((field) => (
@@ -67,20 +68,20 @@ function EditDataForm({ onUpdateData, type }) {
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
               {inputType(field) == "checkbox" ? (
                 <input
-                type="checkbox"
-                id={field}
-                name={field}
-                checked={formik.values[field] === true}
-                onChange={formik.handleChange}
-              />
+                  type="checkbox"
+                  id={field}
+                  name={field}
+                  checked={formik.values[field] === true}
+                  onChange={formik.handleChange}
+                />
               ) : (
                 <input
-                type={inputType(field)}
-                id={field}
-                name={field}
-                onChange={formik.handleChange}
-                value={formik.values[field] || ""}
-              />
+                  type={inputType(field)}
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                />
               )}
             </label>
             {formik.errors[field] ? (
@@ -89,7 +90,9 @@ function EditDataForm({ onUpdateData, type }) {
           </div>
         ))}
 
-        <button type="submit" onClick={()=>console.log('look')}>Submit</button>
+        <button type="submit" onClick={() => console.log("look")}>
+          Submit
+        </button>
         <p className="errorsMessages">{errorMessage}</p>
       </form>
     </div>

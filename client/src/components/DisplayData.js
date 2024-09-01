@@ -34,7 +34,10 @@ const DisplayData = ({ type }) => {
         {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Details
       </h2>
       <ul>
-        <li><strong>Id:</strong>{id}</li>
+        <li>
+          <strong>Id:</strong>
+          {id}
+        </li>
         {fields.map((field) => (
           <li key={field}>
             <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong>{" "}

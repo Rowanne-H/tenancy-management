@@ -10,10 +10,12 @@ export const isDate = (field) => {
     return true;
   }
   return false;
-}
+};
 
 export const getDate = (value) => {
-  if (!value) {return ""}
+  if (!value) {
+    return "";
+  }
   const date = new Date(value).toISOString().split("T")[0];
   return date;
 };
@@ -26,35 +28,47 @@ export const formatValue = (field, value) => {
     return "null";
   }
   if (isDate(field)) {
-    return getDate(value)
+    return getDate(value);
   }
   return value;
 };
 
 export const getFormikValues = (field, value) => {
-    if (field === "is_active") {
-      if (value !== false && value !== true) {value = true} 
-      return value
+  if (field === "is_active") {
+    if (value !== false && value !== true) {
+      value = true;
     }
-    if (field === "is_accounts") {
-      if (value !== false && value !== true) {value = false}
-      return value
+    return value;
+  }
+  if (field === "is_accounts") {
+    if (value !== false && value !== true) {
+      value = false;
     }
-    if (!value) {
-      value = "";
-      if (field === "commission") {value = 0.05}
-      if (field === "letting_fee") {value = 1}
-      if (field === "created_at") {value = new Date()}
+    return value;
+  }
+  if (!value) {
+    value = "";
+    if (field === "commission") {
+      value = 0.05;
     }
-    if (isDate(field)) {return getDate(value)}
-    return value
+    if (field === "letting_fee") {
+      value = 1;
+    }
+    if (field === "created_at") {
+      value = new Date();
+    }
+  }
+  if (isDate(field)) {
+    return getDate(value);
+  }
+  return value;
 };
 
 export const generateFormikValues = (data) => {
   const entries = Object.entries(data).map(([field, value]) => {
-    return [field, getFormikValues(field, value)]
-  })
-  return Object.fromEntries(entries)
+    return [field, getFormikValues(field, value)];
+  });
+  return Object.fromEntries(entries);
 };
 
 export const inputType = (field) => {
@@ -72,7 +86,7 @@ export const inputType = (field) => {
     return "date";
   }
   if (field === "is_active") {
-    return "checkbox"
+    return "checkbox";
   }
   return "text";
 };

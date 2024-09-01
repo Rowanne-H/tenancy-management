@@ -15,6 +15,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [owners, setOwners] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [tenants, setTenants] = useState([]);
 
   useEffect(() => {
@@ -22,40 +23,49 @@ function App() {
     fetch("/check_session").then((r) => {
       if (r.ok) {
         r.json().then((user) => {
-           fetch("/users")
+          fetch("/users")
             .then((r) => r.json())
             .then((users) => {
-             setUsers(users);
+              setUsers(users);
             });
           fetch("/owners")
             .then((r) => r.json())
             .then((owners) => {
               setOwners(owners);
             });
+          fetch("/properties")
+            .then((r) => r.json())
+            .then((properties) => {
+              setProperties(properties);
+            });
           fetch("/tenants")
-          .then(r => r.json())
-          .then(tenants => {
-            setTenants(tenants);
-          });
+            .then((r) => r.json())
+            .then((tenants) => {
+              setTenants(tenants);
+            });
         });
       }
     });
   }, [user]);
-  console.log(tenants)
-
+  console.log(properties);
 
   function updateUser(updatedUser) {
-    setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
+    setUsers(
+      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+    );
   }
   function deleteUser(id) {
     setUsers(users.filter((user) => user.id !== id));
   }
-  
   function updateOwner(updatedOwner) {
-    setOwners(owners.map((owner) => (owner.id === updatedOwner.id ? updatedOwner : owner)));
+    setOwners(
+      owners.map((owner) =>
+        owner.id === updatedOwner.id ? updatedOwner : owner,
+      ),
+    );
   }
   function addNewOwner(newOwner) {
-    setOwners([...owners, newOwner])
+    setOwners([...owners, newOwner]);
   }
   function deleteOwner(id) {
     setOwners(owners.filter((owner) => owner.id !== id));
@@ -67,15 +77,53 @@ function App() {
         <div className="App">
           <NavBar user={user} setUser={setUser} />
           <Switch>
-             <Route exact path="/" component={Home} />
-            <Route exact path="/users" render={() => <Users users={users} deleteUser={deleteUser} />} />
-            <Route exact path="/users/:id" render={() => <DisplayData type="users" />} />
-            <Route exact path="/users/:id/edit" render={() => <FormEditUser onUpdateUser={updateUser} />} />
-            <Route exact path="/owners" render={() => <Owners owners={owners} deleteOwner={deleteOwner} />} />
-            <Route exact path="/owners/new" render={() => <FormNewData type="owners" onAddNewData={addNewOwner} />} />
-            <Route exact path="/owners/:id" render={() => <DisplayData type="owners" />} />
-            <Route exact path="/owners/:id/edit" render={() => <FormEditData type="owners" onUpdateData={updateOwner} />} />
-            <Route exact path="/properties/:id" render={() => <DisplayData type="properties" />} />
+            <Route exact path="/" component={Home} />
+            <Route
+              exact
+              path="/users"
+              render={() => <Users users={users} deleteUser={deleteUser} />}
+            />
+            <Route
+              exact
+              path="/users/:id"
+              render={() => <DisplayData type="users" />}
+            />
+            <Route
+              exact
+              path="/users/:id/edit"
+              render={() => <FormEditUser onUpdateUser={updateUser} />}
+            />
+            <Route
+              exact
+              path="/owners"
+              render={() => (
+                <Owners owners={owners} deleteOwner={deleteOwner} />
+              )}
+            />
+            <Route
+              exact
+              path="/owners/new"
+              render={() => (
+                <FormNewData type="owners" onAddNewData={addNewOwner} />
+              )}
+            />
+            <Route
+              exact
+              path="/owners/:id"
+              render={() => <DisplayData type="owners" />}
+            />
+            <Route
+              exact
+              path="/owners/:id/edit"
+              render={() => (
+                <FormEditData type="owners" onUpdateData={updateOwner} />
+              )}
+            />
+            <Route
+              exact
+              path="/properties/:id"
+              render={() => <DisplayData type="properties" />}
+            />
           </Switch>
         </div>
       ) : (

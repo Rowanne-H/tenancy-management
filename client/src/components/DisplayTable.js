@@ -43,12 +43,10 @@ function DisplayTable({
   return (
     <div>
       <div>
-        {type === "users" ? (
-          null
-        ) : (          
+        {type === "users" ? null : (
           <NavLink className="more" to={`/${type}/new`}>
-            New {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} 
-          </NavLink>          
+            New {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
+          </NavLink>
         )}
       </div>
       <table>
