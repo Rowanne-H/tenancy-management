@@ -9,6 +9,7 @@ import FormEditUser from "./FormEditUser";
 import Owners from "./Owners";
 import DisplayData from "./DisplayData";
 import FormEditData from "./FormEditData";
+import FormNewData from "./FormNewData";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,18 +38,17 @@ function App() {
 
 
   function updateUser(updatedUser) {
-    setUsers(
-      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
-    );
+    setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
   }
   function deleteUser(id) {
     setUsers(users.filter((user) => user.id !== id));
   }
   
   function updateOwner(updatedOwner) {
-    setOwners(
-      owners.map((owner) => (owner.id === updatedOwner.id ? updatedOwner : owner)),
-    );
+    setOwners(owners.map((owner) => (owner.id === updatedOwner.id ? updatedOwner : owner)));
+  }
+  function addNewOwner(newOwner) {
+    setOwners([...owners, newOwner])
   }
   function deleteOwner(id) {
     setOwners(owners.filter((owner) => owner.id !== id));
@@ -60,30 +60,15 @@ function App() {
         <div className="App">
           <NavBar user={user} setUser={setUser} />
           <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/users">
-              <Users users={users} deleteUser={deleteUser} />
-            </Route>
-            <Route exact path="/users/:id">
-              <DisplayData type="users" />
-            </Route>
-            <Route exact path="/users/:id/edit">
-              <FormEditUser onUpdateUser={updateUser} />
-            </Route>
-            <Route exact path="/owners">
-              <Owners owners={owners} deleteOwner={deleteOwner} />
-            </Route>
-            <Route exact path="/owners/:id">
-              <DisplayData type="owners" />
-            </Route>
-            <Route exact path="/owners/:id/edit">
-              <FormEditData type="owners" onUpdateData={updateOwner} />
-            </Route>
-            <Route exact path="/properties/:id">
-              <DisplayData type="properties" />
-            </Route>
+             <Route exact path="/" component={Home} />
+            <Route exact path="/users" render={() => <Users users={users} deleteUser={deleteUser} />} />
+            <Route exact path="/users/:id" render={() => <DisplayData type="users" />} />
+            <Route exact path="/users/:id/edit" render={() => <FormEditUser onUpdateUser={updateUser} />} />
+            <Route exact path="/owners" render={() => <Owners owners={owners} deleteOwner={deleteOwner} />} />
+            <Route exact path="/owners/new" render={() => <FormNewData type="owners" onAddNewData={addNewOwner} />} />
+            <Route exact path="/owners/:id" render={() => <DisplayData type="owners" />} />
+            <Route exact path="/owners/:id/edit" render={() => <FormEditData type="owners" onUpdateData={updateOwner} />} />
+            <Route exact path="/properties/:id" render={() => <DisplayData type="properties" />} />
           </Switch>
         </div>
       ) : (

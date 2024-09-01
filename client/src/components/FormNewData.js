@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
 
-function SignupForm({ onLogin }) {
+function FormNewData({ type, onAddNewData}) {
   const [errorMessage, setErrorMessage] = useState("");
+  const fields = FIELD_MAPPINGS[type];
 
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
@@ -42,7 +44,7 @@ function SignupForm({ onLogin }) {
       }).then((r) => {
         if (r.ok) {
           r.json().then((user) => {
-            onLogin(user);
+            onAddNewData(user);
           });
         } else {
           r.json().then((err) => setErrorMessage(err.message));
@@ -118,4 +120,4 @@ function SignupForm({ onLogin }) {
   );
 }
 
-export default SignupForm;
+export default FormNewData;
