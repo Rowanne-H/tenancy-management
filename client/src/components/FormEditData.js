@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import { generateFormikValues, inputType  } from "./DataDisplayingFunctions";
 
-
 function EditDataForm({ onUpdateData, type }) {
   const [dataToEdit, setDataToEdit] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
@@ -80,7 +79,7 @@ function EditDataForm({ onUpdateData, type }) {
   }
 
   const handleChange = (e) => {
-    const { name, type, value, checked } = e.target;
+    const { name, checked } = e.target;
     formik.setFieldValue(name, checked);
   };
 

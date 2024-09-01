@@ -31,12 +31,22 @@ export const formatValue = (field, value) => {
   return value;
 };
 
-export const generateFormikValues = (dataToEdit) => {
-  const entries = Object.entries(dataToEdit).map(([field, value]) => {
-    if (field === "is_active" || field === "is_accounts") {
+export const generateFormikValues = (data) => {
+  const entries = Object.entries(data).map(([field, value]) => {
+    if (field === "is_active") {
+      if (value !== false && value !== true) {value = true} 
       return [field, value]
     }
-    if (!value) {return [field, ""]}
+    if (field === "is_accounts") {
+      if (value !== false && value !== true) {value = false}
+      return [field, value]
+    }
+    if (!value) {
+      value = "";
+      if (field === "commission") {value = 0.05}
+      if (field === "letting_fee") {value = 1}
+      if (field === "created_at") {value = new Date()}
+    }
     if (isDate(field)) {return [field, getDate(value)]}
     return [field, value]
   })
