@@ -5,10 +5,10 @@ import Home from "./Home";
 import NavBar from "./NavBar";
 import Users from "./Users";
 import Login from "./Login";
-import EditUserForm from "./EditUserForm";
+import FormEditUser from "./FormEditUser";
 import Owners from "./Owners";
 import DisplayData from "./DisplayData";
-import EditDataForm from "./EditDataForm";
+import FormEditData from "./FormEditData";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -70,7 +70,7 @@ function App() {
               <DisplayData type="users" />
             </Route>
             <Route exact path="/users/:id/edit">
-              <EditUserForm onUpdateUser={updateUser} />
+              <FormEditUser onUpdateUser={updateUser} />
             </Route>
             <Route exact path="/owners">
               <Owners owners={owners} deleteOwner={deleteOwner} />
@@ -79,7 +79,7 @@ function App() {
               <DisplayData type="owners" />
             </Route>
             <Route exact path="/owners/:id/edit">
-              <EditDataForm type="owners" onUpdateData={updateOwner} />
+              <FormEditData type="owners" onUpdateData={updateOwner} />
             </Route>
             <Route exact path="/properties/:id">
               <DisplayData type="properties" />
