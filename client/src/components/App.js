@@ -54,42 +54,41 @@ function App() {
     setOwners(owners.filter((owner) => owner.id !== id));
   }
 
-  
-
-
-  if (!user) return <Login onLogin={setUser} />;
-
   return (
     <Router>
-      <div className="App">
-        <NavBar user={user} setUser={setUser} />
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/users">
-            <Users users={users} deleteUser={deleteUser} />
-          </Route>
-          <Route exact path="/users/:id">
-            <DisplayData type="users" />
-          </Route>
-          <Route exact path="/users/:id/edit">
-            <UserForm onUpdateUser={updateUser} />
-          </Route>
-          <Route exact path="/owners">
-            <Owners owners={owners} deleteOwner={deleteOwner} />
-          </Route>
-          <Route exact path="/owners/:id">
-            <DisplayData type="owners" />
-          </Route>
-          <Route exact path="/owners/:id/edit">
-            <EditDataForm type="owners" onUpdateData={updateOwner} />
-          </Route>
-          <Route exact path="/properties/:id">
-            <DisplayData type="properties" />
-          </Route>
-        </Switch>
-      </div>
+      {user ? (
+        <div className="App">
+          <NavBar user={user} setUser={setUser} />
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/users">
+              <Users users={users} deleteUser={deleteUser} />
+            </Route>
+            <Route exact path="/users/:id">
+              <DisplayData type="users" />
+            </Route>
+            <Route exact path="/users/:id/edit">
+              <UserForm onUpdateUser={updateUser} />
+            </Route>
+            <Route exact path="/owners">
+              <Owners owners={owners} deleteOwner={deleteOwner} />
+            </Route>
+            <Route exact path="/owners/:id">
+              <DisplayData type="owners" />
+            </Route>
+            <Route exact path="/owners/:id/edit">
+              <EditDataForm type="owners" onUpdateData={updateOwner} />
+            </Route>
+            <Route exact path="/properties/:id">
+              <DisplayData type="properties" />
+            </Route>
+          </Switch>
+        </div>
+      ) : (
+        <Login onLogin={setUser} />
+      )}
     </Router>
   );
 }
