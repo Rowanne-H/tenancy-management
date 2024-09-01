@@ -1,53 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
-import * as yup from "yup";
-import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
+import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import { generateFormikValues, inputType  } from "./DataDisplayingFunctions";
 
-const validations = {
-  users: yup.object().shape({
-      email: yup.string().email("Invalid email").required("Must enter email"),
-      password: yup.string().required("must enter a password"),
-      name: yup
-        .string()
-        .required("Must enter a name")
-        .min(2, "Name must be at least 2 characters long"),
-      mobile: yup
-        .string(10)
-        .matches(
-          /^04\d{8}$/,
-          'Mobile number must start with "04" and be exactly 10 digits',
-        )
-        .required("Must enter a mobile"),
-      is_accounts: yup.boolean(),
-    }),
-  owners: yup.object().shape({
-      ref: yup
-        .string()
-        .required("Must enter ref")
-        .min(2, "Name must be at least 2 characters long"),
-      name: yup
-        .string()
-        .required("Must enter a name")
-        .min(2, "Name must be at least 2 characters long"),
-      email: yup.string().email("Invalid email").required("Must enter email"),
-      mobile: yup
-        .string(10)
-        .matches(
-          /^04\d{8}$/,
-          'Mobile number must start with "04" and be exactly 10 digits',
-        )
-        .required("Must enter a mobile"),
-      address: yup
-        .string()
-        .required("Must enter ref")
-        .min(10, "Name must be at least 10 characters long"),
-      anagement_start_date: yup.string().required("Must enter a date"),
-      is_active: yup.boolean(),
-    }),
-  
-};
 
 function EditDataForm({ onUpdateData, type }) {
   const [dataToEdit, setDataToEdit] = useState({});
