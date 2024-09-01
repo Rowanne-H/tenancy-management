@@ -99,7 +99,7 @@ export const validations = {
         .string()
         .required("Must enter ref")
         .min(10, "Name must be at least 10 characters long"),
-      anagement_start_date: yup.string().required("Must enter a date"),
+      management_start_date: yup.string().required("Must enter a date"),
       is_active: yup.boolean(),
     }),
   

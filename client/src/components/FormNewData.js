@@ -13,15 +13,13 @@ function FormNewData({ type, onAddNewData}) {
     obj[field] = getFormikValues(field, "");
     return obj
   }, {})
-  console.log(initialData)
-
 
   const formik = useFormik({
     initialValues: initialData,
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      fetch(ENDPOINTS[type], {
+      fetch(`/${type}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,8 +27,9 @@ function FormNewData({ type, onAddNewData}) {
         body: JSON.stringify(values),
       }).then((r) => {
         if (r.ok) {
-          r.json().then((user) => {
-            onAddNewData(user);
+          r.json().then(data => {
+            onAddNewData(data);
+            alert(("A new record has been created"));
           });
         } else {
           r.json().then((err) => setErrorMessage(err.message));
