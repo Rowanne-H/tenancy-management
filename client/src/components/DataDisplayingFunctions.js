@@ -31,15 +31,14 @@ export const formatValue = (field, value) => {
   return value;
 };
 
-export const generateFormikValues = (data) => {
-  const entries = Object.entries(data).map(([field, value]) => {
+export const getFormikValues = (field, value) => {
     if (field === "is_active") {
       if (value !== false && value !== true) {value = true} 
-      return [field, value]
+      return value
     }
     if (field === "is_accounts") {
       if (value !== false && value !== true) {value = false}
-      return [field, value]
+      return value
     }
     if (!value) {
       value = "";
@@ -47,8 +46,13 @@ export const generateFormikValues = (data) => {
       if (field === "letting_fee") {value = 1}
       if (field === "created_at") {value = new Date()}
     }
-    if (isDate(field)) {return [field, getDate(value)]}
-    return [field, value]
+    if (isDate(field)) {return getDate(value)}
+    return value
+};
+
+export const generateFormikValues = (data) => {
+  const entries = Object.entries(data).map(([field, value]) => {
+    return [field, getFormikValues(field, value)]
   })
   return Object.fromEntries(entries)
 };
