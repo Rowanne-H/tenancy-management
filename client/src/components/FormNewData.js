@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
-import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
+import { FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import {
   getFormikValues,
   inputType,

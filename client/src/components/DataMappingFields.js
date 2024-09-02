@@ -96,4 +96,17 @@ export const validations = {
     management_start_date: yup.string().required("Must enter a date"),
     is_active: yup.boolean(),
   }),
+  properties: yup.object().shape({
+    ref: yup
+      .string()
+      .required("Must enter ref")
+      .min(2, "Name must be at least 2 characters long"),
+    address: yup
+      .string()
+      .required("Must enter ref")
+      .min(10, "Name must be at least 10 characters long"),
+    commission: yup.number().required("Must enter a commission").min(0, "comission must be between 0 and 0.1").max(0.1, "comission must be between 0 and 0.1"),
+    letting_fee: yup.number().required("Must enter a commission").min(0, "comission must be between 0 and 0.1").max(2, "comission must be between 0 and 2"),
+    is_active: yup.boolean(),
+  }),
 };
