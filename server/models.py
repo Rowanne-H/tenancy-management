@@ -206,7 +206,7 @@ class Property(BaseModel, SerializerMixin):
     def validate_letting_fee(self, key, value):
         value = float(value)
         if not value or value<=0 or value>=2:
-            raise ValueError("letting_fee must be between 0 and 2")
+            raise ValueError("letting fee must be between 0 and 2")
         return value
     
     def to_dict(self):
@@ -244,6 +244,13 @@ class Tenant(BaseModel, SerializerMixin):
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
     rentals = db.relationship('Rental', backref='tenant') 
 
+    @validates('lease_term')
+    def validate_lease_term(self, key, value):
+        value = float(value)
+        if not value or value<=0 or value>=12:
+            raise ValueError("Lease term must be between 0 and 12")
+        return value
+    
     def to_dict(self):
         return {
             'id': self.id,

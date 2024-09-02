@@ -174,6 +174,13 @@ function App() {
             />
             <Route
               exact
+              path="/tenants/new"
+              render={() => (
+                <FormNewData type="tenants" properties={properties} onAddNewData={addNewProperty} />
+              )}
+            />
+            <Route
+              exact
               path="/tenants/:id"
               render={() => <DisplayData type="tenants" />}
             />
