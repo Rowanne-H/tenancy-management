@@ -92,7 +92,13 @@ function App() {
   function addNewTenant(newTenant) {
     setTenants([...tenants, newTenant]);
   }
-
+  function updateTenant(updatedTenant) {
+    setTenants(
+      properties.map((tenant) =>
+        tenant.id === updatedTenant.id ? updatedTenant : tenant,
+      ),
+    );
+  }
   function deleteTenant(id) {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
   }
@@ -188,6 +194,11 @@ function App() {
               exact
               path="/tenants/:id"
               render={() => <DisplayData type="tenants" />}
+            />
+            <Route
+              exact
+              path="/tenants/:id/edit"
+              render={() => <FormEditData type="tenants" properties={properties} onUpdateData={updateTenant} />}
             />
           </Switch>
         </div>
