@@ -6,11 +6,12 @@ import NavBar from "./NavBar";
 import Users from "./Users";
 import Login from "./Login";
 import FormEditUser from "./FormEditUser";
-import Owners from "./Owners";
-import Properties from "./Properties";
 import DisplayData from "./DisplayData";
 import FormEditData from "./FormEditData";
 import FormNewData from "./FormNewData";
+import Owners from "./Owners";
+import Properties from "./Properties";
+import Tenants from "./Tenants";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -57,6 +58,10 @@ function App() {
   function deleteUser(id) {
     setUsers(users.filter((user) => user.id !== id));
   }
+
+  function addNewOwner(newOwner) {
+    setOwners([...owners, newOwner]);
+  }
   function updateOwner(updatedOwner) {
     setOwners(
       owners.map((owner) =>
@@ -64,15 +69,10 @@ function App() {
       ),
     );
   }
-  function addNewOwner(newOwner) {
-    setOwners([...owners, newOwner]);
-  }
   function deleteOwner(id) {
     setOwners(owners.filter((owner) => owner.id !== id));
   }
-  function deleteProperty(id) {
-    setOwners(owners.filter((owner) => owner.id !== id));
-  }
+
   function addNewProperty(newProperty) {
     console.log('add new property')
     setProperties([...properties, newProperty]);
@@ -83,6 +83,13 @@ function App() {
         property.id === updatedProperty.id ? updatedProperty : property,
       ),
     );
+  }
+  function deleteProperty(id) {
+    setProperties(properties.filter((property) => property.id !== id));
+  }
+
+  function deleteTenant(id) {
+    setTenants(tenants.filter((tenant) => tenant.id !== id));
   }
   
 
@@ -156,6 +163,13 @@ function App() {
               path="/properties/:id/edit"
               render={() => (
                 <FormEditData type="properties" users={users} owners={owners} onUpdateData={updateProperty} />
+              )}
+            />
+            <Route
+              exact
+              path="/tenants"
+              render={() => (
+                <Tenants tenants={tenants} deleteTenant={deleteTenant} />
               )}
             />
           </Switch>
