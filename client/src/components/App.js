@@ -50,6 +50,7 @@ function App() {
     });
   }, [user]);
 
+  console.log(tenants)
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
@@ -94,7 +95,7 @@ function App() {
   }
   function updateTenant(updatedTenant) {
     setTenants(
-      properties.map((tenant) =>
+      tenants.map((tenant) =>
         tenant.id === updatedTenant.id ? updatedTenant : tenant,
       ),
     );
