@@ -172,6 +172,11 @@ function App() {
                 <Tenants tenants={tenants} deleteTenant={deleteTenant} />
               )}
             />
+            <Route
+              exact
+              path="/tenants/:id"
+              render={() => <DisplayData type="tenants" />}
+            />
           </Switch>
         </div>
       ) : (
