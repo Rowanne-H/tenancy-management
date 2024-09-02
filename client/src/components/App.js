@@ -88,6 +88,11 @@ function App() {
     setProperties(properties.filter((property) => property.id !== id));
   }
 
+
+  function addNewTenant(newTenant) {
+    setTenants([...tenants, newTenant]);
+  }
+
   function deleteTenant(id) {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
   }
@@ -176,7 +181,7 @@ function App() {
               exact
               path="/tenants/new"
               render={() => (
-                <FormNewData type="tenants" properties={properties} onAddNewData={addNewProperty} />
+                <FormNewData type="tenants" properties={properties} onAddNewData={addNewTenant} />
               )}
             />
             <Route

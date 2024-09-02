@@ -52,6 +52,7 @@ def validate_ref(value):
     return value
 
 def validate_amount(value):
+    value = float(value)
     if not value or value<0:
         raise ValueError("Amount must be more than 0")
     return value
@@ -247,7 +248,7 @@ class Tenant(BaseModel, SerializerMixin):
     @validates('lease_term')
     def validate_lease_term(self, key, value):
         value = float(value)
-        if not value or value<=0 or value>=12:
+        if not value or value<=0 or value>12:
             raise ValueError("Lease term must be between 0 and 12")
         return value
     

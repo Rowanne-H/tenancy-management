@@ -21,6 +21,7 @@ function FormNewData({ type, onAddNewData, users=[], owners=[], properties=[], t
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log(values)
       fetch(`/${type}`, {
         method: "POST",
         headers: {
