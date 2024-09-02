@@ -78,6 +78,13 @@ function App() {
     console.log('add new property')
     setProperties([...properties, newProperty]);
   }
+  function updateProperty(updatedProperty) {
+    setProperties(
+      owners.map((property) =>
+        property.id === updatedProperty.id ? updatedProperty : property,
+      ),
+    );
+  }
   
 
   return (
@@ -144,6 +151,13 @@ function App() {
               exact
               path="/properties/:id"
               render={() => <DisplayData type="properties" />}
+            />
+            <Route
+              exact
+              path="/properties/:id/edit"
+              render={() => (
+                <FormEditData type="properties" onUpdateData={updateProperty} />
+              )}
             />
           </Switch>
         </div>
