@@ -57,8 +57,7 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
   return (
     <div>
       <h1>
-        Edit {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
-        Form
+        Edit {type === "properties" ? "Property" : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
       </h1>
       <form onSubmit={formik.handleSubmit}>
         {fields.map((field) => (
