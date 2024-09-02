@@ -75,6 +75,7 @@ function App() {
     setOwners(owners.filter((owner) => owner.id !== id));
   }
   function addNewProperty(newProperty) {
+    console.log('add new property')
     setProperties([...properties, newProperty]);
   }
   

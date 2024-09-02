@@ -197,12 +197,14 @@ class Property(BaseModel, SerializerMixin):
 
     @validates('commission')
     def validate_comission(self, key, value):
+        value = float(value)
         if not value or value<=0 or value>=0.1:
             raise ValueError("comission must be between 0 and 0.1")
         return value
     
     @validates('letting_fee')
     def validate_letting_fee(self, key, value):
+        value = float(value)
         if not value or value<=0 or value>=2:
             raise ValueError("letting_fee must be between 0 and 2")
         return value
