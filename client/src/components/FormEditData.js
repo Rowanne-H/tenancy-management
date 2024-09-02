@@ -33,7 +33,6 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log("Submitting form with values:", values);
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {

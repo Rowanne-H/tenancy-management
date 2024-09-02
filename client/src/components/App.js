@@ -48,7 +48,6 @@ function App() {
       }
     });
   }, [user]);
-  console.log(properties);
 
   function updateUser(updatedUser) {
     setUsers(
@@ -80,7 +79,7 @@ function App() {
   }
   function updateProperty(updatedProperty) {
     setProperties(
-      owners.map((property) =>
+      properties.map((property) =>
         property.id === updatedProperty.id ? updatedProperty : property,
       ),
     );

@@ -19,6 +19,8 @@ function DisplayTable({
   defaultSortOrder = "asc",
   type,
 }) {
+  
+  console.log(items);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
 
