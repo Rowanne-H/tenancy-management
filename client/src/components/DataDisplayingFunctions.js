@@ -5,7 +5,8 @@ export const isDate = (field) => {
     field === "management_end_date" ||
     field === "management_start_date" ||
     field === "lease_start_date" ||
-    field === "lease_end_date"
+    field === "lease_end_date" ||
+    field === "vacating_date"
   ) {
     return true;
   }
@@ -75,14 +76,7 @@ export const inputType = (field) => {
   if (field === "password") {
     return "password";
   }
-  if (
-    field === "created_at" ||
-    field === "payment_date" ||
-    field === "management_end_date" ||
-    field === "management_start_date" ||
-    field === "lease_start_date" ||
-    field === "lease_end_date"
-  ) {
+  if (isDate(field)) {
     return "date";
   }
   return "text";

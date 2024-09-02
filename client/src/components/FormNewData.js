@@ -72,7 +72,7 @@ function FormNewData({ type, onAddNewData, users=[], owners=[], properties=[], t
                     </option>
                   ))}
                 </select>
-              ) : field == "is_active" ? (
+              ) : field === "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}

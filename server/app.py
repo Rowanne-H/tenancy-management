@@ -272,7 +272,7 @@ class Tenants(Resource):
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
         lease_start_date = getDate(data['lease_start_date'])
         lease_end_date = getDate(data['lease_end_date'])
-        vacating_date = getDate(data.get('vacating_date')) if data.get('management_end_date') else None
+        vacating_date = getDate(data.get('vacating_date')) if data.get('vacating_date') else None
         new_tenant = Tenant(
             ref=data['ref'],
             name=data['name'],            
@@ -309,7 +309,10 @@ class TenantByID(Resource):
                 if property is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
             if attr == 'lease_start_date' or attr == 'lease_end_date' or attr == 'vacating_date':
-                value=getDate(value)
+                if value == '':
+                    value=None
+                else:
+                    value=getDate(value) 
             setattr(tenant, attr, value)
         db.session.add(tenant)
         db.session.commit()

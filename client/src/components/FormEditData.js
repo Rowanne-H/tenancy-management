@@ -33,6 +33,7 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log(values)
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {
@@ -64,17 +65,23 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field === "user_id" || field === "owner_id" ? (
+              {field === "user_id" || field === "owner_id" || field === "property_id" || field === "tenant_id" ? (
                 <select
                   id={field}
                   name={field}
                   onChange={formik.handleChange}
                   value={formik.values[field] || ""}
                 >
-                  <option value="">Select {field === "user_id" ? "User" : "Owner"}</option>
-                  {(field === "user_id" ? users : owners).map(option => (
+                  <option value="">Select {
+                  field === "user_id" ? "User" : 
+                  field === "owner_id" ? "Owner" : 
+                  field === "property_id" ? "Property" : "Tenant" 
+                  }</option>
+                  {(field === "user_id" ? users :
+                  field === "owner_id" ? owners :
+                field === "property_id" ? properties : tenants).map(option => (
                     <option key={option.id} value={option.id}>
-                      {option.name}
+                      {!option.name ? option.address : option.name}
                     </option>
                   ))}
                 </select>
