@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import { generateFormikValues, inputType } from "./DataDisplayingFunctions";
 
-function EditDataForm({ onUpdateData, type }) {
+function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], tenants=[] }) {
   const [dataToEdit, setDataToEdit] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -66,7 +66,21 @@ function EditDataForm({ onUpdateData, type }) {
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field == "is_active" ? (
+              {field === "user_id" || field === "owner_id" ? (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Select {field === "user_id" ? "User" : "Owner"}</option>
+                  {(field === "user_id" ? users : owners).map(option => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              ) : field == "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}

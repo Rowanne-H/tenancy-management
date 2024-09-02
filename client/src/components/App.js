@@ -156,7 +156,7 @@ function App() {
               exact
               path="/properties/:id/edit"
               render={() => (
-                <FormEditData type="properties" onUpdateData={updateProperty} />
+                <FormEditData type="properties" users={users} owners={owners} onUpdateData={updateProperty} />
               )}
             />
           </Switch>
