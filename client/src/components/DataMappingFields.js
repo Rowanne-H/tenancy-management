@@ -45,6 +45,7 @@ export const FIELD_MAPPINGS = {
     "property_id",
     "is_active",
   ],
+  transactions: ["amount", "created_at", "payment_date", "description", "ref"],
   rentals: ["amount", "created_at", "payment_date", "description", "tenant_id"],
   expenses: [
     "amount",
