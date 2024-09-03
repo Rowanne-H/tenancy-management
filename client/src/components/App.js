@@ -19,6 +19,8 @@ function App() {
   const [owners, setOwners] = useState([]);
   const [properties, setProperties] = useState([]);
   const [tenants, setTenants] = useState([]);
+  const [rentals, setRentals] = useState([]);
+  const [expenses, setExpenses] = useState([]);
 
   useEffect(() => {
     // auto-login
@@ -45,12 +47,22 @@ function App() {
             .then((tenants) => {
               setTenants(tenants);
             });
+          fetch("/rentals")
+            .then((r) => r.json())
+            .then((rentals) => {
+              setRentals(rentals);
+            });
+          fetch("/expenses")
+            .then((r) => r.json())
+            .then((expenses) => {
+              setExpenses(expenses);
+            });
         });
       }
     });
   }, [user]);
 
-  console.log(tenants)
+  console.log(expenses)
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
