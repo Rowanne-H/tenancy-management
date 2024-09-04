@@ -188,11 +188,7 @@ def create_transactions(tenants):
             db.session.add(commission )
             payment_date += timedelta(days=7)
     db.session.commit()  
-    print(transactions)  
     return transactions
-
-
-
 
 if __name__ == '__main__':
     with app.app_context():

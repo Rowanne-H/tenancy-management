@@ -12,6 +12,7 @@ import FormNewData from "./FormNewData";
 import Owners from "./Owners";
 import Properties from "./Properties";
 import Tenants from "./Tenants";
+import Transactions from "./Transactions";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -19,8 +20,7 @@ function App() {
   const [owners, setOwners] = useState([]);
   const [properties, setProperties] = useState([]);
   const [tenants, setTenants] = useState([]);
-  const [rentals, setRentals] = useState([]);
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     // auto-login
@@ -47,22 +47,16 @@ function App() {
             .then((tenants) => {
               setTenants(tenants);
             });
-          fetch("/rentals")
+          fetch("/transactions")
             .then((r) => r.json())
-            .then((rentals) => {
-              setRentals(rentals);
-            });
-          fetch("/expenses")
-            .then((r) => r.json())
-            .then((expenses) => {
-              setExpenses(expenses);
+            .then((transactions) => {
+              setTransactions(transactions);
             });
         });
       }
     });
   }, [user]);
 
-  console.log(expenses)
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
@@ -114,6 +108,10 @@ function App() {
   }
   function deleteTenant(id) {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
+  }
+
+  function deleteTransaction(id) {
+    setTransactions(transactions.filter((transaction) => transaction.id !== id));
   }
   
 
@@ -212,6 +210,13 @@ function App() {
               exact
               path="/tenants/:id/edit"
               render={() => <FormEditData type="tenants" properties={properties} onUpdateData={updateTenant} />}
+            />
+            <Route
+              exact
+              path="/transactions"
+              render={() => (
+                <Transactions transactions={transactions} deleteTransaction={deleteTransaction} />
+              )}
             />
           </Switch>
         </div>

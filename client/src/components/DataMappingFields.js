@@ -5,8 +5,7 @@ export const ENDPOINTS = {
   owners: "/owners/",
   properties: "/properties/",
   tenants: "/tenants/",
-  rentals: "/rentals/",
-  expenses: "/expenses/",
+  transactions: "/transactions/",
 };
 
 export const FIELD_MAPPINGS = {
@@ -45,15 +44,7 @@ export const FIELD_MAPPINGS = {
     "property_id",
     "is_active",
   ],
-  transactions: ["amount", "created_at", "payment_date", "description", "ref"],
-  rentals: ["amount", "created_at", "payment_date", "description", "tenant_id"],
-  expenses: [
-    "amount",
-    "created_at",
-    "payment_date",
-    "description",
-    "tenant_id",
-  ],
+  transactions: ["category", "created_at", "payment_date", "amount","description", "property_id"]
 };
 
 export const validations = {
