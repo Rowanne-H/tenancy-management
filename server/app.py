@@ -14,7 +14,7 @@ from config import app, db, api
 from flask_restful import Api, Resource
 
 # Add your model imports
-from models import db, User, Owner, Property, Tenant, Rental, Expense
+from models import db, User, Owner, Property, Tenant, Transaction
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tenancy_management.db'
@@ -113,7 +113,6 @@ class UserByID(Resource):
             return make_response(jsonify({'message': 'User not found'}), 404)
         if session.get('user_id') != user.id:
             print(f"Authorization failed: current_user.id  != user.id ({user.id})")
-   
             return make_response(jsonify({'message': 'You do not have permission to edit this record. You can only edit your own records.'}), 403)
         data = request.get_json()
         for attr, value in data.items():
@@ -326,65 +325,10 @@ class TenantByID(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Tenant successfully deleted'}), 200)
 
-class Rentals(Resource):
+class Transactions(Resource):
     def get(self):
-        rentals = [rental.to_dict() for rental in Rental.query.all()]
-        return make_response(jsonify(rentals), 200)
-    
-    def post(self):
-        data = request.get_json()
-        tenant = Tenant.query.filter_by(id=data['tenant_id']).first()
-        if tenant is None:
-            return make_response(jsonify({'message': 'Please input a valid tenant id'}), 404)
-        created_at = getDate(data.get('created_at')) if data.get('created_at') else datetime.today()
-        payment_date = getDate(data['payment_date'])
-        new_rental = Rental(
-            amount=data['amount'],
-            created_at=created_at,
-            payment_date=payment_date,
-            description=data.get('description', 'rent'),
-            tenant_id=data['tenant_id'] 
-        )
-        db.session.add(new_rental)
-        db.session.commit()
-        return make_response(new_rental.to_dict(), 201)
-    
-class RentalByID(Resource):
-    def get(self, id):
-        rental = Rental.query.filter_by(id=id).first()
-        if rental is None:
-            return make_response(jsonify({'message': 'Rental not found'}), 404)
-        return make_response(jsonify(rental.to_dict()), 200)
-    
-    def patch(self, id):
-        rental = Rental.query.filter_by(id=id).first()
-        if rental is None:
-            return make_response(jsonify({'message': 'Rental not found'}), 404)
-        data = request.get_json()
-        for attr, value in data.items():
-            if attr == 'tenant_id':
-               tenant = Tenant.query.filter_by(id=value).first()
-               if tenant is None:
-                   return make_response(jsonify({'message': 'Please input a valid tenant id'}), 404)
-            if attr == 'created_at' or attr == 'payment_date':
-                value=getDate(value)
-            setattr(rental, attr, value)
-        db.session.add(rental)
-        db.session.commit()
-        return make_response(rental.to_dict(), 200)
-    
-    def delete(self, id):
-        rental = Rental.query.filter_by(id=id).first()
-        if rental is None:
-            return make_response(jsonify({'message': 'Rental not found'}), 404)   
-        db.session.delete(rental)
-        db.session.commit()
-        return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
-    
-class Expenses(Resource):
-    def get(self):
-        expenses = [expense.to_dict() for expense in Expense.query.all()]
-        return make_response(jsonify(expenses), 200)
+        transactions = [transaction.to_dict() for transaction in Transaction.query.all()]
+        return make_response(jsonify(transactions), 200)
     
     def post(self):
         data = request.get_json()
@@ -393,48 +337,51 @@ class Expenses(Resource):
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
         created_at = getDate(data.get('created_at')) if data.get('created_at') else datetime.today()
         payment_date = getDate(data['payment_date'])
-        new_expense = Expense(
+        new_transaction = Transaction(
             amount=data['amount'],
+            category=data['category'],
             created_at=created_at,
             payment_date=payment_date,
-            description=data.get('description', 'expense'),
-            property_id=data['property_id'] 
+            description=data.get('description', 'rent'),
+            property_id=data['property_id']
         )
-        db.session.add(new_expense)
+        db.session.add(new_transaction)
         db.session.commit()
-        return make_response(new_expense.to_dict(), 201)
+        return make_response(new_transaction.to_dict(), 201)
     
-class ExpenseByID(Resource):
+class TransactionByID(Resource):
     def get(self, id):
-        expense = Expense.query.filter_by(id=id).first()
-        if expense is None:
-            return make_response(jsonify({'message': 'Expense not found'}), 404)
-        return make_response(jsonify(expense.to_dict()), 200)
+        transaction = Transaction.query.filter_by(id=id).first()
+        if transaction is None:
+            return make_response(jsonify({'message': 'Transaction not found'}), 404)
+        return make_response(jsonify(transaction.to_dict()), 200)
     
     def patch(self, id):
-        expense = Expense.query.filter_by(id=id).first()
-        if expense is None:
-            return make_response(jsonify({'message': 'Expense not found'}), 404)
+        transaction = Transaction.query.filter_by(id=id).first()
+        if transaction is None:
+            return make_response(jsonify({'message': 'Transaction not found'}), 404)
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'property_id':
-               property = Property.query.filter_by(id=value).first()
-               if property is None:
-                    return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
+                property = Property.query.filter_by(id=value).first()
+                if property is None:
+                   return make_response(jsonify({'message': 'Please input a valid property id'}), 404)               
             if attr == 'created_at' or attr == 'payment_date':
                 value=getDate(value)
-            setattr(expense, attr, value)
-        db.session.add(expense)
+            setattr(transaction, attr, value)
+        db.session.add(transaction)
         db.session.commit()
-        return make_response(expense.to_dict(), 200)
+        return make_response(transaction.to_dict(), 200)
     
     def delete(self, id):
-        expense = Expense.query.filter_by(id=id).first()
-        if expense is None:
-            return make_response(jsonify({'message': 'Expense not found'}), 404)
-        db.session.delete(expense)
+        transaction = Transaction.query.filter_by(id=id).first()
+        if transaction is None:
+            return make_response(jsonify({'message': 'Transaction not found'}), 404) 
+        db.session.delete(transaction)
         db.session.commit()
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
+    
+
 
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
@@ -448,10 +395,8 @@ api.add_resource(Properties, '/properties', endpoint='properties')
 api.add_resource(PropertyByID, '/properties/<int:id>', endpoint='show_property')
 api.add_resource(Tenants, '/tenants', endpoint='/tenants')
 api.add_resource(TenantByID, '/tenants/<int:id>', endpoint='show_tenant')
-api.add_resource(Rentals, '/rentals', endpoint='/rentals')
-api.add_resource(RentalByID, '/rentals/<int:id>', endpoint='show_rental')
-api.add_resource(Expenses, '/expenses', endpoint='expenses')
-api.add_resource(ExpenseByID, '/expenses/<int:id>', endpoint='show_expense')
+api.add_resource(Transactions, '/transactions', endpoint='/transactions')
+api.add_resource(TransactionByID, '/transactions/<int:id>', endpoint='show_transaction')
 
 
 if __name__ == '__main__':

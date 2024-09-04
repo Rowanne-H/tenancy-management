@@ -51,12 +51,6 @@ def validate_ref(value):
         raise ValueError("ref must be at least 2 characters long and not empty.")
     return value
 
-def validate_amount(value):
-    value = float(value)
-    if not value or value<0:
-        raise ValueError("Amount must be more than 0")
-    return value
-
 
 class BaseModel(db.Model):
     __abstract__ = True
@@ -95,10 +89,6 @@ class BaseModel(db.Model):
     def validate_ref(self, key, value):
         return validate_ref(value)
     
-    @validates('amount')
-    @validates('rent')
-    def validate_amount(self, key, value):
-        return validate_amount(value)
 
 class User(BaseModel, SerializerMixin):
     __tablename__ = 'users'
@@ -193,7 +183,7 @@ class Property(BaseModel, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     tenants = db.relationship('Tenant', backref='property') 
-    expenses = db.relationship('Expense', backref='property')
+    transactions = db.relationship('Transaction', backref='property')
 
     @validates('commission')
     def validate_comission(self, key, value):
@@ -241,13 +231,19 @@ class Tenant(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
-    rentals = db.relationship('Rental', backref='tenant') 
 
     @validates('lease_term')
     def validate_lease_term(self, key, value):
         value = float(value)
         if not value or value<=0 or value>12:
             raise ValueError("Lease term must be between 0 and 12")
+        return value
+    
+    @validates('rent')
+    def validate_rent(self, key, value):
+        value = float(value)
+        if not value or value<0:
+            raise ValueError("Amount must be more than 0")
         return value
     
     def to_dict(self):
@@ -278,16 +274,25 @@ class Transaction(BaseModel, SerializerMixin):
     amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     payment_date = db.Column(db.Date, nullable=False)
-    description = db.Column(db.String, nullable=False, default='rent')
+    description = db.Column(db.String, nullable=False)
     
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
-    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
-    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
 
     @validates('category')
     def validate_category(self, key, value):
         if value != 'Rent' and value != 'Expense' and value != 'Others':
             raise ValueError("Failed simple category validation")
+        return value
+    
+    @validates('amount')
+    def validate_amount(self, key, value):
+        value = float(value)
+        if self.category == 'Rent':
+            if not value or value<0:
+                raise ValueError("Amount must be more than 0")
+        if self.category == 'Expense':
+            if not value or value>0:
+                raise ValueError("Amount must be negative")
         return value
 
     def to_dict(self):
@@ -298,9 +303,7 @@ class Transaction(BaseModel, SerializerMixin):
             'created_at': self.created_at,
             'payment_date': self.payment_date,
             'description': self.description,
-            'tenant_id': self.tenant_id,
             'property_id': self.property_id,
-            'owner_id': self.owner_id
         }
 
     def __repr__(self):
