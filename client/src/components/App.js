@@ -218,6 +218,11 @@ function App() {
                 <Transactions transactions={transactions} deleteTransaction={deleteTransaction} />
               )}
             />
+            <Route
+              exact
+              path="/transactions/:id"
+              render={() => <DisplayData type="transactions" />}
+            />
           </Switch>
         </div>
       ) : (
