@@ -274,21 +274,29 @@ class Transaction(BaseModel, SerializerMixin):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     payment_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=False, default='rent')
+    
 
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
+
 
     def to_dict(self):
         return {
             'id': self.id,
+            'category': self.category,
             'amount': self.amount,
             'created_at': self.created_at,
             'payment_date': self.payment_date,
             'description': self.description,
-            'tenant_id': self.tenant_id
+            'tenant_id': self.tenant_id,
+            'property_id': self.property_id,
+            'owner_id': self.owner_id
         }
 
     def __repr__(self):
