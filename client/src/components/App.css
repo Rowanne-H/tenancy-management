@@ -29,7 +29,8 @@ a {
 }
 
 .navbar.active,
-button {
+button,
+.active {
   background-color: rgb(210, 210, 244);
 }
 
@@ -91,4 +92,14 @@ tr:hover {
   color: red;
   margin: 0px;
   min-height: 15pt;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center; /* Center the pagination items horizontally */
+  list-style: none; /* Remove default list styles */ 
+}
+
+.page-item {
+  margin:10px;
 }
