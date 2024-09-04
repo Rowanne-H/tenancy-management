@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, date
 
 # Local imports
 from app import app
-from models import db, User, Owner, Property, Tenant, Rental, Expense
+from models import db, User, Owner, Property, Tenant, Transaction
 
 fake = Faker()
 
@@ -149,51 +149,49 @@ def create_tenants(properties):
     db.session.commit()
     return tenants
 
-def create_rentals(tenants):
-    rentals = []
+def create_transactions(tenants, properties):
+    transactions = []
     now = date.today()
-    for tenant in tenants:   
+    for tenant in tenants:  
         payment_date = tenant.lease_start_date
+        transaction = Transaction(
+            category='Expense',
+            amount=-tenant.rent,
+            created_at=payment_date,
+            payment_date=payment_date,
+            description='Letting fee',
+            property_id=tenant.property_id
+        )
+        transactions.append(transaction)
+        db.session.add(transaction)
+        db.session.commit()
         while payment_date < now:
-            rental = Rental(
+            transaction = Transaction(
+                category='Rent',
                 amount=tenant.rent,
                 created_at=payment_date,
                 payment_date=payment_date,
-                tenant=tenant
+                description='Rent',
+                property_id=tenant.property_id
             )
-            rentals.append(rental)
-            db.session.add(rental)
+            transactions.append(transaction)
+            db.session.add(transaction)
+            db.session.commit()
+            transaction = Transaction(
+                category='Expense',
+                amount=-tenant.rent*0.05,
+                created_at=payment_date,
+                payment_date=payment_date,
+                description='Commission',
+                property_id=tenant.property_id
+            )
+            transactions.append(transaction)
+            db.session.add(transaction)
             db.session.commit()
             payment_date += timedelta(days=7)
-    return rentals
+        
+    return transactions
 
-def create_expenses(tenants, rentals):
-    expenses = []
-    active_tenants = [tenant for tenant in tenants if tenant.is_active==True]
-    for tenant in active_tenants: 
-        expense = Expense(
-            amount=tenant.rent,
-            created_at=tenant.lease_start_date,
-            payment_date=datetime.today(),
-            property_id=tenant.property_id,
-            description='letting fee'           
-        )
-        expenses.append(expense)
-        db.session.add(expense)
-        db.session.commit()
-    for rental in rentals: 
-        tenant = [tenant for tenant in tenants if tenant.id==rental.tenant_id][0]
-        expense = Expense(
-            amount=rental.amount*0.05,
-            created_at=rental.created_at,
-            payment_date=rental.created_at,
-            property_id=tenant.property_id,
-            description='commission'          
-        )
-        expenses.append(expense)
-        db.session.add(expense)
-        db.session.commit()
-    return expenses
 
 if __name__ == '__main__':
     with app.app_context():
@@ -204,6 +202,5 @@ if __name__ == '__main__':
         owners = create_owners()
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
-        rentals = create_rentals(tenants)
-        expenses = create_expenses(tenants, rentals)
+        transactions = create_transactions(tenants, properties)
 
