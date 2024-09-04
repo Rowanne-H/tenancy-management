@@ -146,4 +146,25 @@ export const validations = {
       .min(0, "Amount must be more than 0"),
     is_active: yup.boolean(),
   }),
+   transactions: yup.object().shape({
+    created_at: yup.string().required("Must enter a date"),
+    category: yup
+      .string()
+      .oneOf(["Rent", "Expense", "Others"], "Invalid category")
+      .required("Must select a category"),
+    payment_date: yup.string().required("Must enter a date"),
+    amount: yup
+    .number()
+    .required("Must enter an amount")
+    .test(
+      'amount-validation',
+      'Invalid amount based on category',
+      function(value) {
+        const { category } = this.parent;
+        if (category === 'Rent' && value <= 0) return false;
+        if (category === 'Expense' && value >= 0) return false;
+        return true;
+      }
+    )
+  }),
 };
