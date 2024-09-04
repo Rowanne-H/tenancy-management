@@ -189,7 +189,6 @@ class Property(BaseModel, SerializerMixin):
     letting_fee = db.Column(db.Float, default=1, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
-
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
@@ -224,7 +223,6 @@ class Property(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'Property(id={self.id})'
-
     
 class Tenant(BaseModel, SerializerMixin):
     __tablename__ = 'tenants'
@@ -271,10 +269,9 @@ class Tenant(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'Tenant(id={self.id})'
-    
-    
-class Rental(BaseModel, SerializerMixin):
-    __tablename__ = 'rentals'
+     
+class Transaction(BaseModel, SerializerMixin):
+    __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
@@ -295,28 +292,5 @@ class Rental(BaseModel, SerializerMixin):
         }
 
     def __repr__(self):
-        return f'Rental(id={self.id})'
+        return f'Transaction(id={self.id})'
     
-class Expense(BaseModel, SerializerMixin):
-    __tablename__ = 'expenses'
-
-    id = db.Column(db.Integer, primary_key=True)
-    amount = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    payment_date = db.Column(db.Date, nullable=False)
-    description = db.Column(db.String, nullable=False, default='expense')
-
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'))
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'amount': self.amount,
-            'created_at': self.created_at,
-            'payment_date': self.payment_date,
-            'description': self.description,
-            'property_id': self.property_id,
-        }
-
-    def __repr__(self):
-        return f'Expense(id={self.id})'
