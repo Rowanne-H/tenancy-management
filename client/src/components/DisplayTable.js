@@ -2,9 +2,15 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import DisplayTableRow from "./DisplayTableRow";
+import { isDate } from "./DataDisplayingFunctions";
 
 const sortItems = (items, sortBy, sortOrder) => {
   return [...items].sort((a, b) => {
+    if (isDate(sortBy)) {
+      const dateA = new Date(a[sortBy]);
+      const dateB = new Date(b[sortBy]);
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    }
     if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
     if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
     return 0;
