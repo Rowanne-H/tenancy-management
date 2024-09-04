@@ -109,6 +109,9 @@ function App() {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
   }
 
+  function addNewTransaction(newTransaction) {
+    setTransactions([...transactions, newTransaction]);
+  }
   function deleteTransaction(id) {
     setTransactions(
       transactions.filter((transaction) => transaction.id !== id),
@@ -243,6 +246,17 @@ function App() {
                 <Transactions
                   transactions={transactions}
                   deleteTransaction={deleteTransaction}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/transactions/new"
+              render={() => (
+                <FormNewData
+                  type="transactions"
+                  properties={properties}
+                  onAddNewData={addNewTransaction}
                 />
               )}
             />

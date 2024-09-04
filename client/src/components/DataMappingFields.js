@@ -45,8 +45,8 @@ export const FIELD_MAPPINGS = {
     "is_active",
   ],
   transactions: [
-    "category",
     "created_at",
+    "category",
     "payment_date",
     "amount",
     "description",
