@@ -280,11 +280,15 @@ class Transaction(BaseModel, SerializerMixin):
     payment_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=False, default='rent')
     
-
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
 
+    @validates('category')
+    def validate_category(self, key, value):
+        if value != 'Rent' and value != 'Expense' and value != 'Others':
+            raise ValueError("Failed simple category validation")
+        return value
 
     def to_dict(self):
         return {
