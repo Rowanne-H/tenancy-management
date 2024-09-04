@@ -44,7 +44,14 @@ export const FIELD_MAPPINGS = {
     "property_id",
     "is_active",
   ],
-  transactions: ["category", "created_at", "payment_date", "amount","description", "property_id"]
+  transactions: [
+    "category",
+    "created_at",
+    "payment_date",
+    "amount",
+    "description",
+    "property_id",
+  ],
 };
 
 export const validations = {
@@ -97,8 +104,16 @@ export const validations = {
       .string()
       .required("Must enter ref")
       .min(10, "Name must be at least 10 characters long"),
-    commission: yup.number().required("Must enter a commission").min(0, "comission must be between 0 and 0.1").max(0.1, "comission must be between 0 and 0.1"),
-    letting_fee: yup.number().required("Must enter a  letting fee").min(0, "letting fee must be between 0 and 2").max(2, "letting fee must be between 0 and 2"),
+    commission: yup
+      .number()
+      .required("Must enter a commission")
+      .min(0, "comission must be between 0 and 0.1")
+      .max(0.1, "comission must be between 0 and 0.1"),
+    letting_fee: yup
+      .number()
+      .required("Must enter a  letting fee")
+      .min(0, "letting fee must be between 0 and 2")
+      .max(2, "letting fee must be between 0 and 2"),
     is_active: yup.boolean(),
   }),
   tenants: yup.object().shape({
@@ -118,10 +133,17 @@ export const validations = {
         'Mobile number must start with "04" and be exactly 10 digits',
       )
       .required("Must enter a mobile"),
-    lease_term: yup.number().required("Must enter a lease term").min(0, "Lease term must be between 0 and 12").max(12, "Lease term must be between 0 and 12"),
+    lease_term: yup
+      .number()
+      .required("Must enter a lease term")
+      .min(0, "Lease term must be between 0 and 12")
+      .max(12, "Lease term must be between 0 and 12"),
     lease_start_date: yup.string().required("Must enter a date"),
     lease_end_date: yup.string().required("Must enter a date"),
-    rent: yup.number().required("Must enter an amount").min(0, "Amount must be more than 0"),
+    rent: yup
+      .number()
+      .required("Must enter an amount")
+      .min(0, "Amount must be more than 0"),
     is_active: yup.boolean(),
   }),
 };

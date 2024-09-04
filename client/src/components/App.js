@@ -81,7 +81,7 @@ function App() {
   }
 
   function addNewProperty(newProperty) {
-    console.log('add new property')
+    console.log("add new property");
     setProperties([...properties, newProperty]);
   }
   function updateProperty(updatedProperty) {
@@ -94,7 +94,6 @@ function App() {
   function deleteProperty(id) {
     setProperties(properties.filter((property) => property.id !== id));
   }
-
 
   function addNewTenant(newTenant) {
     setTenants([...tenants, newTenant]);
@@ -111,9 +110,10 @@ function App() {
   }
 
   function deleteTransaction(id) {
-    setTransactions(transactions.filter((transaction) => transaction.id !== id));
+    setTransactions(
+      transactions.filter((transaction) => transaction.id !== id),
+    );
   }
-  
 
   return (
     <Router>
@@ -166,13 +166,23 @@ function App() {
             <Route
               exact
               path="/properties"
-              render={() => <Properties properties={properties} deleteProperty={deleteProperty} />}
+              render={() => (
+                <Properties
+                  properties={properties}
+                  deleteProperty={deleteProperty}
+                />
+              )}
             />
             <Route
               exact
               path="/properties/new"
               render={() => (
-                <FormNewData type="properties" users={users} owners={owners} onAddNewData={addNewProperty} />
+                <FormNewData
+                  type="properties"
+                  users={users}
+                  owners={owners}
+                  onAddNewData={addNewProperty}
+                />
               )}
             />
             <Route
@@ -184,7 +194,12 @@ function App() {
               exact
               path="/properties/:id/edit"
               render={() => (
-                <FormEditData type="properties" users={users} owners={owners} onUpdateData={updateProperty} />
+                <FormEditData
+                  type="properties"
+                  users={users}
+                  owners={owners}
+                  onUpdateData={updateProperty}
+                />
               )}
             />
             <Route
@@ -198,7 +213,11 @@ function App() {
               exact
               path="/tenants/new"
               render={() => (
-                <FormNewData type="tenants" properties={properties} onAddNewData={addNewTenant} />
+                <FormNewData
+                  type="tenants"
+                  properties={properties}
+                  onAddNewData={addNewTenant}
+                />
               )}
             />
             <Route
@@ -209,13 +228,22 @@ function App() {
             <Route
               exact
               path="/tenants/:id/edit"
-              render={() => <FormEditData type="tenants" properties={properties} onUpdateData={updateTenant} />}
+              render={() => (
+                <FormEditData
+                  type="tenants"
+                  properties={properties}
+                  onUpdateData={updateTenant}
+                />
+              )}
             />
             <Route
               exact
               path="/transactions"
               render={() => (
-                <Transactions transactions={transactions} deleteTransaction={deleteTransaction} />
+                <Transactions
+                  transactions={transactions}
+                  deleteTransaction={deleteTransaction}
+                />
               )}
             />
             <Route

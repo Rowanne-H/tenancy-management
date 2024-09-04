@@ -31,7 +31,10 @@ const DisplayData = ({ type }) => {
   return (
     <div>
       <h2>
-        {type === "properties" ? "Property" : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Details
+        {type === "properties"
+          ? "Property"
+          : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
+        Details
       </h2>
       <ul>
         <li>

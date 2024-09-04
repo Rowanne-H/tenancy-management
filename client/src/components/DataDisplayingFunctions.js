@@ -31,6 +31,22 @@ export const formatValue = (field, value) => {
   if (isDate(field)) {
     return getDate(value);
   }
+  if (field === "rent" || field === "amount") {
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+    return formatter.format(value);
+  }
+  if (field === "letting_fee") {
+    return value + " week/s"
+  }
+  if (field === "commission") {
+    return value*100 + "%"
+  }   
+  if (field === "lease_term") {
+    return value + " months"
+  }
   return value;
 };
 

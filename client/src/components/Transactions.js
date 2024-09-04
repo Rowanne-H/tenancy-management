@@ -3,8 +3,8 @@ import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS } from "./DataMappingFields";
 
 function Transactions({ transactions, deleteTransaction }) {
-  console.log(transactions)
-  
+  console.log(transactions);
+
   const fields = FIELD_MAPPINGS["transactions"];
 
   return (

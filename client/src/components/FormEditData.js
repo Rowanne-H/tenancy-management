@@ -4,7 +4,14 @@ import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import { generateFormikValues, inputType } from "./DataDisplayingFunctions";
 
-function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], tenants=[] }) {
+function EditDataForm({
+  onUpdateData,
+  type,
+  users = [],
+  owners = [],
+  properties = [],
+  tenants = [],
+}) {
   const [dataToEdit, setDataToEdit] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -33,7 +40,7 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log(values)
+      console.log(values);
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {
@@ -58,28 +65,45 @@ function EditDataForm({ onUpdateData, type, users=[], owners=[], properties=[], 
   return (
     <div>
       <h1>
-        Edit {type === "properties" ? "Property" : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)} Form
+        Edit{" "}
+        {type === "properties"
+          ? "Property"
+          : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
+        Form
       </h1>
       <form onSubmit={formik.handleSubmit}>
         {fields.map((field) => (
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field === "user_id" || field === "owner_id" || field === "property_id" || field === "tenant_id" ? (
+              {field === "user_id" ||
+              field === "owner_id" ||
+              field === "property_id" ||
+              field === "tenant_id" ? (
                 <select
                   id={field}
                   name={field}
                   onChange={formik.handleChange}
                   value={formik.values[field] || ""}
                 >
-                  <option value="">Select {
-                  field === "user_id" ? "User" : 
-                  field === "owner_id" ? "Owner" : 
-                  field === "property_id" ? "Property" : "Tenant" 
-                  }</option>
-                  {(field === "user_id" ? users :
-                  field === "owner_id" ? owners :
-                field === "property_id" ? properties : tenants).map(option => (
+                  <option value="">
+                    Select{" "}
+                    {field === "user_id"
+                      ? "User"
+                      : field === "owner_id"
+                        ? "Owner"
+                        : field === "property_id"
+                          ? "Property"
+                          : "Tenant"}
+                  </option>
+                  {(field === "user_id"
+                    ? users
+                    : field === "owner_id"
+                      ? owners
+                      : field === "property_id"
+                        ? properties
+                        : tenants
+                  ).map((option) => (
                     <option key={option.id} value={option.id}>
                       {!option.name ? option.address : option.name}
                     </option>

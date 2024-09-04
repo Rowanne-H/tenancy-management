@@ -97,9 +97,9 @@ tr:hover {
 .pagination {
   display: flex;
   justify-content: center; /* Center the pagination items horizontally */
-  list-style: none; /* Remove default list styles */ 
+  list-style: none; /* Remove default list styles */
 }
 
 .page-item {
-  margin:10px;
+  margin: 10px;
 }

@@ -29,7 +29,7 @@ function Navbar({ user, setUser }) {
         Owners
       </NavLink>
       <NavLink className="navbar" to="/properties" exact>
-        Properties 
+        Properties
       </NavLink>
       <NavLink className="navbar" to="/tenants" exact>
         Tenants

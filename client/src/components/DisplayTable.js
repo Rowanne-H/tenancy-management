@@ -19,7 +19,6 @@ function DisplayTable({
   defaultSortOrder = "asc",
   type,
 }) {
-  
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
 
@@ -46,7 +45,10 @@ function DisplayTable({
       <div>
         {type === "users" ? null : (
           <NavLink className="more" to={`/${type}/new`}>
-            New {type === "properties" ? "Property" : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
+            New{" "}
+            {type === "properties"
+              ? "Property"
+              : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
           </NavLink>
         )}
       </div>
