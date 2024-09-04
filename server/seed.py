@@ -19,8 +19,7 @@ def delete_records():
     Owner.query.delete()
     Property.query.delete()
     Tenant.query.delete()
-    Rental.query.delete()
-    Expense.query.delete()
+    Transaction.query.delete()
     db.session.commit()
 
 def generate_mobile_number():
@@ -55,7 +54,7 @@ def generate_a_date():
     next_month = first_day_of_month.replace(day=28) + timedelta(days=4)
     first_day_of_next_month = next_month.replace(day=1)
     last_day_of_month = first_day_of_next_month - timedelta(days=1)
-    return fake.date_between(start_date=first_day_of_month, end_date=last_day_of_month)
+    return fake.date_between(start_date=first_day_of_month - timedelta(days=15), end_date=last_day_of_month)
 
 def create_owners():
     owners = []
@@ -149,24 +148,25 @@ def create_tenants(properties):
     db.session.commit()
     return tenants
 
-def create_transactions(tenants, properties):
+def create_transactions(tenants):
     transactions = []
     now = date.today()
-    for tenant in tenants:  
+    active_tenants = [tenant for tenant in tenants if tenant.is_active==True]
+    for tenant in active_tenants:  
         payment_date = tenant.lease_start_date
-        transaction = Transaction(
-            category='Expense',
-            amount=-tenant.rent,
-            created_at=payment_date,
-            payment_date=payment_date,
-            description='Letting fee',
-            property_id=tenant.property_id
-        )
-        transactions.append(transaction)
-        db.session.add(transaction)
-        db.session.commit()
+        if payment_date < now:
+            letting_fee = Transaction(
+                category='Expense',
+                amount=-tenant.rent,
+                created_at=payment_date+timedelta(days=1),
+                payment_date=payment_date+timedelta(days=1),
+                description='Letting fee',
+                property_id=tenant.property_id
+            )
+            transactions.append(letting_fee)
+            db.session.add(letting_fee)
         while payment_date < now:
-            transaction = Transaction(
+            rental = Transaction(
                 category='Rent',
                 amount=tenant.rent,
                 created_at=payment_date,
@@ -174,10 +174,9 @@ def create_transactions(tenants, properties):
                 description='Rent',
                 property_id=tenant.property_id
             )
-            transactions.append(transaction)
-            db.session.add(transaction)
-            db.session.commit()
-            transaction = Transaction(
+            transactions.append(rental)
+            db.session.add(rental)
+            commission = Transaction(
                 category='Expense',
                 amount=-tenant.rent*0.05,
                 created_at=payment_date,
@@ -185,12 +184,14 @@ def create_transactions(tenants, properties):
                 description='Commission',
                 property_id=tenant.property_id
             )
-            transactions.append(transaction)
-            db.session.add(transaction)
-            db.session.commit()
+            transactions.append(commission )
+            db.session.add(commission )
             payment_date += timedelta(days=7)
-        
+    db.session.commit()  
+    print(transactions)  
     return transactions
+
+
 
 
 if __name__ == '__main__':
@@ -202,5 +203,5 @@ if __name__ == '__main__':
         owners = create_owners()
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
-        transactions = create_transactions(tenants, properties)
+        transactions = create_transactions(tenants)
 
