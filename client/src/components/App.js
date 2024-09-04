@@ -112,6 +112,13 @@ function App() {
   function addNewTransaction(newTransaction) {
     setTransactions([...transactions, newTransaction]);
   }
+  function updateTransaction(updatedTransaction) {
+    setTransactions(
+      transactions.map((transaction) =>
+        transaction.id === updatedTransaction.id ? updatedTransaction : transaction,
+      ),
+    );
+  }
   function deleteTransaction(id) {
     setTransactions(
       transactions.filter((transaction) => transaction.id !== id),
@@ -264,6 +271,17 @@ function App() {
               exact
               path="/transactions/:id"
               render={() => <DisplayData type="transactions" />}
+            />
+            <Route
+              exact
+              path="/transactions/:id/edit"
+              render={() => (
+                <FormEditData
+                  type="transactions"
+                  properties={properties}
+                  onUpdateData={updateTransaction}
+                />
+              )}
             />
           </Switch>
         </div>
