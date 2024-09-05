@@ -109,6 +109,20 @@ function EditDataForm({
                     </option>
                   ))}
                 </select>
+              ) : field === "category"? (
+                <select
+                  id={field}
+                  name={field}
+                  value={formik.values[field]}
+                  onChange={formik.handleChange}
+                >
+                  <option value="">Select Category</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Expense">Expense</option>
+                  <option value="Others">Others</option>
+                </select>
+              ) : field === "created_at" ? (
+                <span>{formik.values[field]}</span>
               ) : field == "is_active" ? (
                 <input
                   type="checkbox"
