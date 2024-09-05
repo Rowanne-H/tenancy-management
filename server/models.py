@@ -287,14 +287,10 @@ class Transaction(BaseModel, SerializerMixin):
     @validates('amount')
     def validate_amount(self, key, value):
         value = float(value)
-        if self.category == 'Rent':
-            if not value or value<0:
-                raise ValueError("Amount must be more than 0")
-        if self.category == 'Expense':
-            if not value or value>0:
-                raise ValueError("Amount must be negative")
+        if not value:
+            raise ValueError("Amount cannot be None")
         return value
-
+    
     def to_dict(self):
         return {
             'id': self.id,

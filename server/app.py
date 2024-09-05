@@ -359,7 +359,7 @@ class TransactionByID(Resource):
     def patch(self, id):
         transaction = Transaction.query.filter_by(id=id).first()
         if transaction is None:
-            return make_response(jsonify({'message': 'Transaction not found'}), 404)
+            return make_response(jsonify({'message': 'Transaction not found'}), 400)
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'property_id':
