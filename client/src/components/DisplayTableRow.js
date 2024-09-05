@@ -22,7 +22,19 @@ function DisplayTableRow({ item, onDeleteItem, fields, type }) {
     <tr>
       <td>{item.id}</td>
       {fields.map((field) => (
-        <td key={field}>{formatValue(field, item[field])}</td>
+        <td key={field}>{
+          field === "property_id" || field === "user_id" || field === "owner_id" ? (
+            <NavLink className="ids" to={
+              field === "property_id" ? (`/properties/${item[field]}`) : 
+              field === "user_id" ? (`/users/${item[field]}`) : 
+              (`/owners/${item[field]}`) 
+            }>
+              {formatValue(field, item[field])}
+            </NavLink>
+          ) : (
+            formatValue(field, item[field])
+          )
+        }</td>
       ))}
       <td>
         <NavLink className="more" to={`/${type}/${item.id}`}>
