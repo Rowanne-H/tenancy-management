@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
 import { formatValue } from "./DataDisplayingFunctions";
 
@@ -44,7 +45,17 @@ const DisplayData = ({ type }) => {
         {fields.map((field) => (
           <li key={field}>
             <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong>{" "}
-            {formatValue(field, data[field])}
+            {field === "property_id" || field === "user_id" || field === "owner_id" ? (
+            <NavLink className="ids" to={
+              field === "property_id" ? (`/properties/${data[field]}`) : 
+              field === "user_id" ? (`/users/${data[field]}`) : 
+              (`/owners/${data[field]}`) 
+            }>
+              {formatValue(field, data[field])} <label>View details</label>
+            </NavLink>
+          ) : (
+            formatValue(field, data[field])
+          )}
           </li>
         ))}
       </ul>
