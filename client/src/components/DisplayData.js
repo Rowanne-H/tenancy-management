@@ -58,6 +58,11 @@ const DisplayData = ({ type }) => {
           )}
           </li>
         ))}
+        <li>{type === "owners" || type === "tenants" ? (
+          <NavLink className="more" to={`/${type}/${id}/transactions`}>
+            View transactions
+          </NavLink>
+        ) : null}</li>
       </ul>
     </div>
   );
