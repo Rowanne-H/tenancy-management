@@ -283,6 +283,30 @@ function App() {
                 />
               )}
             />
+            <Route
+              exact
+              path="/tenants/:id/transactions"
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  deleteTransaction={deleteTransaction}
+                  view="tenant"
+                  properties={properties}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/owners/:id/transactions"
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  deleteTransaction={deleteTransaction}
+                  view="owner"
+                  properties={properties}
+                />
+              )}
+            />
           </Switch>
         </div>
       ) : (

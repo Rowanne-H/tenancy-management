@@ -24,6 +24,7 @@ function DisplayTable({
   defaultSortBy = "id",
   defaultSortOrder = "asc",
   type,
+  view = ''
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
@@ -49,7 +50,10 @@ function DisplayTable({
   return (
     <div>
       <div>
-        {type === "users" ? null : (
+        {view === "owner" || view === "tenant" ? (
+          <spam>{view.charAt(0).toUpperCase() + view.slice(1)} transactions</spam>
+        ) : 
+        type === "users" ? null : (
           <NavLink className="more" to={`/${type}/new`}>
             New{" "}
             {type === "properties"

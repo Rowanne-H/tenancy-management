@@ -1,19 +1,28 @@
-import React from "react";
+import React,  { useState } from "react";
+import { useParams } from "react-router-dom";
 import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS } from "./DataMappingFields";
 
-function Transactions({ transactions, deleteTransaction }) {
-  console.log(transactions);
-
+function Transactions({ transactions, deleteTransaction, view='', properties=[] }) {
+  let items = transactions;
   const fields = FIELD_MAPPINGS["transactions"];
+  const { id } = useParams();
+  if (view === "owner") {
+    const filteredProperties = properties.filter(property => property.owner_id == id);
+    const ownerTransactions = transactions.filter(transaction => 
+      filteredProperties.some(property => property.id === transaction.property_id)
+    );
+    items = ownerTransactions;
+  }
 
   return (
     <DisplayTable
-      items={transactions}
+      items={items}
       deleteItem={deleteTransaction}
       fields={fields}
       defaultSortBy="created_at"
       type="transactions"
+      view={view}
     />
   );
 }
