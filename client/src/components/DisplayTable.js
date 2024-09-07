@@ -51,7 +51,7 @@ function DisplayTable({
     <div>
       <div>
         {view === "owner" || view === "tenant" ? (
-          <spam>{view.charAt(0).toUpperCase() + view.slice(1)} transactions</spam>
+          <span>{view.charAt(0).toUpperCase() + view.slice(1)} transactions</span>
         ) : 
         type === "users" ? null : (
           <NavLink className="more" to={`/${type}/new`}>
@@ -71,7 +71,7 @@ function DisplayTable({
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </th>
             ))}
-            <th>More</th>
+            <th>{view === "owner" || view === "tenant" ? null : "More"}</th>
           </tr>
         </thead>
         <tbody>
@@ -82,6 +82,7 @@ function DisplayTable({
               onDeleteItem={deleteItem}
               fields={fields}
               type={type}
+              view={view}
             />
           ))}
         </tbody>
