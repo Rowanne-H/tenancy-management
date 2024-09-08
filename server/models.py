@@ -276,7 +276,11 @@ class Transaction(BaseModel, SerializerMixin):
     payment_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=False)
     
+    
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
+
 
     @validates('category')
     def validate_category(self, key, value):
@@ -299,7 +303,9 @@ class Transaction(BaseModel, SerializerMixin):
             'created_at': self.created_at,
             'payment_date': self.payment_date,
             'description': self.description,
+            'tenant_id': self.tenant_id,
             'property_id': self.property_id,
+            'owner_id': self.owner_id,
         }
 
     def __repr__(self):

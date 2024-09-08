@@ -77,7 +77,7 @@ def create_owners():
             email=fake.unique.email(),
             mobile=generate_mobile_number(),
             address=fake.unique.address(),
-            management_start_date=generate_a_date()-timedelta(days=30)
+            management_start_date=generate_a_date()-timedelta(days=60)
         )
         owners.append(owner)
     db.session.add_all(owners)
@@ -148,12 +148,14 @@ def create_tenants(properties):
     db.session.commit()
     return tenants
 
-def create_transactions(tenants):
+def create_transactions(tenants, properties, owners):
     transactions = []
     now = date.today()
     active_tenants = [tenant for tenant in tenants if tenant.is_active==True]
     for tenant in active_tenants:  
         payment_date = tenant.lease_start_date
+        property = [property for property in properties if property.id==tenant.property_id][0]
+        owner = [owner for owner in owners if owner.id==property.owner_id][0]
         if payment_date < now:
             letting_fee = Transaction(
                 category='Expense',
@@ -161,7 +163,10 @@ def create_transactions(tenants):
                 created_at=payment_date+timedelta(days=1),
                 payment_date=payment_date+timedelta(days=1),
                 description='Letting fee',
-                property_id=tenant.property_id
+                tenant_id=tenant.id,
+                property_id=property.id,
+                owner_id=owner.id
+
             )
             transactions.append(letting_fee)
             db.session.add(letting_fee)
@@ -172,7 +177,9 @@ def create_transactions(tenants):
                 created_at=payment_date,
                 payment_date=payment_date,
                 description='Rent',
-                property_id=tenant.property_id
+                tenant_id=tenant.id,
+                property_id=property.id,
+                owner_id=owner.id
             )
             transactions.append(rental)
             db.session.add(rental)
@@ -182,7 +189,9 @@ def create_transactions(tenants):
                 created_at=payment_date,
                 payment_date=payment_date,
                 description='Commission',
-                property_id=tenant.property_id
+                tenant_id=tenant.id,
+                property_id=property.id,
+                owner_id=owner.id
             )
             transactions.append(commission )
             db.session.add(commission )
@@ -199,5 +208,5 @@ if __name__ == '__main__':
         owners = create_owners()
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
-        transactions = create_transactions(tenants)
+        transactions = create_transactions(tenants, properties, owners)
 

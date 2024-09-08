@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: adc85fb24254
+Revision ID: 73c7bcaa6d45
 Revises: 
-Create Date: 2024-09-04 20:13:01.183055
+Create Date: 2024-09-08 22:13:02.972238
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'adc85fb24254'
+revision = '73c7bcaa6d45'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -78,8 +78,12 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('payment_date', sa.Date(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
+    sa.Column('tenant_id', sa.Integer(), nullable=True),
     sa.Column('property_id', sa.Integer(), nullable=True),
+    sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['owner_id'], ['owners.id'], name=op.f('fk_transactions_owner_id_owners')),
     sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_transactions_property_id_properties')),
+    sa.ForeignKeyConstraint(['tenant_id'], ['tenants.id'], name=op.f('fk_transactions_tenant_id_tenants')),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
