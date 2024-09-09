@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { FIELD_MAPPINGS, validations } from "./DataMappingFields";
 import { getFormikValues, inputType } from "./DataDisplayingFunctions";
@@ -13,13 +13,19 @@ function FormNewData({
 }) {
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [selectedProperty, setSelectedProperty] = useState(""); 
+
   const fields = FIELD_MAPPINGS[type];
   const validation = validations[type];
   const initialData = fields.reduce((obj, field) => {
     obj[field] = getFormikValues(field, "");
     return obj;
   }, {});
-
+  if (type==="transactions") {
+    initialData["owner_id"] = "";
+    initialData["tenant_id"] = ""
+  }
+  
   const formik = useFormik({
     initialValues: initialData,
     validationSchema: validation,
@@ -35,6 +41,7 @@ function FormNewData({
       }).then((r) => {
         if (r.ok) {
           r.json().then((data) => {
+            console.log(values)
             onAddNewData(data);
             alert("A new record has been created");
           });

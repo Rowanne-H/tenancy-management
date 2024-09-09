@@ -50,9 +50,7 @@ export const FIELD_MAPPINGS = {
     "payment_date",
     "amount",
     "description",
-    "tenant_id",
-    "property_id",
-    "owner_id"
+    "property_id"
   ],
 };
 
@@ -148,7 +146,7 @@ export const validations = {
       .min(0, "Amount must be more than 0"),
     is_active: yup.boolean(),
   }),
-   transactions: yup.object().shape({
+  transactions: yup.object().shape({
     created_at: yup.string().required("Must enter a date"),
     category: yup
       .string()

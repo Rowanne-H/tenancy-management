@@ -332,15 +332,14 @@ class Transactions(Resource):
     
     def post(self):
         data = request.get_json()
-        tenant = Tenant.query.filter_by(id=data['tenant_id']).first()
         property = Property.query.filter_by(id=data['property_id']).first()
         if property is None:
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
-        if tenant and tenant.property_id != property.id:
-            return make_response(jsonify({'message': 'Please input a valid tenant id'}), 404)
-        owner = Owner.query.filter_by(id=data['owner_id']).first()
-        if owner.property_id != property.id:
-            return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
+        tenant = None
+        if data['category'] == "Rent":            
+            tenant = Tenant.query.filter_by(property_id=data['property_id'], is_active=True).first()
+            if tenant is None:
+                return make_response(jsonify({'message': 'Please select a property which is tenanted'}), 404)        
         created_at = getDate(data.get('created_at')) if data.get('created_at') else datetime.today()
         payment_date = getDate(data['payment_date'])
         new_transaction = Transaction(
@@ -349,9 +348,9 @@ class Transactions(Resource):
             created_at=created_at,
             payment_date=payment_date,
             description=data.get('description', 'rent'),
-            tenant_id=data.get('tenant_id', ''),
+            tenant_id=tenant.id if tenant else None,
             property_id=data['property_id'],
-            owner_id=data['owner_id']
+            owner_id=property.owner_id
         )
         db.session.add(new_transaction)
         db.session.commit()
