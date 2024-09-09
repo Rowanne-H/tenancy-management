@@ -14,6 +14,8 @@ function Transactions({ transactions, deleteTransaction, view='', properties=[] 
     );
     items = ownerTransactions;
   }
+  console.log(view+id)
+  console.log(items)
 
   return (
     <DisplayTable
