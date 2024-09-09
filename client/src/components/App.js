@@ -262,7 +262,9 @@ function App() {
               render={() => (
                 <FormNewData
                   type="transactions"
+                  tenants={tenants}
                   properties={properties}
+                  owers={owners}
                   onAddNewData={addNewTransaction}
                 />
               )}
@@ -278,7 +280,9 @@ function App() {
               render={() => (
                 <FormEditData
                   type="transactions"
+                  tenants={tenants}
                   properties={properties}
+                  owers={owners}
                   onUpdateData={updateTransaction}
                 />
               )}
