@@ -14,8 +14,11 @@ function Transactions({ transactions, deleteTransaction, view='', properties=[] 
     );
     items = ownerTransactions;
   }
-  console.log(view+id)
-  console.log(items)
+  if (view === "tenant") {
+    console.log(id)
+    const tenantTransactions = transactions.filter(transaction => transaction.tenant_id == id);
+    items = tenantTransactions;
+  }
 
   return (
     <DisplayTable
