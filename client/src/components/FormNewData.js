@@ -21,10 +21,6 @@ function FormNewData({
     obj[field] = getFormikValues(field, "");
     return obj;
   }, {});
-  if (type==="transactions") {
-    initialData["owner_id"] = "";
-    initialData["tenant_id"] = ""
-  }
   
   const formik = useFormik({
     initialValues: initialData,

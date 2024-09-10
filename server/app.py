@@ -368,17 +368,22 @@ class TransactionByID(Resource):
         if transaction is None:
             return make_response(jsonify({'message': 'Transaction not found'}), 404)
         data = request.get_json()
+        property = Property.query.filter_by(id=data['property_id']).first()
+        if property is None:
+            return make_response(jsonify({'message': 'Please input a valid property id'}), 404) 
+        transaction.property_id = property.id
+        print(property.owner_id)
+        transaction.owner_id = property.owner_id
+        category = data['category']
+        transaction.category = category
+        transaction.tenant_id = None
+        if category == 'Rent':
+            tenant = Tenant.query.filter_by(property_id=data['property_id'], is_active=True).first()
+            transaction.tenant_id = tenant.id
+            print(tenant.id)
         for attr, value in data.items():
-            if attr == 'property_id':
-                property = Property.query.filter_by(id=value).first()
-                tenant = Tenant.query.filter_by(id=data['tenant_id']).first()
-                owner = Owner.query.filter_by(id=data['owner_id']).first()
-                if property is None:
-                   return make_response(jsonify({'message': 'Please input a valid property id'}), 404)  
-                if tenant and tenant.property_id != property.id:
-                    return make_response(jsonify({'message': 'Please input a valid tenant id'}), 404)                
-                if owner.property_id != property.id:
-                    return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)            
+            if attr == 'property_id' or attr == 'category' or attr == 'owner_id' or attr == 'tenant_id':
+                continue            
             if attr == 'created_at' or attr == 'payment_date':
                 value=getDate(value)
             setattr(transaction, attr, value)
