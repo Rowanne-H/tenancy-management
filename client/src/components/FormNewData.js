@@ -15,12 +15,26 @@ function FormNewData({
 
   const [selectedProperty, setSelectedProperty] = useState(""); 
 
-  const fields = FIELD_MAPPINGS[type];
+  let fields = [];
+  if (type == "transactions") {
+    fields = [...[
+    "created_at",
+    "category",
+    "payment_date",
+    "amount",
+    "description",
+    "property_id"
+  ]];
+  } else {
+    fields = [...FIELD_MAPPINGS[type]];
+  }
   const validation = validations[type];
   const initialData = fields.reduce((obj, field) => {
     obj[field] = getFormikValues(field, "");
     return obj;
   }, {});
+
+  
   
   const formik = useFormik({
     initialValues: initialData,

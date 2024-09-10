@@ -50,7 +50,9 @@ export const FIELD_MAPPINGS = {
     "payment_date",
     "amount",
     "description",
-    "property_id"
+    "property_id",
+    "tenant_id",
+    "owner_id"
   ],
 };
 

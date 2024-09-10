@@ -31,9 +31,22 @@ function EditDataForm({
     }
   }, [id]);
 
-  const fields = FIELD_MAPPINGS[type];
   const validation = validations[type];
   const initialValues = generateFormikValues(dataToEdit);
+  let fields = [];
+
+  if (type == "transactions") {
+    fields = [...[
+    "created_at",
+    "category",
+    "payment_date",
+    "amount",
+    "description",
+    "property_id"
+  ]];
+  } else {
+    fields = [...FIELD_MAPPINGS[type]];
+  }
 
   const formik = useFormik({
     initialValues: { ...initialValues },
