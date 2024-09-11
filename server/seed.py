@@ -95,8 +95,7 @@ def create_properties(users, owners):
         commission=0.05,
         letting_fee=1,
         user=rc(property_managers),
-        owner=inactive_owner,        
-        is_tenanted=False,
+        owner=inactive_owner,  
         is_active=False
     )
     properties.append(inactive_property)
@@ -107,7 +106,6 @@ def create_properties(users, owners):
             commission=0.05,
             letting_fee=1,
             user=rc(property_managers),
-            is_tenanted=True,
             owner=owner
         )
         properties.append(property)
