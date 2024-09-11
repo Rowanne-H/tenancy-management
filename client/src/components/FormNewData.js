@@ -13,18 +13,20 @@ function FormNewData({
 }) {
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [selectedProperty, setSelectedProperty] = useState(""); 
+  const [selectedProperty, setSelectedProperty] = useState("");
 
   let fields = [];
   if (type == "transactions") {
-    fields = [...[
-    "created_at",
-    "category",
-    "payment_date",
-    "amount",
-    "description",
-    "property_id"
-  ]];
+    fields = [
+      ...[
+        "created_at",
+        "category",
+        "payment_date",
+        "amount",
+        "description",
+        "property_id",
+      ],
+    ];
   } else {
     fields = [...FIELD_MAPPINGS[type]];
   }
@@ -34,8 +36,6 @@ function FormNewData({
     return obj;
   }, {});
 
-  
-  
   const formik = useFormik({
     initialValues: initialData,
     validationSchema: validation,
@@ -51,7 +51,7 @@ function FormNewData({
       }).then((r) => {
         if (r.ok) {
           r.json().then((data) => {
-            console.log(values)
+            console.log(values);
             onAddNewData(data);
             alert("A new record has been created");
           });
@@ -110,7 +110,7 @@ function FormNewData({
                     </option>
                   ))}
                 </select>
-              ) : field === "category"? (
+              ) : field === "category" ? (
                 <select
                   id={field}
                   name={field}

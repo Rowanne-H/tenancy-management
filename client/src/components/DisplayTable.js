@@ -9,7 +9,7 @@ const sortItems = (items, sortBy, sortOrder) => {
     if (isDate(sortBy)) {
       const dateA = new Date(a[sortBy]);
       const dateB = new Date(b[sortBy]);
-      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     }
     if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
     if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
@@ -24,15 +24,33 @@ function DisplayTable({
   defaultSortBy = "id",
   defaultSortOrder = "asc",
   type,
-  view = ''
+  view = "",
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
 
   const [sortBy, setSortBy] = useState(defaultSortBy);
   const [sortOrder, setSortOrder] = useState(defaultSortOrder);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showInactive, setShowInactive] = useState(false);
 
-  const sortedItems = sortItems(items, sortBy, sortOrder);
+  const filteredItems = items
+    .filter((item) => {
+      if (!showInactive) {
+        return item.is_active === true;
+      } else {
+        return true;
+      }
+    })
+    .filter((item) => {
+      return fields.some((field) =>
+        item[field]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()),
+      );
+    });
+  const sortedItems = sortItems(filteredItems, sortBy, sortOrder);
   const paginatedItems = sortedItems.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize,
@@ -47,13 +65,19 @@ function DisplayTable({
     setCurrentPage(data.selected);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(0); // Reset to first page on search
+  };
+
   return (
     <div>
       <div>
         {view === "owner" || view === "tenant" ? (
-          <span>{view.charAt(0).toUpperCase() + view.slice(1)} transactions</span>
-        ) : 
-        type === "users" ? null : (
+          <span>
+            {view.charAt(0).toUpperCase() + view.slice(1)} transactions
+          </span>
+        ) : type === "users" ? null : (
           <NavLink className="more" to={`/${type}/new`}>
             New{" "}
             {type === "properties"
@@ -61,6 +85,24 @@ function DisplayTable({
               : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
           </NavLink>
         )}
+        <div>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {type === "tenants" || type === "owners" || type === "properties" ? (
+            <label>
+              Show Inactive {type.charAt(0).toUpperCase() + type.slice(1)} 
+              <input
+                type="checkbox"
+                checked={showInactive}
+                onChange={() => setShowInactive(!showInactive)}
+              />
+            </label>
+          ) : null}
+        </div>
       </div>
       <table>
         <thead>

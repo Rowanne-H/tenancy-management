@@ -115,7 +115,9 @@ function App() {
   function updateTransaction(updatedTransaction) {
     setTransactions(
       transactions.map((transaction) =>
-        transaction.id === updatedTransaction.id ? updatedTransaction : transaction,
+        transaction.id === updatedTransaction.id
+          ? updatedTransaction
+          : transaction,
       ),
     );
   }

@@ -39,13 +39,13 @@ export const formatValue = (field, value) => {
     return formatter.format(value);
   }
   if (field === "letting_fee") {
-    return value + " week/s"
+    return value + " week/s";
   }
   if (field === "commission") {
-    return value*100 + "%"
-  }   
+    return value * 100 + "%";
+  }
   if (field === "lease_term") {
-    return value + " months"
+    return value + " months";
   }
   return value;
 };

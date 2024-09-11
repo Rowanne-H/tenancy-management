@@ -36,14 +36,16 @@ function EditDataForm({
   let fields = [];
 
   if (type == "transactions") {
-    fields = [...[
-    "created_at",
-    "category",
-    "payment_date",
-    "amount",
-    "description",
-    "property_id"
-  ]];
+    fields = [
+      ...[
+        "created_at",
+        "category",
+        "payment_date",
+        "amount",
+        "description",
+        "property_id",
+      ],
+    ];
   } else {
     fields = [...FIELD_MAPPINGS[type]];
   }
@@ -122,7 +124,7 @@ function EditDataForm({
                     </option>
                   ))}
                 </select>
-              ) : field === "category"? (
+              ) : field === "category" ? (
                 <select
                   id={field}
                   name={field}

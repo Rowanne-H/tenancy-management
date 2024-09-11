@@ -52,7 +52,7 @@ export const FIELD_MAPPINGS = {
     "description",
     "property_id",
     "tenant_id",
-    "owner_id"
+    "owner_id",
   ],
 };
 
@@ -96,17 +96,17 @@ export const validations = {
       .min(10, "Name must be at least 10 characters long"),
     management_start_date: yup.string().required("Must enter a date"),
     management_end_date: yup
-    .string()
-    .nullable() 
-    .test(
-      'is-after-managment-start-date',
-      'End date must be after the start date',
-      function (value) {
-        const { management_start_date } = this.parent;
-        if (value === null) return 
-        return new Date(value) > new Date(management_start_date);
-      }
-    ),
+      .string()
+      .nullable()
+      .test(
+        "is-after-managment-start-date",
+        "End date must be after the start date",
+        function (value) {
+          const { management_start_date } = this.parent;
+          if (value === null) return;
+          return new Date(value) > new Date(management_start_date);
+        },
+      ),
     is_active: yup.boolean(),
   }),
   properties: yup.object().shape({
@@ -154,28 +154,28 @@ export const validations = {
       .max(12, "Lease term must be between 0 and 12"),
     lease_start_date: yup.string().required("Must enter a date"),
     lease_end_date: yup
-    .string()
-    .required("Must enter a date")
-    .test(
-      'is-after-lease-start-date',
-      'Lease end date must be after the start date',
-      function (value) {
-        const { lease_start_date } = this.parent;
-        return new Date(value) > new Date(lease_start_date);
-      }
-    ),
+      .string()
+      .required("Must enter a date")
+      .test(
+        "is-after-lease-start-date",
+        "Lease end date must be after the start date",
+        function (value) {
+          const { lease_start_date } = this.parent;
+          return new Date(value) > new Date(lease_start_date);
+        },
+      ),
     vacating_date: yup
-    .string()
-    .nullable() 
-    .test(
-      'is-after-lease-start-date',
-      'Vacating date must be after the start date',
-      function (value) {
-        const { lease_start_date } = this.parent;
-        if (value === null) return 
-        return new Date(value) > new Date(lease_start_date);
-      }
-    ),
+      .string()
+      .nullable()
+      .test(
+        "is-after-lease-start-date",
+        "Vacating date must be after the start date",
+        function (value) {
+          const { lease_start_date } = this.parent;
+          if (value === null) return;
+          return new Date(value) > new Date(lease_start_date);
+        },
+      ),
     rent: yup
       .number()
       .required("Must enter an amount")
@@ -190,17 +190,17 @@ export const validations = {
       .required("Must select a category"),
     payment_date: yup.string().required("Must enter a date"),
     amount: yup
-    .number()
-    .required("Must enter an amount")
-    .test(
-      'amount-validation',
-      'Invalid amount based on category',
-      function(value) {
-        const { category } = this.parent;
-        if (category === 'Rent' && value <= 0) return false;
-        if (category === 'Expense' && value >= 0) return false;
-        return true;
-      }
-    )
+      .number()
+      .required("Must enter an amount")
+      .test(
+        "amount-validation",
+        "Invalid amount based on category",
+        function (value) {
+          const { category } = this.parent;
+          if (category === "Rent" && value <= 0) return false;
+          if (category === "Expense" && value >= 0) return false;
+          return true;
+        },
+      ),
   }),
 };
