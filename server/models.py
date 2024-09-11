@@ -177,6 +177,7 @@ class Property(BaseModel, SerializerMixin):
     address = db.Column(db.String, nullable=False)
     commission = db.Column(db.Float, default=0.05, nullable=False)
     letting_fee = db.Column(db.Float, default=1, nullable=False)
+    is_tenanted = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
@@ -208,6 +209,7 @@ class Property(BaseModel, SerializerMixin):
             'letting_fee': self.letting_fee,
             'user_id': self.user_id,
             'owner_id': self.owner_id,
+            'is_tenanted': self.is_tenanted,
             'is_active': self.is_active 
         }
 
