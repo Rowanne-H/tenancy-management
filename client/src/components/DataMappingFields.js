@@ -153,7 +153,29 @@ export const validations = {
       .min(0, "Lease term must be between 0 and 12")
       .max(12, "Lease term must be between 0 and 12"),
     lease_start_date: yup.string().required("Must enter a date"),
-    lease_end_date: yup.string().required("Must enter a date"),
+    lease_end_date: yup
+    .string()
+    .required("Must enter a date")
+    .test(
+      'is-after-lease-start-date',
+      'Lease end date must be after the start date',
+      function (value) {
+        const { lease_start_date } = this.parent;
+        return new Date(value) > new Date(lease_start_date);
+      }
+    ),
+    vacating_date: yup
+    .string()
+    .nullable() 
+    .test(
+      'is-after-lease-start-date',
+      'Vacating date must be after the start date',
+      function (value) {
+        const { lease_start_date } = this.parent;
+        if (value === null) return 
+        return new Date(value) > new Date(lease_start_date);
+      }
+    ),
     rent: yup
       .number()
       .required("Must enter an amount")
