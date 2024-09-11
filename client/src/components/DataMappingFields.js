@@ -95,6 +95,18 @@ export const validations = {
       .required("Must enter ref")
       .min(10, "Name must be at least 10 characters long"),
     management_start_date: yup.string().required("Must enter a date"),
+    management_end_date: yup
+    .string()
+    .nullable() 
+    .test(
+      'is-after-managment-start-date',
+      'End date must be after the start date',
+      function (value) {
+        const { management_start_date } = this.parent;
+        if (value === null) return 
+        return new Date(value) > new Date(management_start_date);
+      }
+    ),
     is_active: yup.boolean(),
   }),
   properties: yup.object().shape({
