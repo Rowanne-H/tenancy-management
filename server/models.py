@@ -56,6 +56,8 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     @validates('name')
+    @validates('pay_from')
+    @validates('pay_to')
     def validate_name(self, key, value):
         return validate_name(value)
 
@@ -264,22 +266,32 @@ class Tenant(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'Tenant(id={self.id})'
+    
+class Creditor(BaseModel, SerializerMixin):
+    __tablename__ = 'creditors'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    
+    def __repr__(self):
+        return f'Creditor {self.name}, ID {self.id}'
      
 class Transaction(BaseModel, SerializerMixin):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String, nullable=False)
+    pay_from = db.Column(db.String, nullable=False)
+    pay_to = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     payment_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=False)
-    
-    
+      
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
-
 
     @validates('category')
     def validate_category(self, key, value):
@@ -310,13 +322,3 @@ class Transaction(BaseModel, SerializerMixin):
     def __repr__(self):
         return f'Transaction(id={self.id})'
     
-class Creditor(BaseModel, SerializerMixin):
-    __tablename__ = 'creditors'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    
-    def __repr__(self):
-        return f'Creditor {self.name}, ID {self.id}'
- 

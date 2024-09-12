@@ -148,6 +148,21 @@ def create_tenants(properties):
     db.session.commit()
     return tenants
 
+def create_creditors():
+    creditors = []
+    agent = Creditor(
+        name='Real Estate Agent',
+    )
+    creditors.append(agent)
+    for i in range(2):
+        tradesman = Creditor(
+            name=fake.unique.name(),
+        )
+        creditors.append(tradesman)
+    db.session.add_all(creditors)
+    db.session.commit()
+    return creditors
+
 def create_transactions(tenants, properties, owners):
     transactions = []
     now = date.today()
@@ -160,13 +175,14 @@ def create_transactions(tenants, properties, owners):
             letting_fee = Transaction(
                 category='Expense',
                 amount=-tenant.rent,
+                pay_from=owner.name,
+                pay_to='Real Estate Agent',
                 created_at=payment_date+timedelta(days=1),
                 payment_date=payment_date+timedelta(days=1),
                 description='Letting fee',
                 tenant_id=tenant.id,
                 property_id=property.id,
                 owner_id=owner.id
-
             )
             transactions.append(letting_fee)
             db.session.add(letting_fee)
@@ -176,6 +192,8 @@ def create_transactions(tenants, properties, owners):
                 amount=tenant.rent,
                 created_at=payment_date,
                 payment_date=payment_date,
+                pay_from=tenant.name,
+                pay_to=owner.name,
                 description='Rent',
                 tenant_id=tenant.id,
                 property_id=property.id,
@@ -188,6 +206,8 @@ def create_transactions(tenants, properties, owners):
                 amount=-tenant.rent*0.05,
                 created_at=payment_date,
                 payment_date=payment_date,
+                pay_from=owner.name,
+                pay_to='Real Estate Agent',
                 description='Commission',
                 tenant_id=tenant.id,
                 property_id=property.id,
@@ -199,21 +219,6 @@ def create_transactions(tenants, properties, owners):
     db.session.commit()  
     return transactions
 
-def create_creditors():
-    creditors = []
-    agent = Creditor(
-        name="Real Estate Agent",
-    )
-    creditors.append(agent)
-    for i in range(2):
-        tradesman = Creditor(
-            name=fake.unique.name(),
-        )
-        creditors.append(tradesman)
-    db.session.add_all(creditors)
-    db.session.commit()
-    return creditors
-
 if __name__ == '__main__':
     with app.app_context():
         print("Starting seed...")
@@ -223,6 +228,6 @@ if __name__ == '__main__':
         owners = create_owners()
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
-        transactions = create_transactions(tenants, properties, owners)
         creditors = create_creditors()
+        transactions = create_transactions(tenants, properties, owners)
 

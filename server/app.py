@@ -325,6 +325,47 @@ class TenantByID(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Tenant successfully deleted'}), 200)
 
+class Creditors(Resource):
+    def get(self):
+        creditors = [creditor.to_dict() for creditor in Creditor.query.all()]
+        return make_response(jsonify(creditors), 200)
+    
+    def post(self):
+        data = request.get_json()
+        new_creditor = Creditor(
+            name=data['name'],
+            is_active=data.get('is_active', True),
+        )
+        db.session.add(new_creditor)
+        db.session.commit()
+        return make_response(new_creditor.to_dict(), 201)
+    
+class CreditorByID(Resource):
+    def get(self, id):
+        creditor = Creditor.query.filter_by(id=id).first()
+        if creditor is None:
+            return make_response(jsonify({'message': 'Creditor not found'}), 404)
+        return make_response(jsonify(creditor.to_dict()), 200)
+    
+    def patch(self, id):
+        creditor = Creditor.query.filter_by(id=id).first()
+        if creditor is None:
+            return make_response(jsonify({'message': 'Creditor not found'}), 404)
+        data = request.get_json()
+        for attr, value in data.items():                    
+            setattr(creditor, attr, value)
+        db.session.add(creditor)
+        db.session.commit()
+        return make_response(creditor.to_dict(), 200)
+    
+    def delete(self, id):
+        creditor = Creditor.query.filter_by(id=id).first()
+        if creditor is None:
+            return make_response(jsonify({'message': 'Creditor not found'}), 404)      
+        db.session.delete(creditor)
+        db.session.commit()
+        return make_response(jsonify({'message': 'Creditor successfully deleted'}), 200)
+
 class Transactions(Resource):
     def get(self):
         transactions = [transaction.to_dict() for transaction in Transaction.query.all()]
@@ -399,46 +440,6 @@ class TransactionByID(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
     
-class Creditors(Resource):
-    def get(self):
-        creditors = [creditor.to_dict() for creditor in Creditor.query.all()]
-        return make_response(jsonify(creditors), 200)
-    
-    def post(self):
-        data = request.get_json()
-        new_creditor = Creditor(
-            name=data['name'],
-            is_active=data.get('is_active', True),
-        )
-        db.session.add(new_creditor)
-        db.session.commit()
-        return make_response(new_creditor.to_dict(), 201)
-    
-class CreditorByID(Resource):
-    def get(self, id):
-        creditor = Creditor.query.filter_by(id=id).first()
-        if creditor is None:
-            return make_response(jsonify({'message': 'Creditor not found'}), 404)
-        return make_response(jsonify(creditor.to_dict()), 200)
-    
-    def patch(self, id):
-        creditor = Creditor.query.filter_by(id=id).first()
-        if creditor is None:
-            return make_response(jsonify({'message': 'Creditor not found'}), 404)
-        data = request.get_json()
-        for attr, value in data.items():                    
-            setattr(creditor, attr, value)
-        db.session.add(creditor)
-        db.session.commit()
-        return make_response(creditor.to_dict(), 200)
-    
-    def delete(self, id):
-        creditor = Creditor.query.filter_by(id=id).first()
-        if creditor is None:
-            return make_response(jsonify({'message': 'Creditor not found'}), 404)      
-        db.session.delete(creditor)
-        db.session.commit()
-        return make_response(jsonify({'message': 'Creditor successfully deleted'}), 200)
 
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
@@ -452,10 +453,10 @@ api.add_resource(Properties, '/properties', endpoint='properties')
 api.add_resource(PropertyByID, '/properties/<int:id>', endpoint='show_property')
 api.add_resource(Tenants, '/tenants', endpoint='/tenants')
 api.add_resource(TenantByID, '/tenants/<int:id>', endpoint='show_tenant')
-api.add_resource(Transactions, '/transactions', endpoint='/transactions')
-api.add_resource(TransactionByID, '/transactions/<int:id>', endpoint='show_transaction')
 api.add_resource(Owners, '/creditors', endpoint='creditors')
 api.add_resource(OwnerByID, '/creditors/<int:id>', endpoint='show_creditor')
+api.add_resource(Transactions, '/transactions', endpoint='/transactions')
+api.add_resource(TransactionByID, '/transactions/<int:id>', endpoint='show_transaction')
 
 
 if __name__ == '__main__':
