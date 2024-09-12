@@ -147,6 +147,9 @@ class Owners(Resource):
     
     def post(self):
         data = request.get_json()
+        user = User.query.filter_by(id=data['user_id']).first()
+        if user is None:
+            return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
         management_start_date = getDate(data['management_start_date'])
         management_end_date = getDate(data.get('management_end_date')) if data.get('management_end_date') else None
         new_owner = Owner(
@@ -158,7 +161,8 @@ class Owners(Resource):
             note=data.get('note', ''),
             management_start_date=management_start_date,
             management_end_date=management_end_date,
-            is_active=data.get('is_active', True) 
+            is_active=data.get('is_active', True),
+            user_id=data['user_id'] 
         )
         db.session.add(new_owner)
         db.session.commit()
@@ -177,6 +181,10 @@ class OwnerByID(Resource):
             return make_response(jsonify({'message': 'Owner not found'}), 404)
         data = request.get_json()
         for attr, value in data.items():
+            if attr == 'user_id':
+                user = User.query.filter_by(id=value).first()
+                if user is None:
+                    return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
             if attr == 'management_start_date' or attr == 'management_end_date':
                 if value == '':
                     value=None
@@ -208,17 +216,13 @@ class Properties(Resource):
         owner = Owner.query.filter_by(id=data['owner_id']).first()
         if owner is None:
             return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
-        user = User.query.filter_by(id=data['user_id']).first()
-        if user is None:
-            return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
         new_property = Property(
             ref=data['ref'],
             address=data['address'],
             commission=data.get('commission', 0.05),
             letting_fee=data.get('letting_fee', 1),
             is_active=data.get('is_active', True),
-            owner_id=data['owner_id'],
-            user_id=data['user_id']
+            owner_id=data['owner_id']
         )
         db.session.add(new_property)
         db.session.commit()
@@ -241,10 +245,6 @@ class PropertyByID(Resource):
                 owner = Owner.query.filter_by(id=value).first()
                 if owner is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
-            if attr == 'user_id':
-                user = User.query.filter_by(id=value).first()
-                if user is None:
-                    return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
             setattr(property, attr, value)
         db.session.add(property)
         db.session.commit()
@@ -419,4 +419,3 @@ api.add_resource(TransactionByID, '/transactions/<int:id>', endpoint='show_trans
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
-

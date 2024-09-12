@@ -100,9 +100,9 @@ class User(BaseModel, SerializerMixin):
     mobile = db.Column(db.String(10), nullable=False)
     is_accounts = db.Column(db.Boolean, default=False)
 
-    properties = db.relationship('Property', backref='user') 
-    owners = association_proxy('properties', 'owner', 
-                               creator=lambda ow: Property(owner=ow))
+    owners = db.relationship('Owner', backref='user') 
+    properties = association_proxy('owners', 'property', 
+                               creator=lambda pr: Property(property=pr))
     tenants = association_proxy('properties', 'tenant', 
                                creator=lambda te: Property(tenant=te))
 
@@ -146,9 +146,9 @@ class Owner(BaseModel, SerializerMixin):
     management_end_date = db.Column(db.Date) 
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
     properties = db.relationship('Property', backref='owner') 
-    users = association_proxy('properties', 'user', 
-                               creator=lambda us: Property(user=us))
     tenants = association_proxy('properties', 'tenant', 
                                creator=lambda te: Property(tenant=te))
     
@@ -163,7 +163,8 @@ class Owner(BaseModel, SerializerMixin):
             'note': self.note,
             'management_end_date': self.management_end_date,
             'management_start_date': self.management_start_date,
-            'is_active': self.is_active 
+            'is_active': self.is_active,
+            'user_id': self.user_id 
         }
     
     def __repr__(self):
@@ -180,7 +181,6 @@ class Property(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     tenants = db.relationship('Tenant', backref='property') 
     transactions = db.relationship('Transaction', backref='property')
@@ -206,7 +206,6 @@ class Property(BaseModel, SerializerMixin):
             'address': self.address,
             'commission': self.commission,
             'letting_fee': self.letting_fee,
-            'user_id': self.user_id,
             'owner_id': self.owner_id,
             'is_active': self.is_active 
         }

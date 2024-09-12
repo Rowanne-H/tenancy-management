@@ -57,8 +57,9 @@ def generate_a_date():
     return fake.date_between(start_date=first_day_of_month - timedelta(days=15), end_date=last_day_of_month)
 
 def create_owners():
-    owners = []
-    #management has been terminated
+    owners = []    
+    property_managers = [user for user in users if user.is_accounts==False]
+    #management has been terminated    
     inactive_owner = Owner(
         ref=fake.word(),
         name=fake.unique.name(),        
@@ -67,7 +68,8 @@ def create_owners():
         address=fake.unique.address(),
         management_start_date=generate_a_date()-timedelta(days=30),
         management_end_date=datetime.today() - timedelta(days=7),
-        is_active=False
+        is_active=False,
+        user=rc(property_managers)
     )
     owners.append(inactive_owner)
     for i in range(10):
@@ -77,7 +79,8 @@ def create_owners():
             email=fake.unique.email(),
             mobile=generate_mobile_number(),
             address=fake.unique.address(),
-            management_start_date=generate_a_date()-timedelta(days=60)
+            management_start_date=generate_a_date()-timedelta(days=60),
+            user=rc(property_managers)
         )
         owners.append(owner)
     db.session.add_all(owners)
@@ -86,7 +89,6 @@ def create_owners():
 
 def create_properties(users, owners):
     properties = []
-    property_managers = [user for user in users if user.is_accounts==False]
     active_owners = [owner for owner in owners if owner.is_active==True]
     inactive_owner = owners[0]
     inactive_property = Property(
@@ -94,7 +96,6 @@ def create_properties(users, owners):
         address=fake.unique.address(),
         commission=0.05,
         letting_fee=1,
-        user=rc(property_managers),
         owner=inactive_owner,  
         is_active=False
     )
@@ -105,7 +106,6 @@ def create_properties(users, owners):
             address=fake.unique.address(),
             commission=0.05,
             letting_fee=1,
-            user=rc(property_managers),
             owner=owner
         )
         properties.append(property)
