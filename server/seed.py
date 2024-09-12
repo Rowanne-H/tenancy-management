@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, date
 
 # Local imports
 from app import app
-from models import db, User, Owner, Property, Tenant, Transaction
+from models import db, User, Owner, Property, Tenant, Transaction, Creditor
 
 fake = Faker()
 
@@ -199,6 +199,21 @@ def create_transactions(tenants, properties, owners):
     db.session.commit()  
     return transactions
 
+def create_creditors():
+    creditors = []
+    agent = Creditor(
+        name="Real Estate Agent",
+    )
+    creditors.append(agent)
+    for i in range(2):
+        tradesman = Creditor(
+            name=fake.unique.name(),
+        )
+        creditors.append(tradesman)
+    db.session.add_all(creditors)
+    db.session.commit()
+    return creditors
+
 if __name__ == '__main__':
     with app.app_context():
         print("Starting seed...")
@@ -209,4 +224,5 @@ if __name__ == '__main__':
         properties = create_properties(users, owners)
         tenants = create_tenants(properties)
         transactions = create_transactions(tenants, properties, owners)
+        creditors = create_creditors()
 

@@ -310,3 +310,13 @@ class Transaction(BaseModel, SerializerMixin):
     def __repr__(self):
         return f'Transaction(id={self.id})'
     
+class Creditor(BaseModel, SerializerMixin):
+    __tablename__ = 'creditors'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    
+    def __repr__(self):
+        return f'Creditor {self.name}, ID {self.id}'
+ 
