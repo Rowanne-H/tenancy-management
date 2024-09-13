@@ -34,6 +34,9 @@ function Navbar({ user, setUser }) {
       <NavLink className="navbar" to="/tenants" exact>
         Tenants
       </NavLink>
+      <NavLink className="navbar" to="/creditors" exact>
+        Creditors
+      </NavLink>
       <NavLink className="navbar" to="/transactions" exact>
         Transactions
       </NavLink>

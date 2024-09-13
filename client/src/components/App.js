@@ -12,6 +12,7 @@ import FormNewData from "./FormNewData";
 import Owners from "./Owners";
 import Properties from "./Properties";
 import Tenants from "./Tenants";
+import Creditors from "./Creditors";
 import Transactions from "./Transactions";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [owners, setOwners] = useState([]);
   const [properties, setProperties] = useState([]);
   const [tenants, setTenants] = useState([]);
+  const [creditors, setCreditors] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -46,6 +48,11 @@ function App() {
             .then((r) => r.json())
             .then((tenants) => {
               setTenants(tenants);
+            });
+          fetch("/creditors")
+            .then((r) => r.json())
+            .then((creditors) => {
+              setCreditors(creditors);
             });
           fetch("/transactions")
             .then((r) => r.json())
@@ -105,6 +112,10 @@ function App() {
       ),
     );
   }
+  function deleteCreditor(id) {
+    setCreditors(creditors.filter((creditor) => creditor.id !== id));
+  }
+
   function deleteTenant(id) {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
   }
@@ -246,6 +257,13 @@ function App() {
                   properties={properties}
                   onUpdateData={updateTenant}
                 />
+              )}
+            />
+            <Route
+              exact
+              path="/creditors"
+              render={() => (
+                <Creditors creditors={creditors} deleteCreditor={deleteCreditor} />
               )}
             />
             <Route
