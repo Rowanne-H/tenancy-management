@@ -20,6 +20,7 @@ def delete_records():
     Property.query.delete()
     Tenant.query.delete()
     Transaction.query.delete()
+    Creditor.query.delete()
     db.session.commit()
 
 def generate_mobile_number():
