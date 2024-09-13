@@ -36,10 +36,14 @@ function DisplayTable({
 
   const filteredItems = items
     .filter((item) => {
-      if (!showInactive) {
-        return item.is_active === true;
+      if ('is_active' in item) {
+        if (!showInactive) {
+          return item.is_active === true;
+        } else {
+          return true;
+        }
       } else {
-        return true;
+        return true
       }
     })
     .filter((item) => {
