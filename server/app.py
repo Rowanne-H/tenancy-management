@@ -224,7 +224,10 @@ class OwnerByID(Resource):
     def delete(self, id):
         owner = Owner.query.filter_by(id=id).first() 
         if owner is None:
-            return make_response(jsonify({'message': 'Owner not found'}), 404)          
+            return make_response(jsonify({'message': 'Owner not found'}), 404)
+        auth_response = user_authorization(None, None, owner.id)
+        if auth_response:
+            return auth_response          
         property = Property.query.filter_by(owner_id=id).first()
         if property:
             return make_response(jsonify({'message': 'Owner who hasnot terminated management cannot be deleted'}), 400)      
@@ -242,6 +245,9 @@ class Properties(Resource):
         owner = Owner.query.filter_by(id=data['owner_id']).first()
         if owner is None:
             return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
+        auth_response = user_authorization(None, None, owner.id)
+        if auth_response:
+            return auth_response
         new_property = Property(
             ref=data['ref'],
             address=data['address'],
@@ -265,22 +271,33 @@ class PropertyByID(Resource):
         property = Property.query.filter_by(id=id).first()
         if property is None:
             return make_response(jsonify({'message': 'Property not found'}), 404)
+        auth_response = user_authorization(None, property.id, None)
+        if auth_response:
+            return auth_response
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'owner_id':
                 owner = Owner.query.filter_by(id=value).first()
                 if owner is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
+                auth_response = user_authorization(None, None, owner.id)
+                if auth_response:
+                    return auth_response
             setattr(property, attr, value)
         db.session.add(property)
         db.session.commit()
         return make_response(property.to_dict(), 200)
     
     def delete(self, id):
+        property = Property.query.filter_by(id=id).first()
+        if property is None:
+            return make_response(jsonify({'message': 'Property not found'}), 404)  
+        auth_response = user_authorization(None, property.id,None)
+        if auth_response:
+            return auth_response 
         tenant = Tenant.query.filter_by(property_id=id).first()
         if tenant:
-            return make_response(jsonify({'message': 'Tenanted property cannot be deleted'}), 400) 
-        property = Property.query.filter_by(id=id).first()       
+            return make_response(jsonify({'message': 'Tenanted property cannot be deleted'}), 400)             
         db.session.delete(property)
         db.session.commit()
         return make_response(jsonify({'message': 'Property successfully deleted'}), 200)
