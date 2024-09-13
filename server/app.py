@@ -312,6 +312,9 @@ class Tenants(Resource):
         property = Property.query.filter_by(id=data['property_id']).first()
         if property is None:
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
+        auth_response = user_authorization(None, property.id,None)
+        if auth_response:
+            return auth_response 
         lease_start_date = getDate(data['lease_start_date'])
         lease_end_date = getDate(data['lease_end_date'])
         vacating_date = getDate(data.get('vacating_date')) if data.get('vacating_date') else None
@@ -344,12 +347,18 @@ class TenantByID(Resource):
         tenant = Tenant.query.filter_by(id=id).first()
         if tenant is None:
             return make_response(jsonify({'message': 'Tenant not found'}), 404)
+        auth_response = user_authorization(tenant.id, None,None)
+        if auth_response:
+            return auth_response 
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'property_id':
                 property = Property.query.filter_by(id=value).first()
                 if property is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
+                auth_response = user_authorization(None, property.id,None)
+                if auth_response:
+                    return auth_response 
             if attr == 'lease_start_date' or attr == 'lease_end_date' or attr == 'vacating_date':
                 if value == '':
                     value=None
@@ -363,7 +372,10 @@ class TenantByID(Resource):
     def delete(self, id):
         tenant = Tenant.query.filter_by(id=id).first() 
         if tenant is None:
-            return make_response(jsonify({'message': 'Tenant not found'}), 404)     
+            return make_response(jsonify({'message': 'Tenant not found'}), 404) 
+        auth_response = user_authorization(tenant.id, None, None)
+        if auth_response:
+            return auth_response     
         db.session.delete(tenant)
         db.session.commit()
         return make_response(jsonify({'message': 'Tenant successfully deleted'}), 200)
