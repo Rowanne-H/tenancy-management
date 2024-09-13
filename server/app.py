@@ -385,6 +385,7 @@ class Creditors(Resource):
         creditors = [creditor.to_dict() for creditor in Creditor.query.all()]
         return make_response(jsonify(creditors), 200)
     
+    @require_account_role
     def post(self):
         data = request.get_json()
         new_creditor = Creditor(
@@ -402,6 +403,7 @@ class CreditorByID(Resource):
             return make_response(jsonify({'message': 'Creditor not found'}), 404)
         return make_response(jsonify(creditor.to_dict()), 200)
     
+    @require_account_role
     def patch(self, id):
         creditor = Creditor.query.filter_by(id=id).first()
         if creditor is None:
@@ -413,6 +415,7 @@ class CreditorByID(Resource):
         db.session.commit()
         return make_response(creditor.to_dict(), 200)
     
+    @require_account_role
     def delete(self, id):
         creditor = Creditor.query.filter_by(id=id).first()
         if creditor is None:
@@ -497,7 +500,7 @@ class TransactionByID(Resource):
         db.session.delete(transaction)
         db.session.commit()
         return make_response(jsonify({'message': 'Rental successfully deleted'}), 200)
-    
+
 
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
