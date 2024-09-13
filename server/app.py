@@ -44,6 +44,21 @@ def require_account_role(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def user_authorization(tenant_id=None, property_id=None, owner_id=None):
+    current_user_id = session.get('user_id')
+    if tenant_id:
+        tenant = Tenant.query.filter_by(id=tenant_id).first()
+        property = Property.query.filter_by(id=tenant.property_id).first()
+        owner = Owner.query.filter_by(id=property.owner_id).first()
+    elif property_id:
+        property = Property.query.filter_by(id=property_id).first()
+        owner = Owner.query.filter_by(id=property.owner_id).first()
+    else:
+        owner = Owner.query.filter_by(id=owner_id).first()
+    if current_user_id != owner.user_id:
+        return make_response(jsonify({'message': 'Unauthorized action'}), 403)
+    return None
+
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -155,7 +170,7 @@ class Owners(Resource):
     
     def post(self):
         data = request.get_json()
-        user = User.query.filter_by(id=data['user_id']).first()
+        user = User.query.filter_by(id=session.get('user_id')).first()
         if user is None:
             return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
         management_start_date = getDate(data['management_start_date'])
@@ -170,7 +185,7 @@ class Owners(Resource):
             management_start_date=management_start_date,
             management_end_date=management_end_date,
             is_active=data.get('is_active', True),
-            user_id=data['user_id'] 
+            user_id=user.id
         )
         db.session.add(new_owner)
         db.session.commit()
@@ -187,6 +202,9 @@ class OwnerByID(Resource):
         owner = Owner.query.filter_by(id=id).first()
         if owner is None:
             return make_response(jsonify({'message': 'Owner not found'}), 404)
+        auth_response = user_authorization(None, None, owner.id)
+        if auth_response:
+            return auth_response
         data = request.get_json()
         for attr, value in data.items():
             if attr == 'user_id':
