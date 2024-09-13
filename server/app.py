@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from flask_restful import Resource
 from datetime import date, datetime
 from flask_cors import CORS
+from functools import wraps
 
 # Local imports
 from config import app, db, api
@@ -33,6 +34,15 @@ CORS(app)
 def getDate(value):
     """Convert a date string in 'YYYY-MM-DD' format to a datetime.date object."""
     return datetime.strptime(value, "%Y-%m-%d").date()
+
+def require_account_role(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        current_user = User.query.filter_by(id=session.get('user_id')).first()
+        if not current_user or not current_user.is_accounts:
+            return make_response(jsonify({'message': 'Only accounts can perform this action'}), 403)
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/')
 def index():
@@ -124,14 +134,12 @@ class UserByID(Resource):
         db.session.commit()
         return make_response(user.to_dict(), 200)
     
+    @require_account_role
     def delete(self, id):
-        current_user = User.query.filter_by(id=session.get('user_id')).first()
-        if not current_user.is_accounts:
-            return make_response(jsonify({'message': 'Only accounts can delete an user record'}), 403) 
         user = User.query.filter_by(id=id).first()
         if user is None:
             return make_response(jsonify({'message': 'User not found'}), 404) 
-        if user.id==current_user.id:
+        if user.id==session.get('user_id'):
             return make_response(jsonify({'message': 'Accounts can not delete himself/herself'}), 400) 
         owner = Owner.query.filter_by(user_id=id).first()
         if owner:
@@ -371,6 +379,7 @@ class Transactions(Resource):
         transactions = [transaction.to_dict() for transaction in Transaction.query.all()]
         return make_response(jsonify(transactions), 200)
     
+    @require_account_role
     def post(self):
         data = request.get_json()
         property = Property.query.filter_by(id=data['property_id']).first()
@@ -404,6 +413,7 @@ class TransactionByID(Resource):
             return make_response(jsonify({'message': 'Transaction not found'}), 404)
         return make_response(jsonify(transaction.to_dict()), 200)
     
+    @require_account_role
     def patch(self, id):
         transaction = Transaction.query.filter_by(id=id).first()
         if transaction is None:
@@ -432,6 +442,7 @@ class TransactionByID(Resource):
         db.session.commit()
         return make_response(transaction.to_dict(), 200)
     
+    @require_account_role
     def delete(self, id):
         transaction = Transaction.query.filter_by(id=id).first()
         if transaction is None:
