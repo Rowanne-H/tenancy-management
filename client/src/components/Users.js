@@ -4,7 +4,6 @@ import { FIELD_MAPPINGS } from "./DataMappingFields";
 
 function Users({ users, deleteUser }) {
   const fields = FIELD_MAPPINGS["users"];
-  console.log(users)
 
   return (
     <DisplayTable

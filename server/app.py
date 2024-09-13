@@ -133,9 +133,9 @@ class UserByID(Resource):
             return make_response(jsonify({'message': 'User not found'}), 404) 
         if user.id==current_user.id:
             return make_response(jsonify({'message': 'Accounts can not delete himself/herself'}), 400) 
-        property = Property.query.filter_by(user_id=id).first()
-        if property:
-            return make_response(jsonify({'message': 'User who manage one or more properties cannot be deleted'}), 400)      
+        owner = Owner.query.filter_by(user_id=id).first()
+        if owner:
+            return make_response(jsonify({'message': 'User who manage zero or more properties for an owner cannot be deleted'}), 400)      
         db.session.delete(user)
         db.session.commit()
         return make_response(jsonify({'message': 'User successfully deleted'}), 200)
