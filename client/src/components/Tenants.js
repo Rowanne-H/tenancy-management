@@ -2,7 +2,7 @@ import React from "react";
 import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS } from "./DataMappingFields";
 
-function Tenants({ tenants, deleteTenant }) {
+function Tenants({ tenants, deleteTenant, user }) {
   console.log(tenants);
   const fields = FIELD_MAPPINGS["tenants"];
 
@@ -13,6 +13,7 @@ function Tenants({ tenants, deleteTenant }) {
       fields={fields}
       defaultSortBy="id"
       type="tenants"
+      user={user}
     />
   );
 }

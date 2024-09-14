@@ -1,9 +1,16 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import { ENDPOINTS } from "./DataMappingFields";
 import { formatValue } from "./DataDisplayingFunctions";
 
-function DisplayTableRow({ item, onDeleteItem, fields, type, view = "" }) {
+function DisplayTableRow({
+  item,
+  onDeleteItem,
+  fields,
+  type,
+  view = "",
+  user,
+}) {
   function handleDeleteClick() {
     fetch(ENDPOINTS[type] + item.id, {
       method: "DELETE",
@@ -16,6 +23,31 @@ function DisplayTableRow({ item, onDeleteItem, fields, type, view = "" }) {
         r.json().then((err) => alert(err.message));
       }
     });
+  }
+  const history = useHistory();
+  function handleEditClick() {
+    if (type === "users" && user.id !== item.id) {
+      alert("User not authorized to to edit this file");
+    } else if (
+      (type === "owners" || type === "tenants" || type === "properties") &&
+      user.id !== item.user_id
+    ) {
+      alert("User not authorized to to edit this file");
+    } else if (
+      (type === "transactions" || type === "creditors") &&
+      !user.is_accounts
+    ) {
+      alert("Only accounts can perform this action");
+    } else {
+      history.push(`/${type}/${item.id}/edit`);
+    }
+  }
+  function handleChangeStatusClick() {
+    if (user.is_accounts) {
+      history.push(`/${type}/${item.id}/changestatus`);
+    } else {
+      alert("User not authorized to change status");
+    }
   }
 
   return (
@@ -45,15 +77,24 @@ function DisplayTableRow({ item, onDeleteItem, fields, type, view = "" }) {
       ))}
       {view === "owner" || view === "tenant" ? null : (
         <td>
-          <NavLink className="more" to={`/${type}/${item.id}`}>
+          <button
+            className="link-button"
+            onClick={() => history.push(`/${type}/${item.id}`)}
+          >
             View
-          </NavLink>
-          <NavLink className="more" to={`/${type}/${item.id}/edit`}>
+          </button>
+          <button className="link-button" onClick={handleEditClick}>
             Edit
-          </NavLink>
+          </button>
           <button className="link-button" onClick={handleDeleteClick}>
             Delete
           </button>
+
+          {type === "users" ? (
+            <button className="link-button" onClick={handleChangeStatusClick}>
+              Change Status
+            </button>
+          ) : null}
         </td>
       )}
     </tr>

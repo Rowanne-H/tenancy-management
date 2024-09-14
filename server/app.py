@@ -130,16 +130,13 @@ class UserByID(Resource):
         if current_user is None:
             return make_response(jsonify({'message': 'Unauthorized'}), 401)
         data = request.get_json()
-        if 'is_active' in data or 'is_accounts' in data:
-            if current_user.is_accounts:
-                user.is_active = data['is_active']
-            else:
-                return make_response(jsonify({'message': 'You do not have permission to change user status.'}), 403)
-        if current_user.id != user.id:
-            return make_response(jsonify({'message': 'You do not have permission to edit this record. You can only edit your own records.'}), 403)
-        for attr, value in data:
-            if attr == 'is_accounts' or attr == 'is_active':
-                continue
+        for attr, value in data.items():
+            if attr in ['is_accounts', 'is_active']:
+                if not current_user.is_accounts:
+                    return make_response(jsonify({'message': 'You do not have permission to change user status.'}), 403)
+            if attr in ['email','name', 'mobile', 'password']:
+                if current_user.id != user.id:
+                    return make_response(jsonify({'message': 'You do not have permission to edit this record. You can only edit your own records.'}), 403)
             if attr == 'password':
                 user.password_hash = data['password']
             else:

@@ -25,6 +25,7 @@ function DisplayTable({
   defaultSortOrder = "asc",
   type,
   view = "",
+  user,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
@@ -36,14 +37,14 @@ function DisplayTable({
 
   const filteredItems = items
     .filter((item) => {
-      if ('is_active' in item) {
+      if ("is_active" in item) {
         if (!showInactive) {
           return item.is_active === true;
         } else {
           return true;
         }
       } else {
-        return true
+        return true;
       }
     })
     .filter((item) => {
@@ -96,9 +97,14 @@ function DisplayTable({
             value={searchQuery}
             onChange={handleSearchChange}
           />
-          {type === "tenants" || type === "owners" || type === "properties" ? (
+          &nbsp;&nbsp;
+          {type === "users" ||
+          type === "owners" ||
+          type === "properties" ||
+          type === "tenants" ||
+          type === "creditors" ? (
             <label>
-              Show Inactive {type.charAt(0).toUpperCase() + type.slice(1)} 
+              Show Inactive {type.charAt(0).toUpperCase() + type.slice(1)}
               <input
                 type="checkbox"
                 checked={showInactive}
@@ -129,6 +135,7 @@ function DisplayTable({
               fields={fields}
               type={type}
               view={view}
+              user={user}
             />
           ))}
         </tbody>

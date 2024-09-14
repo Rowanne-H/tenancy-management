@@ -3,9 +3,10 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-function UserForm({ onUpdateUser }) {
+function UserForm({ onUpdateUser, changeStatus = "" }) {
   const [userToEdit, setUserToEdit] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [editPassword, setEditPassword] = useState(false);
 
   const { id } = useParams();
   const history = useHistory();
@@ -18,9 +19,21 @@ function UserForm({ onUpdateUser }) {
     }
   }, [id]);
 
+  console.log(userToEdit);
+
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
-    password: yup.string().required("must enter a password"),
+    password: yup.string().when("$editPassword", {
+      is: true, // When editPassword is true
+      then: yup.string().required("Must enter a password"),
+    }),
+    confirmPassword: yup.string().when("$editPassword", {
+      is: true, // When editPassword is true
+      then: yup
+        .string()
+        .oneOf([yup.ref("password"), null], "Passwords must match")
+        .required("Must confirm password"),
+    }),
     name: yup
       .string()
       .required("Must enter a name")
@@ -33,29 +46,44 @@ function UserForm({ onUpdateUser }) {
       )
       .required("Must enter a mobile"),
     is_accounts: yup.boolean(),
+    is_active: yup.boolean(),
   });
 
   const formik = useFormik({
     initialValues: {
       email: userToEdit?.email || "",
-      password: userToEdit?.password || "",
+      password: "",
+      confirmPassword: "",
       name: userToEdit?.name || "",
       mobile: userToEdit?.mobile || "",
       is_accounts: userToEdit?.is_accounts || false,
+      is_active: userToEdit?.is_active,
     },
     validationSchema: formSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log("seee");
+      let updatedValues = {};
+      if (editPassword) {
+        updatedValues.password = values.password;
+      } else if (changeStatus) {
+        updatedValues.is_accounts = values.is_accounts;
+        updatedValues.is_active = values.is_active;
+      } else {
+        updatedValues.email = values.email;
+        updatedValues.name = values.name;
+        updatedValues.mobile = values.mobile;
+      }
+      console.log(updatedValues);
       fetch(`/users/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(updatedValues),
       }).then((r) => {
         if (r.ok) {
           r.json().then((user) => {
-            console.log(user);
             onUpdateUser(user);
             history.push(`/users/${id}`);
           });
@@ -67,64 +95,114 @@ function UserForm({ onUpdateUser }) {
     },
   });
 
+  if (!userToEdit) {
+    return <p3>Loading...</p3>;
+  }
+
   return (
     <div>
-      <h1>Edit User Form</h1>
+      <h1>
+        {changeStatus
+          ? "Change Status"
+          : editPassword
+            ? "Change Password"
+            : "Edit User Form"}
+      </h1>
+      {changeStatus ? (
+        <p>User email: {userToEdit.email}</p>
+      ) : (
+        <button
+          className="link-button"
+          value={editPassword}
+          onClick={() => setEditPassword(!editPassword)}
+        >
+          {editPassword ? "Edit User Form" : "Change Password"}
+        </button>
+      )}
       <form onSubmit={formik.handleSubmit}>
-        <label>
-          Email Address
-          <input
-            id="email"
-            name="email"
-            onChange={formik.handleChange}
-            value={formik.values.email}
-          />
-        </label>
-        <p className="errorsMessages"> {formik.errors.email}</p>
+        {changeStatus ? (
+          <div>
+            <label>
+              Is Accounts?
+              <input
+                type="checkbox"
+                name="is_accounts"
+                checked={formik.values.is_accounts}
+                onChange={formik.handleChange}
+              />
+            </label>
+            <label>
+              Is Active?
+              <input
+                type="checkbox"
+                name="is_active"
+                checked={formik.values.is_active}
+                onChange={formik.handleChange}
+              />
+            </label>
+          </div>
+        ) : editPassword ? (
+          <div>
+            <label>
+              Password
+              <input
+                type="password"
+                id="password"
+                name="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+            </label>
+            <p className="errorsMessages"> {formik.errors.password}</p>
 
-        <label>
-          Password
-          <input
-            type="password"
-            id="password"
-            name="password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
-        </label>
-        <p className="errorsMessages"> {formik.errors.password}</p>
+            <label>
+              Confirm Password
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+              />
+            </label>
+            <p className="errorsMessages"> {formik.errors.confirmPassword}</p>
+          </div>
+        ) : (
+          <div>
+            <label>
+              Email Address
+              <input
+                id="email"
+                name="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+              />
+            </label>
+            <p className="errorsMessages"> {formik.errors.email}</p>
 
-        <label>
-          Name
-          <input
-            id="name"
-            name="name"
-            onChange={formik.handleChange}
-            value={formik.values.name}
-          />
-        </label>
-        <p className="errorsMessages"> {formik.errors.name}</p>
+            <label>
+              Name
+              <input
+                id="name"
+                name="name"
+                onChange={formik.handleChange}
+                value={formik.values.name}
+              />
+            </label>
+            <p className="errorsMessages"> {formik.errors.name}</p>
 
-        <label>
-          mobile
-          <input
-            id="mobile"
-            name="mobile"
-            onChange={formik.handleChange}
-            value={formik.values.mobile}
-          />
-        </label>
-        <p className="errorsMessages"> {formik.errors.mobile}</p>
-
-        <label>
-          Is Accounts?
-          <input
-            type="checkbox"
-            name="is_accounts"
-            checked={formik.values.is_accounts}
-            onChange={formik.handleChange}
-          />
-        </label>
+            <label>
+              mobile
+              <input
+                id="mobile"
+                name="mobile"
+                onChange={formik.handleChange}
+                value={formik.values.mobile}
+              />
+            </label>
+            <p className="errorsMessages"> {formik.errors.mobile}</p>
+          </div>
+        )}
 
         <button type="submit">Submit</button>
         <p className="errorsMessages">{errorMessage}</p>

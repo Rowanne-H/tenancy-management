@@ -2,7 +2,7 @@ import React from "react";
 import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS } from "./DataMappingFields";
 
-function Creditors({ creditors, deleteCreditor }) {
+function Creditors({ creditors, deleteCreditor, user }) {
   const fields = FIELD_MAPPINGS["creditors"];
 
   return (
@@ -12,6 +12,7 @@ function Creditors({ creditors, deleteCreditor }) {
       fields={fields}
       defaultSortBy="id"
       type="creditors"
+      user={user}
     />
   );
 }

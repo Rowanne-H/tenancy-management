@@ -8,6 +8,10 @@ function SignupForm({ onLogin }) {
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
     password: yup.string().required("must enter a password"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Must confirm password"),
     name: yup
       .string()
       .required("Must enter a name")
@@ -26,22 +30,33 @@ function SignupForm({ onLogin }) {
     initialValues: {
       email: "",
       password: "",
+      confirmPassword: "",
       name: "",
       mobile: "",
       is_accounts: false,
+      is_active: true,
     },
     validationSchema: formSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
+      console.log(values);
       fetch("/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+          name: values.name,
+          mobile: values.mobile,
+          is_accounts: values.is_accounts,
+          is_active: values.is_active,
+        }),
       }).then((r) => {
         if (r.ok) {
           r.json().then((user) => {
+            console.log(user);
             onLogin(user);
           });
         } else {
@@ -80,6 +95,18 @@ function SignupForm({ onLogin }) {
         <p className="errorsMessages"> {formik.errors.password}</p>
 
         <label>
+          Confirm Password
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            onChange={formik.handleChange}
+            value={formik.values.confirmPassword}
+          />
+        </label>
+        <p className="errorsMessages"> {formik.errors.confirmPassword}</p>
+
+        <label>
           Name
           <input
             id="name"
@@ -100,16 +127,6 @@ function SignupForm({ onLogin }) {
           />
         </label>
         <p className="errorsMessages"> {formik.errors.mobile}</p>
-
-        <label>
-          Is Accounts?
-          <input
-            type="checkbox"
-            name="is_accounts"
-            checked={formik.values.is_accounts}
-            onChange={formik.handleChange}
-          />
-        </label>
 
         <button type="submit">Submit</button>
         <p className="errorsMessages">{errorMessage}</p>

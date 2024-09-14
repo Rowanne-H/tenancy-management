@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS } from "./DataMappingFields";
 
-function Users({ users, deleteUser }) {
+function Users({ users, deleteUser, user }) {
   const fields = FIELD_MAPPINGS["users"];
 
   return (
@@ -12,6 +12,7 @@ function Users({ users, deleteUser }) {
       fields={fields}
       defaultSortBy="id"
       type="users"
+      user={user}
     />
   );
 }

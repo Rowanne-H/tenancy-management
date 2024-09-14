@@ -91,10 +91,9 @@ function EditDataForm({
           <div key={field}>
             <label>
               {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field === "user_id" ||
-              field === "owner_id" ||
-              field === "property_id" ||
-              field === "tenant_id" ? (
+              {field === "user_id" ? null : field === "owner_id" ||
+                field === "property_id" ||
+                field === "tenant_id" ? (
                 <select
                   id={field}
                   name={field}

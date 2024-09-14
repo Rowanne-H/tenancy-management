@@ -112,12 +112,22 @@ function App() {
       ),
     );
   }
-  function deleteCreditor(id) {
-    setCreditors(creditors.filter((creditor) => creditor.id !== id));
-  }
-
   function deleteTenant(id) {
     setTenants(tenants.filter((tenant) => tenant.id !== id));
+  }
+
+  function addNewCreditor(newCreditor) {
+    setCreditors([...creditors, newCreditor]);
+  }
+  function updateCreditor(updatedCreditor) {
+    setCreditors(
+      creditors.map((creditor) =>
+        creditor.id === updatedCreditor.id ? updatedCreditor : creditor,
+      ),
+    );
+  }
+  function deleteCreditor(id) {
+    setCreditors(creditors.filter((creditor) => creditor.id !== id));
   }
 
   function addNewTransaction(newTransaction) {
@@ -148,7 +158,9 @@ function App() {
             <Route
               exact
               path="/users"
-              render={() => <Users users={users} deleteUser={deleteUser} />}
+              render={() => (
+                <Users users={users} user={user} deleteUser={deleteUser} />
+              )}
             />
             <Route
               exact
@@ -162,9 +174,16 @@ function App() {
             />
             <Route
               exact
+              path="/users/:id/changestatus"
+              render={() => (
+                <FormEditUser onUpdateUser={updateUser} changeStatus="true" />
+              )}
+            />
+            <Route
+              exact
               path="/owners"
               render={() => (
-                <Owners owners={owners} deleteOwner={deleteOwner} />
+                <Owners owners={owners} deleteOwner={deleteOwner} user={user} />
               )}
             />
             <Route
@@ -193,6 +212,7 @@ function App() {
                 <Properties
                   properties={properties}
                   deleteProperty={deleteProperty}
+                  user={user}
                 />
               )}
             />
@@ -229,7 +249,11 @@ function App() {
               exact
               path="/tenants"
               render={() => (
-                <Tenants tenants={tenants} deleteTenant={deleteTenant} />
+                <Tenants
+                  tenants={tenants}
+                  deleteTenant={deleteTenant}
+                  user={user}
+                />
               )}
             />
             <Route
@@ -263,7 +287,30 @@ function App() {
               exact
               path="/creditors"
               render={() => (
-                <Creditors creditors={creditors} deleteCreditor={deleteCreditor} />
+                <Creditors
+                  creditors={creditors}
+                  deleteCreditor={deleteCreditor}
+                  user={user}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/creditors/new"
+              render={() => (
+                <FormNewData type="creditors" onAddNewData={addNewCreditor} />
+              )}
+            />
+            <Route
+              exact
+              path="/creditors/:id"
+              render={() => <DisplayData type="creditors" />}
+            />
+            <Route
+              exact
+              path="/creditors/:id/edit"
+              render={() => (
+                <FormEditData type="creditors" onUpdateData={updateCreditor} />
               )}
             />
             <Route
@@ -273,6 +320,7 @@ function App() {
                 <Transactions
                   transactions={transactions}
                   deleteTransaction={deleteTransaction}
+                  user={user}
                 />
               )}
             />

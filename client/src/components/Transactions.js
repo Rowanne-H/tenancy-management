@@ -8,6 +8,7 @@ function Transactions({
   deleteTransaction,
   view = "",
   properties = [],
+  user,
 }) {
   let items = transactions;
   const fields = FIELD_MAPPINGS["transactions"];
@@ -39,6 +40,7 @@ function Transactions({
       defaultSortBy="created_at"
       type="transactions"
       view={view}
+      user={user}
     />
   );
 }

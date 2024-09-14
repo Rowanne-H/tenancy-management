@@ -6,11 +6,11 @@ export const ENDPOINTS = {
   properties: "/properties/",
   tenants: "/tenants/",
   transactions: "/transactions/",
-  creditors: "/creditors/"
+  creditors: "/creditors/",
 };
 
 export const FIELD_MAPPINGS = {
-  users: ["name", "email", "mobile", "is_accounts"],
+  users: ["name", "email", "mobile", "is_accounts", "is_active"],
   owners: [
     "ref",
     "name",
@@ -20,6 +20,7 @@ export const FIELD_MAPPINGS = {
     "note",
     "management_start_date",
     "management_end_date",
+    "user_id",
     "is_active",
   ],
   properties: [
@@ -27,8 +28,8 @@ export const FIELD_MAPPINGS = {
     "address",
     "commission",
     "letting_fee",
-    "user_id",
     "owner_id",
+    "user_id",
     "is_active",
   ],
   tenants: [
@@ -43,12 +44,10 @@ export const FIELD_MAPPINGS = {
     "rent",
     "vacating_date",
     "property_id",
+    "user_id",
     "is_active",
   ],
-  creditors: [
-    "name",
-    "is_active",
-  ],
+  creditors: ["name", "is_active"],
   transactions: [
     "created_at",
     "category",
@@ -191,7 +190,7 @@ export const validations = {
     name: yup
       .string()
       .required("Must enter a name")
-      .min(2, "Name must be at least 2 characters long")   
+      .min(2, "Name must be at least 2 characters long"),
   }),
   transactions: yup.object().shape({
     created_at: yup.string().required("Must enter a date"),
