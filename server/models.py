@@ -101,6 +101,7 @@ class User(BaseModel, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     mobile = db.Column(db.String(10), nullable=False)
     is_accounts = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     owners = db.relationship('Owner', backref='user') 
     properties = association_proxy('owners', 'property', 
@@ -128,7 +129,8 @@ class User(BaseModel, SerializerMixin):
             'name': self.name,
             'email': self.email,
             'mobile': self.mobile,
-            'is_accounts': self.is_accounts
+            'is_accounts': self.is_accounts,
+            "is_active": self.is_active
         }
 
     def __repr__(self):
