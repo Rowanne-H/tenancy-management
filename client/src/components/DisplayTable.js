@@ -27,8 +27,7 @@ function DisplayTable({
   view = "",
   user,
 }) {
-  
-console.log(items)
+  console.log(items);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
 
@@ -77,30 +76,32 @@ console.log(items)
     setCurrentPage(0); // Reset to first page on search
   };
 
-  
   const history = useHistory();
-const handleNewDataClick = () => {
-    if ((type === "transactions" || type === "creditors") && !user.is_accounts) {
+  const handleNewDataClick = () => {
+    if (
+      (type === "transactions" || type === "creditors") &&
+      !user.is_accounts
+    ) {
       alert("Only accounts can perform this action");
     } else {
       history.push(`/${type}/new`);
     }
-  }
+  };
 
   return (
     <div>
       <div>
-        {view === "owner" || view === "tenant" || view === "user"? (
+        {view === "owner" || view === "tenant" || view === "user" ? (
           <span>
-            {view === "user" ? (
-              " List of Owners for Properties Managed by user id "+ items[0]["user_id"]
-            ) : (
-              "View" + view.charAt(0).toUpperCase() + view.slice(1)
-            )}    
+            {view === "user"
+              ? " List of Owners for Properties Managed by user id " +
+                items[0]["user_id"]
+              : "View" + view.charAt(0).toUpperCase() + view.slice(1)}
           </span>
         ) : type === "users" ? null : (
           <button className="link-button" onClick={handleNewDataClick}>
-            + New {type === "properties"
+            + New{" "}
+            {type === "properties"
               ? "Property"
               : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
           </button>
@@ -138,7 +139,11 @@ const handleNewDataClick = () => {
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </th>
             ))}
-            <th>{view === "owner" || view === "tenant" || view === "user"? null : "More" }</th>
+            <th>
+              {view === "owner" || view === "tenant" || view === "user"
+                ? null
+                : "More"}
+            </th>
           </tr>
         </thead>
         <tbody>

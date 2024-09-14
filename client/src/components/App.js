@@ -183,11 +183,7 @@ function App() {
               exact
               path="/users/:id/owners"
               render={() => (
-                <Owners
-                  owners={owners}
-                  deleteOwner={deleteOwner}
-                  view="user"
-                />
+                <Owners owners={owners} deleteOwner={deleteOwner} view="user" />
               )}
             />
             <Route
@@ -367,7 +363,8 @@ function App() {
                   type="transactions"
                   tenants={tenants}
                   properties={properties}
-                  owers={owners}
+                  owners={owners}
+                  creditors={creditors}
                   onAddNewData={addNewTransaction}
                 />
               )}

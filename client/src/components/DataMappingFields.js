@@ -50,15 +50,12 @@ export const FIELD_MAPPINGS = {
   creditors: ["name", "is_active"],
   transactions: [
     "created_at",
-    "category",
     "payment_date",
+    "category",
     "pay_from",
     "pay_to",
     "amount",
     "description",
-    "property_id",
-    "tenant_id",
-    "owner_id",
   ],
 };
 

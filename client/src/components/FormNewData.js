@@ -10,31 +10,36 @@ function FormNewData({
   owners = [],
   properties = [],
   tenants = [],
+  creditors = [],
 }) {
   const [errorMessage, setErrorMessage] = useState("");
+  const [payFrom, setPayFrom] = useState([]);
+  const [payTo, setPayTo] = useState([]);
 
-  const [selectedProperty, setSelectedProperty] = useState("");
+  const fields = FIELD_MAPPINGS[type];
 
-  let fields = [];
-  if (type == "transactions") {
-    fields = [
-      ...[
-        "created_at",
-        "category",
-        "payment_date",
-        "amount",
-        "description",
-        "property_id",
-      ],
-    ];
-  } else {
-    fields = [...FIELD_MAPPINGS[type]];
-  }
   const validation = validations[type];
   const initialData = fields.reduce((obj, field) => {
     obj[field] = getFormikValues(field, "");
     return obj;
   }, {});
+  console.log(creditors);
+
+  //setUp payfrom and payto select options when a category is selected
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    if (selectedCategory === "Rent") {
+      setPayFrom([...tenants]);
+      setPayTo([...owners]);
+    } else if (selectedCategory === "Expense") {
+      setPayFrom([...owners]);
+      setPayTo([...creditors, ...tenants]);
+    } else {
+      setPayFrom([...owners, ...tenants]);
+      setPayTo([...owners, ...tenants, ...creditors]);
+    }
+    formik.setFieldValue("category", selectedCategory); // Update Formik field value
+  };
 
   const formik = useFormik({
     initialValues: initialData,
@@ -73,7 +78,7 @@ function FormNewData({
         Form
       </h1>
       <form onSubmit={formik.handleSubmit}>
-        {fields.map((field) => (
+        {fields.map((field) => (//mapping fields
           <div key={field}>
             <label>
               {field === "user_id"
@@ -116,12 +121,40 @@ function FormNewData({
                   id={field}
                   name={field}
                   value={formik.values[field]}
-                  onChange={formik.handleChange}
+                  onChange={handleCategoryChange}
                 >
                   <option value="">Select Category</option>
                   <option value="Rent">Rent</option>
                   <option value="Expense">Expense</option>
                   <option value="Others">Others</option>
+                </select>
+              ) : field === "pay_from" ? (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Pay From</option>
+                  {payFrom.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {!option.name ? "others" : option.name}
+                    </option>
+                  ))}
+                </select>
+              ) : field === "pay_to" ? (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Pay To</option>
+                  {payTo.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {!option.name ? "others" : option.name}
+                    </option>
+                  ))}
                 </select>
               ) : field === "created_at" ? (
                 <span>{formik.values[field]}</span>
