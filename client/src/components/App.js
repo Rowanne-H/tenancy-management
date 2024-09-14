@@ -181,6 +181,17 @@ function App() {
             />
             <Route
               exact
+              path="/users/:id/owners"
+              render={() => (
+                <Owners
+                  owners={owners}
+                  deleteOwner={deleteOwner}
+                  view="user"
+                />
+              )}
+            />
+            <Route
+              exact
               path="/owners"
               render={() => (
                 <Owners owners={owners} deleteOwner={deleteOwner} user={user} />
@@ -203,6 +214,18 @@ function App() {
               path="/owners/:id/edit"
               render={() => (
                 <FormEditData type="owners" onUpdateData={updateOwner} />
+              )}
+            />
+            <Route
+              exact
+              path="/owners/:id/transactions"
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  deleteTransaction={deleteTransaction}
+                  view="owner"
+                  properties={properties}
+                />
               )}
             />
             <Route
@@ -285,6 +308,18 @@ function App() {
             />
             <Route
               exact
+              path="/tenants/:id/transactions"
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  deleteTransaction={deleteTransaction}
+                  view="tenant"
+                  properties={properties}
+                />
+              )}
+            />
+            <Route
+              exact
               path="/creditors"
               render={() => (
                 <Creditors
@@ -352,30 +387,6 @@ function App() {
                   properties={properties}
                   owers={owners}
                   onUpdateData={updateTransaction}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/tenants/:id/transactions"
-              render={() => (
-                <Transactions
-                  transactions={transactions}
-                  deleteTransaction={deleteTransaction}
-                  view="tenant"
-                  properties={properties}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/owners/:id/transactions"
-              render={() => (
-                <Transactions
-                  transactions={transactions}
-                  deleteTransaction={deleteTransaction}
-                  view="owner"
-                  properties={properties}
                 />
               )}
             />

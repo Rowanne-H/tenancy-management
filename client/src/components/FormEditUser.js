@@ -116,7 +116,7 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
           value={editPassword}
           onClick={() => setEditPassword(!editPassword)}
         >
-          {editPassword ? "Edit User Form" : "Change Password"}
+          {editPassword ? "Edit User" : "Change Password"}
         </button>
       )}
       <form onSubmit={formik.handleSubmit}>

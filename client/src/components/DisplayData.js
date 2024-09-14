@@ -37,6 +37,15 @@ const DisplayData = ({ type }) => {
           : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
         Details
       </h2>
+          {type === "owners" || type === "tenants" ? (
+            <NavLink className="more" to={`/${type}/${id}/transactions`}>
+              View transactions
+            </NavLink>
+          ) : type === "users" ? (
+            <NavLink className="more" to={`/${type}/${id}/owners`}>
+              View Owners of Managed Properties
+            </NavLink>
+          ) : null}
       <ul>
         <li>
           <strong>Id:</strong>
@@ -65,13 +74,6 @@ const DisplayData = ({ type }) => {
             )}
           </li>
         ))}
-        <li>
-          {type === "owners" || type === "tenants" ? (
-            <NavLink className="more" to={`/${type}/${id}/transactions`}>
-              View transactions
-            </NavLink>
-          ) : null}
-        </li>
       </ul>
     </div>
   );

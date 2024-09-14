@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import DisplayTableRow from "./DisplayTableRow";
 import { isDate } from "./DataDisplayingFunctions";
@@ -75,20 +75,33 @@ function DisplayTable({
     setCurrentPage(0); // Reset to first page on search
   };
 
+  
+  const history = useHistory();
+const handleNewDataClick = () => {
+    if ((type === "transactions" || type === "creditors") && !user.is_accounts) {
+      alert("Only accounts can perform this action");
+    } else {
+      history.push(`/${type}/new`);
+    }
+  }
+
   return (
     <div>
       <div>
-        {view === "owner" || view === "tenant" ? (
+        {view === "owner" || view === "tenant" || view === "user"? (
           <span>
-            {view.charAt(0).toUpperCase() + view.slice(1)} transactions
+            {view === "user" ? (
+              " List of Owners for Properties Managed by user id "+ items[0]["user_id"]
+            ) : (
+              "View" + view.charAt(0).toUpperCase() + view.slice(1)
+            )}    
           </span>
         ) : type === "users" ? null : (
-          <NavLink className="more" to={`/${type}/new`}>
-            New{" "}
-            {type === "properties"
+          <button className="link-button" onClick={handleNewDataClick}>
+            + New {type === "properties"
               ? "Property"
               : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
-          </NavLink>
+          </button>
         )}
         <div>
           <input
