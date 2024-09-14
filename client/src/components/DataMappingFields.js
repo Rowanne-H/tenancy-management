@@ -197,6 +197,21 @@ export const validations = {
       .string()
       .oneOf(["Rent", "Expense", "Others"], "Invalid category")
       .required("Must select a category"),
+    pay_from: yup
+      .string()
+      .required("Must select a payer"),
+    pay_to: yup
+      .string()
+      .nullable()
+      .test(
+        "is-category-rent",
+        "A recipient must be selected if category is not rent",
+        function (value) {
+          const { category } = this.parent;
+          if (category=="Rent" && !value) return true;
+          return value;
+        },
+      ),
     payment_date: yup.string().required("Must enter a date"),
     amount: yup
       .number()
