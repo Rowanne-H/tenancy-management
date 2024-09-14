@@ -185,6 +185,7 @@ class Property(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     tenants = db.relationship('Tenant', backref='property') 
     transactions = db.relationship('Transaction', backref='property')
@@ -211,6 +212,7 @@ class Property(BaseModel, SerializerMixin):
             'commission': self.commission,
             'letting_fee': self.letting_fee,
             'owner_id': self.owner_id,
+            "user_id": self.user_id,
             'is_active': self.is_active 
         }
 
@@ -234,6 +236,7 @@ class Tenant(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @validates('lease_term')
     def validate_lease_term(self, key, value):
@@ -263,6 +266,7 @@ class Tenant(BaseModel, SerializerMixin):
             'rent': self.rent,
             'vacating_date': self.vacating_date,
             'property_id': self.property_id,
+            "user_id": self.user_id,
             'is_active': self.is_active 
         }
 

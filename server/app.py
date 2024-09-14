@@ -44,19 +44,10 @@ def require_account_role(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def user_authorization(tenant_id=None, property_id=None, owner_id=None):
+def user_authorization(id):
     current_user_id = session.get('user_id')
-    if tenant_id:
-        tenant = Tenant.query.filter_by(id=tenant_id).first()
-        property = Property.query.filter_by(id=tenant.property_id).first()
-        owner = Owner.query.filter_by(id=property.owner_id).first()
-    elif property_id:
-        property = Property.query.filter_by(id=property_id).first()
-        owner = Owner.query.filter_by(id=property.owner_id).first()
-    else:
-        owner = Owner.query.filter_by(id=owner_id).first()
-    if current_user_id != owner.user_id:
-        return make_response(jsonify({'message': 'Unauthorized action'}), 403)
+    if current_user_id != id:
+        return make_response(jsonify({'message': 'User not authorized to to edit this file'}), 403)
     return None
 
 @app.route('/')
@@ -133,7 +124,6 @@ class UserByID(Resource):
 
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
-        print(session.get('user_id'))
         if user is None:
             return make_response(jsonify({'message': 'User not found'}), 404)
         current_user = User.query.filter_by(id=session.get('user_id')).first()
@@ -148,6 +138,8 @@ class UserByID(Resource):
         if current_user.id != user.id:
             return make_response(jsonify({'message': 'You do not have permission to edit this record. You can only edit your own records.'}), 403)
         for attr, value in data:
+            if attr == 'is_accounts' or attr == 'is_active':
+                continue
             if attr == 'password':
                 user.password_hash = data['password']
             else:
@@ -209,7 +201,7 @@ class OwnerByID(Resource):
         owner = Owner.query.filter_by(id=id).first()
         if owner is None:
             return make_response(jsonify({'message': 'Owner not found'}), 404)
-        auth_response = user_authorization(None, None, owner.id)
+        auth_response = user_authorization(owner.user_id)
         if auth_response:
             return auth_response
         data = request.get_json()
@@ -232,7 +224,7 @@ class OwnerByID(Resource):
         owner = Owner.query.filter_by(id=id).first() 
         if owner is None:
             return make_response(jsonify({'message': 'Owner not found'}), 404)
-        auth_response = user_authorization(None, None, owner.id)
+        auth_response = user_authorization(owner.user_id)
         if auth_response:
             return auth_response          
         property = Property.query.filter_by(owner_id=id).first()
@@ -252,7 +244,7 @@ class Properties(Resource):
         owner = Owner.query.filter_by(id=data['owner_id']).first()
         if owner is None:
             return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
-        auth_response = user_authorization(None, None, owner.id)
+        auth_response = user_authorization(owner.user_id)
         if auth_response:
             return auth_response
         new_property = Property(
@@ -261,7 +253,8 @@ class Properties(Resource):
             commission=data.get('commission', 0.05),
             letting_fee=data.get('letting_fee', 1),
             is_active=data.get('is_active', True),
-            owner_id=data['owner_id']
+            owner_id=data['owner_id'],
+            user_id=owner.user_id
         )
         db.session.add(new_property)
         db.session.commit()
@@ -278,7 +271,7 @@ class PropertyByID(Resource):
         property = Property.query.filter_by(id=id).first()
         if property is None:
             return make_response(jsonify({'message': 'Property not found'}), 404)
-        auth_response = user_authorization(None, property.id, None)
+        auth_response = user_authorization(property.user_id)
         if auth_response:
             return auth_response
         data = request.get_json()
@@ -287,7 +280,7 @@ class PropertyByID(Resource):
                 owner = Owner.query.filter_by(id=value).first()
                 if owner is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
-                auth_response = user_authorization(None, None, owner.id)
+                auth_response = user_authorization(owner.user_id)
                 if auth_response:
                     return auth_response
             setattr(property, attr, value)
@@ -299,7 +292,7 @@ class PropertyByID(Resource):
         property = Property.query.filter_by(id=id).first()
         if property is None:
             return make_response(jsonify({'message': 'Property not found'}), 404)  
-        auth_response = user_authorization(None, property.id,None)
+        auth_response = user_authorization(property.user_id)
         if auth_response:
             return auth_response 
         tenant = Tenant.query.filter_by(property_id=id).first()
@@ -319,7 +312,7 @@ class Tenants(Resource):
         property = Property.query.filter_by(id=data['property_id']).first()
         if property is None:
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
-        auth_response = user_authorization(None, property.id,None)
+        auth_response = user_authorization(property.user_id)
         if auth_response:
             return auth_response 
         lease_start_date = getDate(data['lease_start_date'])
@@ -337,7 +330,8 @@ class Tenants(Resource):
             vacating_date=vacating_date,
             rent=data['rent'],
             is_active=data.get('is_active', True),
-            property_id=data['property_id'] 
+            property_id=data['property_id'],
+            user_id=property.user_id
         )
         db.session.add(new_tenant)
         db.session.commit()
@@ -354,7 +348,7 @@ class TenantByID(Resource):
         tenant = Tenant.query.filter_by(id=id).first()
         if tenant is None:
             return make_response(jsonify({'message': 'Tenant not found'}), 404)
-        auth_response = user_authorization(tenant.id, None,None)
+        auth_response = user_authorization(tenant.user_id)
         if auth_response:
             return auth_response 
         data = request.get_json()
@@ -363,7 +357,7 @@ class TenantByID(Resource):
                 property = Property.query.filter_by(id=value).first()
                 if property is None:
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
-                auth_response = user_authorization(None, property.id,None)
+                auth_response = user_authorization(property.user_id)
                 if auth_response:
                     return auth_response 
             if attr == 'lease_start_date' or attr == 'lease_end_date' or attr == 'vacating_date':
@@ -380,7 +374,7 @@ class TenantByID(Resource):
         tenant = Tenant.query.filter_by(id=id).first() 
         if tenant is None:
             return make_response(jsonify({'message': 'Tenant not found'}), 404) 
-        auth_response = user_authorization(tenant.id, None, None)
+        auth_response = user_authorization(tenant.user_id)
         if auth_response:
             return auth_response     
         db.session.delete(tenant)

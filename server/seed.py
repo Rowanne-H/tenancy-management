@@ -97,7 +97,8 @@ def create_properties(users, owners):
         address=fake.unique.address(),
         commission=0.05,
         letting_fee=1,
-        owner=inactive_owner,  
+        owner=inactive_owner, 
+        user_id=inactive_owner.user_id, 
         is_active=False
     )
     properties.append(inactive_property)
@@ -107,7 +108,8 @@ def create_properties(users, owners):
             address=fake.unique.address(),
             commission=0.05,
             letting_fee=1,
-            owner=owner
+            owner=owner,
+            user_id=owner.user_id,
         )
         properties.append(property)
     db.session.add_all(properties)
@@ -128,6 +130,7 @@ def create_tenants(properties):
         lease_start_date=datetime.today()+timedelta(days=10),
         lease_end_date=datetime.today()+timedelta(days=375),
         property=inactive_property,
+        user_id=inactive_property.user_id,
         is_active=False
     )
     tenants.append(inactive_tenant)
@@ -142,7 +145,8 @@ def create_tenants(properties):
             lease_term=12,
             lease_start_date=date,
             lease_end_date=date+timedelta(days=365),
-            property=property
+            property=property,
+            user_id=property.user_id
         )
         tenants.append(tenant)
     db.session.add_all(tenants)

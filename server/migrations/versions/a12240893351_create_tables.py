@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 596cb57f5401
+Revision ID: a12240893351
 Revises: 
-Create Date: 2024-09-14 13:40:47.829506
+Create Date: 2024-09-14 16:24:58.183992
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '596cb57f5401'
+revision = 'a12240893351'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -58,7 +58,9 @@ def upgrade():
     sa.Column('letting_fee', sa.Float(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['owners.id'], name=op.f('fk_properties_owner_id_owners')),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_properties_user_id_users')),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('tenants',
@@ -75,7 +77,9 @@ def upgrade():
     sa.Column('vacating_date', sa.Date(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('property_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_tenants_property_id_properties')),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_tenants_user_id_users')),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('transactions',
