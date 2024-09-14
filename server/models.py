@@ -317,12 +317,11 @@ class Transaction(BaseModel, SerializerMixin):
             'id': self.id,
             'category': self.category,
             'amount': self.amount,
+            'pay_from': self.pay_from,
+            'pay_to': self.pay_to,
             'created_at': self.created_at,
             'payment_date': self.payment_date,
-            'description': self.description,
-            'tenant_id': self.tenant_id,
-            'property_id': self.property_id,
-            'owner_id': self.owner_id,
+            'description': self.description
         }
 
     def __repr__(self):

@@ -73,7 +73,7 @@ def create_owners():
         user=rc(property_managers)
     )
     owners.append(inactive_owner)
-    for i in range(10):
+    for i in range(5):
         owner = Owner(
             name=fake.unique.name(),
             ref=fake.word(),
