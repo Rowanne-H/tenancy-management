@@ -136,7 +136,7 @@ const handleNewDataClick = () => {
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </th>
             ))}
-            <th>{view === "owner" || view === "tenant" ? null : "More"}</th>
+            <th>{view === "owner" || view === "tenant" || view === "user"? null : "More" }</th>
           </tr>
         </thead>
         <tbody>

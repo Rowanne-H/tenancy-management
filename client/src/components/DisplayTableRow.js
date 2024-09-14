@@ -75,7 +75,7 @@ function DisplayTableRow({
           )}
         </td>
       ))}
-      {view === "owner" || view === "tenant" ? null : (
+      {view === "owner" || view === "tenant" || view === "user"? null : (
         <td>
           <button
             className="link-button"
