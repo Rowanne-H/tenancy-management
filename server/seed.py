@@ -130,6 +130,7 @@ def create_tenants(properties):
         lease_start_date=datetime.today()+timedelta(days=10),
         lease_end_date=datetime.today()+timedelta(days=375),
         property=inactive_property,
+        owner_id=inactive_property.owner_id,
         user_id=inactive_property.user_id,
         is_active=False
     )
@@ -146,6 +147,7 @@ def create_tenants(properties):
             lease_start_date=date,
             lease_end_date=date+timedelta(days=365),
             property=property,
+            owner_id=property.owner_id,
             user_id=property.user_id
         )
         tenants.append(tenant)
@@ -159,6 +161,10 @@ def create_creditors():
         name='Real Estate Agent',
     )
     creditors.append(agent)
+    others = Creditor(
+        name='Others',
+    )
+    creditors.append(others)
     for i in range(2):
         tradesman = Creditor(
             name=fake.unique.name(),

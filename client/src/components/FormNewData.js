@@ -15,6 +15,7 @@ function FormNewData({
   const [errorMessage, setErrorMessage] = useState("");
   const [payFrom, setPayFrom] = useState([]);
   const [payTo, setPayTo] = useState([]);
+  const [category, setCategory] = useState("");
 
   const fields = FIELD_MAPPINGS[type];
 
@@ -23,20 +24,23 @@ function FormNewData({
     obj[field] = getFormikValues(field, "");
     return obj;
   }, {});
-  console.log(creditors);
 
   //setUp payfrom and payto select options when a category is selected
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
+    const activeTenants = tenants.filter(tenant=>tenant.is_active)
+    const activeOwners = owners.filter(owner=>owner.is_active)
+    const activeCreditors = creditors.filter(creditor=>creditor.is_active)
+    setCategory(selectedCategory)
     if (selectedCategory === "Rent") {
-      setPayFrom([...tenants]);
-      setPayTo([...owners]);
+      setPayFrom([...activeTenants]);
+      setPayTo([...activeOwners]);
     } else if (selectedCategory === "Expense") {
-      setPayFrom([...owners]);
-      setPayTo([...creditors, ...tenants]);
+      setPayFrom([...activeOwners]);
+      setPayTo([...activeCreditors]);
     } else {
-      setPayFrom([...owners, ...tenants]);
-      setPayTo([...owners, ...tenants, ...creditors]);
+      setPayFrom([...activeOwners, ...activeTenants, ...activeCreditors]);
+      setPayTo([...activeOwners, ...activeTenants, ...activeCreditors]);
     }
     formik.setFieldValue("category", selectedCategory); // Update Formik field value
   };
@@ -81,10 +85,13 @@ function FormNewData({
         {fields.map((field) => (//mapping fields
           <div key={field}>
             <label>
-              {field === "user_id"
+              {
+                field === "user_id" || category === "Rent"
                 ? null
-                : field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field === "user_id" ? null : field === "owner_id" ||
+                : field.charAt(0).toUpperCase() + field.slice(1) + ": "
+              }
+              {
+                field === "user_id" ? null : field === "owner_id" ||
                 field === "property_id" ||
                 field === "tenant_id" ? (
                 <select
@@ -143,6 +150,7 @@ function FormNewData({
                   ))}
                 </select>
               ) : field === "pay_to" ? (
+                category === "Rent" ? null : (
                 <select
                   id={field}
                   name={field}
@@ -154,9 +162,10 @@ function FormNewData({
                     <option key={option.name} value={option.name}>
                       {!option.name ? "others" : option.name}
                     </option>
-                  ))}
+                  ))
+              }
                 </select>
-              ) : field === "created_at" ? (
+              )) : field === "created_at" ? (
                 <span>{formik.values[field]}</span>
               ) : field === "is_active" ? (
                 <input

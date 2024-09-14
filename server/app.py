@@ -328,6 +328,7 @@ class Tenants(Resource):
             rent=data['rent'],
             is_active=data.get('is_active', True),
             property_id=data['property_id'],
+            owner_id=property.owner_id,
             user_id=property.user_id
         )
         db.session.add(new_tenant)
@@ -356,7 +357,9 @@ class TenantByID(Resource):
                     return make_response(jsonify({'message': 'Please input a valid owner id'}), 404)
                 auth_response = user_authorization(property.user_id)
                 if auth_response:
-                    return auth_response 
+                    return auth_response
+                tenant.owner_id = property.owner_id
+                tenant.user_id = property.user_id 
             if attr == 'lease_start_date' or attr == 'lease_end_date' or attr == 'vacating_date':
                 if value == '':
                     value=None
@@ -430,25 +433,76 @@ class Transactions(Resource):
     @require_account_role
     def post(self):
         data = request.get_json()
-        property = Property.query.filter_by(id=data['property_id']).first()
-        if property is None:
-            return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
-        tenant = None
-        if data['category'] == "Rent":            
-            tenant = Tenant.query.filter_by(property_id=data['property_id'], is_active=True).first()
-            if tenant is None:
-                return make_response(jsonify({'message': 'Please select a property which is tenanted'}), 404)        
+        tenant_id = None
+        property_id = None
+        owner_id = None
+        creditor_id = None
+        from_owner = Owner.query.filter_by(name=data['pay_from'], is_active=True).first()           
+        from_tenant = Tenant.query.filter_by(name=data['pay_from'], is_active=True).first()
+        from_creditor = Creditor.query.filter_by(name=data['pay_from'], is_active=True).first()
+        to_owner = Owner.query.filter_by(name=data['pay_to'], is_active=True).first()
+        to_tenant = Tenant.query.filter_by(name=data['pay_to'], is_active=True).first()
+        to_creditor = Creditor.query.filter_by(name=data['pay_to'], is_active=True).first()
+        pay_from = ''
+        pay_to = ''
+        if data['category'] == "Rent":
+            if from_tenant is None:
+                return make_response(jsonify({'message': 'Please select a tenant who is currently renting a property'}), 404)  
+            pay_from=from_tenant.name
+            tenant_id=from_tenant.id
+            property_id=from_tenant.property_id
+            owner_id = from_tenant.owner_id
+            owner = Owner.query.filter_by(id=owner_id, is_active=True).first()
+            if not owner:
+                return make_response(jsonify({'message': 'Please select a tenant who is currently renting a property'}), 404) 
+            pay_to = owner.name
+             
+        if data['category'] == "Expense":
+            if from_owner is None:
+                return make_response(jsonify({'message': 'Please select an owner who is active'}), 404)  
+            pay_from=from_owner.name
+            owner_id=from_owner.id
+            if to_creditor:
+                creditor_id=to_creditor.id
+            else:
+                return make_response(jsonify({'message': 'Please select a recipient'}), 404)                    
+        if data['category'] == "Others":
+            if from_owner:  
+                pay_from=from_owner.name
+                owner_id=from_owner.id
+            elif from_tenant:
+                pay_from=from_tenant.name
+                tenant_id=from_tenant.id
+            elif from_creditor:
+                pay_from=from_creditor.name
+                creditor_id=from_creditor.id
+            else:
+                return make_response(jsonify({'message': 'Please select a payer'}), 404) 
+            if to_owner:  
+                pay_to=to_owner.name
+                owner_id=to_owner.id
+            elif to_tenant:
+                pay_to=to_tenant.name
+                tenant_id=to_tenant.id
+            elif to_creditor:
+                pay_to=to_creditor.name
+                creditor_id=to_creditor.id
+            else:
+                return make_response(jsonify({'message': 'Please select a recipient'}), 404)    
         created_at = getDate(data.get('created_at')) if data.get('created_at') else datetime.today()
         payment_date = getDate(data['payment_date'])
         new_transaction = Transaction(
-            amount=data['amount'],
-            category=data['category'],
             created_at=created_at,
             payment_date=payment_date,
+            category=data['category'],
+            pay_from=pay_from,
+            pay_to=pay_to,
             description=data.get('description', 'rent'),
-            tenant_id=tenant.id if tenant else None,
-            property_id=data['property_id'],
-            owner_id=property.owner_id
+            amount=data['amount'],
+            tenant_id=tenant_id,
+            property_id=property_id,
+            owner_id=owner_id,
+            creditor_id=creditor_id
         )
         db.session.add(new_transaction)
         db.session.commit()

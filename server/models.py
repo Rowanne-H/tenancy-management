@@ -236,6 +236,7 @@ class Tenant(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @validates('lease_term')
@@ -266,6 +267,7 @@ class Tenant(BaseModel, SerializerMixin):
             'rent': self.rent,
             'vacating_date': self.vacating_date,
             'property_id': self.property_id,
+            'owner_id': self.property_id,
             "user_id": self.user_id,
             'is_active': self.is_active 
         }
@@ -287,17 +289,18 @@ class Transaction(BaseModel, SerializerMixin):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    payment_date = db.Column(db.Date, nullable=False)
     category = db.Column(db.String, nullable=False)
     pay_from = db.Column(db.String, nullable=False)
     pay_to = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    payment_date = db.Column(db.Date, nullable=False)
     description = db.Column(db.String, nullable=False)
       
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
     property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
+    creditor_id = db.Column(db.Integer, db.ForeignKey('creditors.id')) 
 
     @validates('category')
     def validate_category(self, key, value):
@@ -325,6 +328,7 @@ class Transaction(BaseModel, SerializerMixin):
             'tenant_id': self.tenant_id,
             'property_id': self.property_id,
             'owner_id': self.owner_id,
+            "creditor_id": self.creditor_id
         }
 
     def __repr__(self):

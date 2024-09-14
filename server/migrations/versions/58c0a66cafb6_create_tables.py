@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: a12240893351
+Revision ID: 58c0a66cafb6
 Revises: 
-Create Date: 2024-09-14 16:24:58.183992
+Create Date: 2024-09-14 23:41:59.878703
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a12240893351'
+revision = '58c0a66cafb6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -77,23 +77,27 @@ def upgrade():
     sa.Column('vacating_date', sa.Date(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('property_id', sa.Integer(), nullable=True),
+    sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['owner_id'], ['owners.id'], name=op.f('fk_tenants_owner_id_owners')),
     sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_tenants_property_id_properties')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_tenants_user_id_users')),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('payment_date', sa.Date(), nullable=False),
     sa.Column('category', sa.String(), nullable=False),
     sa.Column('pay_from', sa.String(), nullable=False),
     sa.Column('pay_to', sa.String(), nullable=False),
     sa.Column('amount', sa.Float(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('payment_date', sa.Date(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
     sa.Column('tenant_id', sa.Integer(), nullable=True),
     sa.Column('property_id', sa.Integer(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.Column('creditor_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['creditor_id'], ['creditors.id'], name=op.f('fk_transactions_creditor_id_creditors')),
     sa.ForeignKeyConstraint(['owner_id'], ['owners.id'], name=op.f('fk_transactions_owner_id_owners')),
     sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_transactions_property_id_properties')),
     sa.ForeignKeyConstraint(['tenant_id'], ['tenants.id'], name=op.f('fk_transactions_tenant_id_tenants')),
