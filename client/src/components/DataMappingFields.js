@@ -107,7 +107,7 @@ export const validations = {
         "End date must be after the start date",
         function (value) {
           const { management_start_date } = this.parent;
-          if (value === null) return;
+          if (!value) return true;
           return new Date(value) > new Date(management_start_date);
         },
       ),
@@ -176,7 +176,7 @@ export const validations = {
         "Vacating date must be after the start date",
         function (value) {
           const { lease_start_date } = this.parent;
-          if (value === null) return;
+          if (!value) return true;
           return new Date(value) > new Date(lease_start_date);
         },
       ),
