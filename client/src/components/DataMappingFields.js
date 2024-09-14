@@ -52,6 +52,8 @@ export const FIELD_MAPPINGS = {
     "created_at",
     "category",
     "payment_date",
+    "pay_from",
+    "pay_to",
     "amount",
     "description",
     "property_id",
