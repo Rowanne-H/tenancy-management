@@ -456,14 +456,14 @@ class Transactions(Resource):
             if not owner:
                 return make_response(jsonify({'message': 'Please select a tenant who is currently renting a property'}), 404) 
             pay_to = owner.name
-             
         if data['category'] == "Expense":
             if from_owner is None:
                 return make_response(jsonify({'message': 'Please select an owner who is active'}), 404)  
             pay_from=from_owner.name
             owner_id=from_owner.id
             if to_creditor:
-                creditor_id=to_creditor.id
+                creditor_id = to_creditor.id
+                pay_to = to_creditor.name
             else:
                 return make_response(jsonify({'message': 'Please select a recipient'}), 404)                    
         if data['category'] == "Others":
