@@ -88,7 +88,6 @@ function App() {
   }
 
   function addNewProperty(newProperty) {
-    console.log("add new property");
     setProperties([...properties, newProperty]);
   }
   function updateProperty(updatedProperty) {
@@ -382,7 +381,7 @@ function App() {
                   type="transactions"
                   tenants={tenants}
                   properties={properties}
-                  owers={owners}
+                  owners={owners}
                   creditors={creditors}
                   onUpdateData={updateTransaction}
                 />

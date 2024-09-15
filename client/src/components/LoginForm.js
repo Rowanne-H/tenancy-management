@@ -33,7 +33,6 @@ function LoginForm({ onLogin }) {
         })
         .then((user) => {
           onLogin(user);
-          console.log(user);
         });
       formik.resetForm();
     },

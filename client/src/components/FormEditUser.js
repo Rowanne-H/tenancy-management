@@ -19,8 +19,6 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
     }
   }, [id]);
 
-  console.log(userToEdit);
-
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
     password: yup.string().when("$editPassword", {
@@ -62,7 +60,6 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
     validationSchema: formSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log("seee");
       let updatedValues = {};
       if (editPassword) {
         updatedValues.password = values.password;
@@ -74,7 +71,6 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
         updatedValues.name = values.name;
         updatedValues.mobile = values.mobile;
       }
-      console.log(updatedValues);
       fetch(`/users/${id}`, {
         method: "PATCH",
         headers: {

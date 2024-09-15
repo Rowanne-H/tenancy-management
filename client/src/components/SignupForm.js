@@ -39,7 +39,6 @@ function SignupForm({ onLogin }) {
     validationSchema: formSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log(values);
       fetch("/signup", {
         method: "POST",
         headers: {
@@ -56,7 +55,6 @@ function SignupForm({ onLogin }) {
       }).then((r) => {
         if (r.ok) {
           r.json().then((user) => {
-            console.log(user);
             onLogin(user);
           });
         } else {

@@ -18,7 +18,7 @@ function DisplayTableRow({
       if (r.ok) {
         onDeleteItem(item.id);
         alert("Record has been deleted");
-        return r.json((item) => console.log(item));
+        return r.json();
       } else {
         r.json().then((err) => alert(err.message));
       }

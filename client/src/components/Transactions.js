@@ -25,7 +25,6 @@ function Transactions({
     items = ownerTransactions;
   }
   if (view === "tenant") {
-    console.log(id);
     const tenantTransactions = transactions.filter(
       (transaction) => transaction.tenant_id == id,
     );

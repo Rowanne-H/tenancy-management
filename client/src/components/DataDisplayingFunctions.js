@@ -71,7 +71,7 @@ export const getFormikValues = (field, value) => {
     if (field === "letting_fee") {
       value = 1;
     }
-    if (field === "created_at") {
+    if (field === "created_at" || field === "payment_date") {
       value = new Date();
     }
   }

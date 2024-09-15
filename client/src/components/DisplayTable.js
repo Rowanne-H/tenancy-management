@@ -27,7 +27,6 @@ function DisplayTable({
   view = "",
   user,
 }) {
-  console.log(items);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
 
