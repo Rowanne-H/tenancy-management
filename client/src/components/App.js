@@ -383,6 +383,7 @@ function App() {
                   tenants={tenants}
                   properties={properties}
                   owers={owners}
+                  creditors={creditors}
                   onUpdateData={updateTransaction}
                 />
               )}

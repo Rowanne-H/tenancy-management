@@ -34,7 +34,7 @@ def create_users():
        mobile=generate_mobile_number(),
        is_accounts=True
     )
-    accounts.password_hash = '123456'
+    accounts.password_hash = '123'
     users.append(accounts)
     for i in range(2):
         user = User(

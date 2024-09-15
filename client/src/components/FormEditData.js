@@ -11,8 +11,11 @@ function EditDataForm({
   owners = [],
   properties = [],
   tenants = [],
+  creditors = []
 }) {
   const [dataToEdit, setDataToEdit] = useState({});
+  const [payFrom, setPayFrom] = useState([]);
+  const [payTo, setPayTo] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   const { id } = useParams();
@@ -31,31 +34,39 @@ function EditDataForm({
     }
   }, [id]);
 
+  const fields = FIELD_MAPPINGS[type];
   const validation = validations[type];
   const initialValues = generateFormikValues(dataToEdit);
-  let fields = [];
+  const [category, setCategory] = useState("");
 
-  if (type == "transactions") {
-    fields = [
-      ...[
-        "created_at",
-        "category",
-        "payment_date",
-        "amount",
-        "description",
-        "property_id",
-      ],
-    ];
-  } else {
-    fields = [...FIELD_MAPPINGS[type]];
-  }
-
+  //setUp payfrom and payto select options when a category is selected
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    const activeTenants = tenants.filter(tenant=>tenant.is_active)
+    const activeOwners = owners.filter(owner=>owner.is_active)
+    const activeCreditors = creditors.filter(creditor=>creditor.is_active)
+    setCategory(selectedCategory)
+    if (selectedCategory === "Rent") {
+      setPayFrom([...activeTenants]);
+      setPayTo([...activeOwners]);
+    } else if (selectedCategory === "Expense") {
+      setPayFrom([...activeOwners]);
+      setPayTo([...activeCreditors]);
+    } else {
+      setPayFrom([...activeOwners, ...activeTenants, ...activeCreditors]);
+      setPayTo([...activeOwners, ...activeTenants, ...activeCreditors]);
+    }
+    formik.setFieldValue("category", selectedCategory); // Update Formik field value
+  };
+   
   const formik = useFormik({
     initialValues: { ...initialValues },
     validationSchema: validation,
     enableReinitialize: true,
     onSubmit: (values) => {
-      console.log(values);
+      if (values.category === "Rent") {
+        values.pay_to = ""
+      }
       fetch(ENDPOINTS[type] + id, {
         method: "PATCH",
         headers: {
@@ -90,8 +101,13 @@ function EditDataForm({
         {fields.map((field) => (
           <div key={field}>
             <label>
-              {field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-              {field === "user_id" ? null : field === "owner_id" ||
+              {
+                field === "user_id" || category === "Rent"
+                ? null
+                : field.charAt(0).toUpperCase() + field.slice(1) + ": "
+              }
+              {
+                field === "user_id" ? null : field === "owner_id" ||
                 field === "property_id" ||
                 field === "tenant_id" ? (
                 <select
@@ -128,7 +144,7 @@ function EditDataForm({
                   id={field}
                   name={field}
                   value={formik.values[field]}
-                  onChange={formik.handleChange}
+                  onChange={handleCategoryChange}
                 >
                   <option value="">Select Category</option>
                   <option value="Rent">Rent</option>
@@ -137,7 +153,37 @@ function EditDataForm({
                 </select>
               ) : field === "created_at" ? (
                 <span>{formik.values[field]}</span>
-              ) : field == "is_active" ? (
+              ) :field === "pay_from" ? (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Pay From</option>
+                  {payFrom.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {!option.name ? "others" : option.name}
+                    </option>
+                  ))}
+                </select>
+              ) : field === "pay_to" ? (
+                category === "Rent" ? null : (
+                <select
+                  id={field}
+                  name={field}
+                  onChange={formik.handleChange}
+                  value={formik.values[field] || ""}
+                >
+                  <option value="">Pay To</option>
+                  {payTo.map((option) => (
+                    <option key={option.name} value={option.name}>
+                      {!option.name ? "others" : option.name}
+                    </option>
+                  ))
+              }
+                </select>
+              )) : field == "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}

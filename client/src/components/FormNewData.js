@@ -18,7 +18,6 @@ function FormNewData({
   const [category, setCategory] = useState("");
 
   const fields = FIELD_MAPPINGS[type];
-
   const validation = validations[type];
   const initialData = fields.reduce((obj, field) => {
     obj[field] = getFormikValues(field, "");
@@ -60,8 +59,6 @@ function FormNewData({
       }).then((r) => {
         if (r.ok) {
           r.json().then((data) => {
-            console.log(values);
-            onAddNewData(data);
             alert("A new record has been created");
           });
         } else {
