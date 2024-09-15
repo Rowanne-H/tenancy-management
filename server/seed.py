@@ -198,7 +198,6 @@ def create_transactions(tenants, properties, owners):
                 created_at=payment_date+timedelta(days=1),
                 payment_date=payment_date+timedelta(days=1),
                 description='Letting fee',
-                tenant_id=tenant.id,
                 property_id=property.id,
                 owner_id=owner.id
             )
@@ -227,7 +226,6 @@ def create_transactions(tenants, properties, owners):
                 pay_from=owner.name,
                 pay_to='Real Estate Agent',
                 description='Commission',
-                tenant_id=tenant.id,
                 property_id=property.id,
                 owner_id=owner.id
             )

@@ -39,7 +39,8 @@ const DisplayData = ({ type }) => {
       </h2>
       {type === "owners" || type === "tenants" ? (
         <NavLink className="more" to={`/${type}/${id}/transactions`}>
-          View transactions
+          {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
+          Statement
         </NavLink>
       ) : type === "users" ? (
         <NavLink className="more" to={`/${type}/${id}/owners`}>

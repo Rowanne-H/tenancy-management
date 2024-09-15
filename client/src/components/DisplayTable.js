@@ -95,7 +95,7 @@ function DisplayTable({
             {view === "user"
               ? " List of Owners for Properties Managed by user id " +
                 items[0]["user_id"]
-              : "View" + view.charAt(0).toUpperCase() + view.slice(1)}
+              : view.charAt(0).toUpperCase() + view.slice(1) + " Statement"}
           </span>
         ) : type === "users" ? null : (
           <button className="link-button" onClick={handleNewDataClick}>

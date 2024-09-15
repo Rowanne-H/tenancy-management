@@ -14,13 +14,8 @@ function Transactions({
   const fields = FIELD_MAPPINGS["transactions"];
   const { id } = useParams();
   if (view === "owner") {
-    const filteredProperties = properties.filter(
-      (property) => property.owner_id == id,
-    );
-    const ownerTransactions = transactions.filter((transaction) =>
-      filteredProperties.some(
-        (property) => property.id === transaction.property_id,
-      ),
+    const ownerTransactions = transactions.filter(
+      (transaction) => transaction.owner_id == id,
     );
     items = ownerTransactions;
   }

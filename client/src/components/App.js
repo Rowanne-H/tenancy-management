@@ -101,6 +101,14 @@ function App() {
     setProperties(properties.filter((property) => property.id !== id));
   }
 
+  const activeTenantPropertyIds = new Set(
+    tenants
+      .filter((tenant) => tenant.is_active)
+      .map((tenant) => tenant.property_id),
+  );
+  const propertiesWithoutActiveTenants = properties.filter(
+    (property) => !activeTenantPropertyIds.has(property.id),
+  );
   function addNewTenant(newTenant) {
     setTenants([...tenants, newTenant]);
   }
@@ -240,8 +248,7 @@ function App() {
               render={() => (
                 <FormNewData
                   type="properties"
-                  users={users}
-                  owners={owners}
+                  owners={owners.filter((owner) => owner.user_id == user.id)}
                   onAddNewData={addNewProperty}
                 />
               )}
@@ -257,8 +264,7 @@ function App() {
               render={() => (
                 <FormEditData
                   type="properties"
-                  users={users}
-                  owners={owners}
+                  owners={owners.filter((owner) => owner.user_id == user.id)}
                   onUpdateData={updateProperty}
                 />
               )}
@@ -280,7 +286,8 @@ function App() {
               render={() => (
                 <FormNewData
                   type="tenants"
-                  properties={properties}
+                  properties={propertiesWithoutActiveTenants}
+                  tenants={tenants}
                   onAddNewData={addNewTenant}
                 />
               )}
@@ -296,7 +303,9 @@ function App() {
               render={() => (
                 <FormEditData
                   type="tenants"
-                  properties={properties}
+                  properties={properties.filter(
+                    (property) => property.user_id == user.id,
+                  )}
                   onUpdateData={updateTenant}
                 />
               )}
