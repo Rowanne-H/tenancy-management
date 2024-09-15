@@ -36,6 +36,13 @@ def create_users():
     )
     accounts.password_hash = '123'
     users.append(accounts)
+    test = User(
+       email='test@gmail.com',
+       name=fake.unique.name(),
+       mobile=generate_mobile_number()
+    )
+    test.password_hash = '123'
+    users.append(test)
     for i in range(2):
         user = User(
             email=fake.unique.email(),

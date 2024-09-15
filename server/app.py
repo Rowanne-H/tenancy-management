@@ -368,6 +368,10 @@ class Tenants(Resource):
         property = Property.query.filter_by(id=data['property_id']).first()
         if property is None:
             return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
+        active_tenant_exists = any(tenant.is_active for tenant in property.tenants)
+        print(active_tenant_exists)
+        if active_tenant_exists:
+            return make_response(jsonify({'message': 'Please select a property that is vacant'}), 404)
         auth_response = user_authorization(property.user_id)
         if auth_response:
             return auth_response 
