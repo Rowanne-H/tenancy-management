@@ -290,7 +290,7 @@ class Transaction(BaseModel, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
-    payment_date = db.Column(db.Date, nullable=False)
+    payment_date = db.Column(db.Date, server_default=db.func.now())
     category = db.Column(db.String, nullable=False)
     pay_from = db.Column(db.String, nullable=False)
     pay_to = db.Column(db.String, nullable=False)
