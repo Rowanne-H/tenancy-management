@@ -365,16 +365,19 @@ class Tenants(Resource):
     
     def post(self):
         data = request.get_json()
+        user = User.query.filter_by(id=session.get('user_id')).first()
+        if user is None:
+            return make_response(jsonify({'message': 'Please input a valid user id'}), 404)
         property = Property.query.filter_by(id=data['property_id']).first()
-        if property is None:
-            return make_response(jsonify({'message': 'Please input a valid property id'}), 404)
-        active_tenant_exists = any(tenant.is_active for tenant in property.tenants)
-        print(active_tenant_exists)
-        if active_tenant_exists:
-            return make_response(jsonify({'message': 'Please select a property that is vacant'}), 404)
-        auth_response = user_authorization(property.user_id)
-        if auth_response:
-            return auth_response 
+        owner_id = ''
+        if property:
+            active_tenant_exists = any(tenant.is_active for tenant in property.tenants)
+            if active_tenant_exists:
+                return make_response(jsonify({'message': 'Please select a property that is vacant'}), 404)
+            auth_response = user_authorization(property.user_id)
+            if auth_response:
+                return auth_response 
+            owner_id = property.owner_id
         lease_start_date = getDate(data['lease_start_date'])
         lease_end_date = getDate(data['lease_end_date'])
         vacating_date = getDate(data.get('vacating_date')) if data.get('vacating_date') else None
@@ -390,9 +393,9 @@ class Tenants(Resource):
             vacating_date=vacating_date,
             rent=data['rent'],
             is_active=data.get('is_active', True),
-            property_id=data['property_id'],
-            owner_id=property.owner_id,
-            user_id=property.user_id
+            property_id=data.get('property_id', ''),
+            owner_id=owner_id,
+            user_id=user.id
         )
         db.session.add(new_tenant)
         db.session.commit()
