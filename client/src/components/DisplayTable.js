@@ -26,6 +26,7 @@ function DisplayTable({
   type,
   view = "",
   user,
+  managingAgent = "",
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(8);
@@ -93,8 +94,7 @@ function DisplayTable({
         {view === "owner" || view === "tenant" || view === "user" ? (
           <span>
             {view === "user"
-              ? " List of Owners for Properties Managed by user id " +
-                items[0]["user_id"]
+              ? `List of Owners for Properties Managed by Propety Manager ${managingAgent}`
               : view.charAt(0).toUpperCase() + view.slice(1) + " Statement"}
           </span>
         ) : type === "users" ? null : (

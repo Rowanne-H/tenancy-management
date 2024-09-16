@@ -50,6 +50,14 @@ function DisplayTableRow({
     }
   }
 
+  function handleChangeUserClick() {
+    if (user.is_accounts) {
+      history.push(`/${type}/${item.id}/changeuser`);
+    } else {
+      alert("User not authorized to change status");
+    }
+  }
+
   return (
     <tr>
       <td>{item.id}</td>
@@ -93,6 +101,11 @@ function DisplayTableRow({
           {type === "users" ? (
             <button className="link-button" onClick={handleChangeStatusClick}>
               Change Status
+            </button>
+          ) : null}
+          {type === "owners" ? (
+            <button className="link-button" onClick={handleChangeUserClick}>
+              Change User
             </button>
           ) : null}
         </td>

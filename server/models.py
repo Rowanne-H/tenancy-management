@@ -228,7 +228,7 @@ class Property(BaseModel, SerializerMixin):
             'commission': self.commission,
             'letting_fee': self.letting_fee,
             'owner_id': self.owner_id,
-            "user_id": self.user_id,
+            'user_id': self.user_id,
             'is_active': self.is_active
         }
 
@@ -285,7 +285,7 @@ class Tenant(BaseModel, SerializerMixin):
             'vacating_date': self.vacating_date,
             'property_id': self.property_id,
             'owner_id': self.property_id,
-            "user_id": self.user_id,
+            'user_id': self.user_id,
             'is_active': self.is_active
         }
 

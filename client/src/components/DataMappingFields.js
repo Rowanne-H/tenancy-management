@@ -53,7 +53,7 @@ export const FIELD_MAPPINGS = {
     "pay_to",
     "created_at",
     "payment_date",
-    "category",    
+    "category",
     "description",
     "amount",
   ],

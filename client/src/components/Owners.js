@@ -1,15 +1,16 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import DisplayTable from "./DisplayTable";
-import { FIELD_MAPPINGS } from "./DataMappingFields";
 
-function Owners({ owners, deleteOwner, user, view = "" }) {
-  const fields = FIELD_MAPPINGS["owners"];
+function Owners({ owners, deleteOwner, user, view = "", users = [] }) {
+  const fields = ["ref", "name", "email", "user_id", "is_active"];
   const { id } = useParams();
   let items = owners;
+  let managingAgent = "";
   if (view === "user") {
     const filteredOwners = owners.filter((owner) => owner.user_id == id);
     items = filteredOwners;
+    const user = users.filter((user) => user.id == id)[0];
   }
 
   return (
@@ -21,6 +22,7 @@ function Owners({ owners, deleteOwner, user, view = "" }) {
       type="owners"
       user={user}
       view={view}
+      managingAgent={managingAgent}
     />
   );
 }

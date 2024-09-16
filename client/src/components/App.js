@@ -9,6 +9,7 @@ import FormEditUser from "./FormEditUser";
 import DisplayData from "./DisplayData";
 import FormEditData from "./FormEditData";
 import FormNewData from "./FormNewData";
+import FormChangeUser from "./FormChangeUser";
 import Owners from "./Owners";
 import Properties from "./Properties";
 import Tenants from "./Tenants";
@@ -190,7 +191,13 @@ function App() {
               exact
               path="/users/:id/owners"
               render={() => (
-                <Owners owners={owners} deleteOwner={deleteOwner} view="user" />
+                <Owners
+                  owners={owners}
+                  users={users}
+                  deleteOwner={deleteOwner}
+                  user={user}
+                  view="user"
+                />
               )}
             />
             <Route
@@ -217,6 +224,20 @@ function App() {
               path="/owners/:id/edit"
               render={() => (
                 <FormEditData type="owners" onUpdateData={updateOwner} />
+              )}
+            />
+            <Route
+              exact
+              path="/owners/:id/changeuser"
+              render={() => (
+                <FormChangeUser
+                  users={users}
+                  properties={properties}
+                  tenants={tenants}
+                  onUpdateOwner={updateOwner}
+                  onUpdateProperty={updateProperty}
+                  onUpdateTenant={updateTenant}
+                />
               )}
             />
             <Route
