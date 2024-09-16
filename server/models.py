@@ -3,42 +3,51 @@ from sqlalchemy.orm import validates
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
-from flask_sqlalchemy import SQLAlchemy 
-from sqlalchemy import MetaData 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
 from config import db, bcrypt
 from datetime import date, datetime
 
-metadata = MetaData(naming_convention={ 
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s", 
-    }) 
+metadata = MetaData(
+    naming_convention={
+        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    })
 
-db = SQLAlchemy(metadata=metadata) 
+db = SQLAlchemy(metadata=metadata)
+
 
 # Models go here!
 def validate_name(value):
     if not value or len(value) < 2:
-        raise ValueError("Name must be at least 2 characters long and not empty.")
+        raise ValueError(
+            "Name must be at least 2 characters long and not empty.")
     return value
+
 
 def validate_email(value):
     if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', value):
         raise ValueError("Invalid email format")
     return value
 
+
 def validate_mobile(value):
-    if not value or len(value)!=10:
+    if not value or len(value) != 10:
         raise ValueError("Invalid mobile number format. Must be 10 digits.")
     return value
 
+
 def validate_address(value):
     if not value or len(value) < 10:
-        raise ValueError("Name must be at least 10 characters long and not empty.")
+        raise ValueError(
+            "Name must be at least 10 characters long and not empty.")
     return value
+
 
 def validate_date(value):
     if value is None:
         raise ValueError("Date cannot be None")
     return value
+
 
 def validate_date_format(value):
     if value:
@@ -46,9 +55,11 @@ def validate_date_format(value):
             raise ValueError("Invalid date format")
     return value
 
+
 def validate_ref(value):
     if not value or len(value) < 2:
-        raise ValueError("ref must be at least 2 characters long and not empty.")
+        raise ValueError(
+            "ref must be at least 2 characters long and not empty.")
     return value
 
 
@@ -72,25 +83,26 @@ class BaseModel(db.Model):
     @validates('address')
     def validate_address(self, key, value):
         return validate_address(value)
-    
+
     @validates('management_start_date')
     @validates('lease_start_date')
     @validates('lease_end_date')
     @validates('payment_date')
     def validate_date(self, key, value):
         return validate_date(value)
+
     def validate_date_format(self, key, value):
         return validate_date_format(value)
-    
+
     @validates('management_end_date')
     @validates('vacating_date')
     def validate_date_format(self, key, value):
         return validate_date_format(value)
-    
+
     @validates('ref')
     def validate_ref(self, key, value):
         return validate_ref(value)
-    
+
 
 class User(BaseModel, SerializerMixin):
     __tablename__ = 'users'
@@ -103,26 +115,27 @@ class User(BaseModel, SerializerMixin):
     is_accounts = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
-    owners = db.relationship('Owner', backref='user') 
-    properties = association_proxy('owners', 'property', 
-                               creator=lambda pr: Property(property=pr))
-    tenants = association_proxy('properties', 'tenant', 
-                               creator=lambda te: Property(tenant=te))
+    owners = db.relationship('Owner', backref='user')
+    properties = association_proxy('owners',
+                                   'property',
+                                   creator=lambda pr: Property(property=pr))
+    tenants = association_proxy('properties',
+                                'tenant',
+                                creator=lambda te: Property(tenant=te))
 
     @hybrid_property
     def password_hash(self):
         raise Exception('Password hashes may not be viewed.')
-    
+
     @password_hash.setter
     def password_hash(self, password):
-        password_hash = bcrypt.generate_password_hash(
-            password.encode('utf-8'))
+        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
 
     def authenticate(self, password):
-        return bcrypt.check_password_hash(
-            self._password_hash, password.encode('utf-8'))
-    
+        return bcrypt.check_password_hash(self._password_hash,
+                                          password.encode('utf-8'))
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -135,7 +148,8 @@ class User(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'User {self.email}, ID {self.id}'
-    
+
+
 class Owner(BaseModel, SerializerMixin):
     __tablename__ = 'owners'
 
@@ -146,16 +160,17 @@ class Owner(BaseModel, SerializerMixin):
     mobile = db.Column(db.String(10), nullable=False)
     address = db.Column(db.String, nullable=False)
     note = db.Column(db.String)
-    management_start_date = db.Column(db.Date, nullable=False) 
-    management_end_date = db.Column(db.Date) 
+    management_start_date = db.Column(db.Date, nullable=False)
+    management_end_date = db.Column(db.Date)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    properties = db.relationship('Property', backref='owner') 
-    tenants = association_proxy('properties', 'tenant', 
-                               creator=lambda te: Property(tenant=te))
-    
+    properties = db.relationship('Property', backref='owner')
+    tenants = association_proxy('properties',
+                                'tenant',
+                                creator=lambda te: Property(tenant=te))
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -168,12 +183,13 @@ class Owner(BaseModel, SerializerMixin):
             'management_end_date': self.management_end_date,
             'management_start_date': self.management_start_date,
             'is_active': self.is_active,
-            'user_id': self.user_id 
+            'user_id': self.user_id
         }
-    
+
     def __repr__(self):
         return f'Owner(id={self.id})'
-    
+
+
 class Property(BaseModel, SerializerMixin):
     __tablename__ = 'properties'
 
@@ -186,24 +202,24 @@ class Property(BaseModel, SerializerMixin):
 
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    
-    tenants = db.relationship('Tenant', backref='property') 
+
+    tenants = db.relationship('Tenant', backref='property')
     transactions = db.relationship('Transaction', backref='property')
 
     @validates('commission')
     def validate_comission(self, key, value):
         value = float(value)
-        if not value or value<=0 or value>=0.1:
+        if not value or value <= 0 or value >= 0.1:
             raise ValueError("comission must be between 0 and 0.1")
         return value
-    
+
     @validates('letting_fee')
     def validate_letting_fee(self, key, value):
         value = float(value)
-        if not value or value<=0 or value>=2:
+        if not value or value <= 0 or value >= 2:
             raise ValueError("letting fee must be between 0 and 2")
         return value
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -213,12 +229,13 @@ class Property(BaseModel, SerializerMixin):
             'letting_fee': self.letting_fee,
             'owner_id': self.owner_id,
             "user_id": self.user_id,
-            'is_active': self.is_active 
+            'is_active': self.is_active
         }
 
     def __repr__(self):
         return f'Property(id={self.id})'
-    
+
+
 class Tenant(BaseModel, SerializerMixin):
     __tablename__ = 'tenants'
 
@@ -229,30 +246,30 @@ class Tenant(BaseModel, SerializerMixin):
     mobile = db.Column(db.String(15), nullable=False)
     note = db.Column(db.String)
     lease_term = db.Column(db.Float, nullable=False)
-    lease_start_date = db.Column(db.Date, nullable=False) 
+    lease_start_date = db.Column(db.Date, nullable=False)
     lease_end_date = db.Column(db.Date, nullable=False)
     rent = db.Column(db.Float, nullable=False)
     vacating_date = db.Column(db.Date)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'))
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @validates('lease_term')
     def validate_lease_term(self, key, value):
         value = float(value)
-        if not value or value<=0 or value>12:
+        if not value or value <= 0 or value > 12:
             raise ValueError("Lease term must be between 0 and 12")
         return value
-    
+
     @validates('rent')
     def validate_rent(self, key, value):
         value = float(value)
-        if not value or value<0:
+        if not value or value < 0:
             raise ValueError("Amount must be more than 0")
         return value
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -269,22 +286,24 @@ class Tenant(BaseModel, SerializerMixin):
             'property_id': self.property_id,
             'owner_id': self.property_id,
             "user_id": self.user_id,
-            'is_active': self.is_active 
+            'is_active': self.is_active
         }
 
     def __repr__(self):
         return f'Tenant(id={self.id})'
-    
+
+
 class Creditor(BaseModel, SerializerMixin):
     __tablename__ = 'creditors'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
-    
+
     def __repr__(self):
         return f'Creditor {self.name}, ID {self.id}'
-     
+
+
 class Transaction(BaseModel, SerializerMixin):
     __tablename__ = 'transactions'
 
@@ -296,25 +315,25 @@ class Transaction(BaseModel, SerializerMixin):
     pay_to = db.Column(db.String, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     description = db.Column(db.String, nullable=False)
-      
-    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id')) 
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id')) 
-    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id')) 
-    creditor_id = db.Column(db.Integer, db.ForeignKey('creditors.id')) 
+
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
+    creditor_id = db.Column(db.Integer, db.ForeignKey('creditors.id'))
 
     @validates('category')
     def validate_category(self, key, value):
         if value != 'Rent' and value != 'Expense' and value != 'Others':
             raise ValueError("Failed simple category validation")
         return value
-    
+
     @validates('amount')
     def validate_amount(self, key, value):
         value = float(value)
         if not value:
             raise ValueError("Amount cannot be None")
         return value
-    
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -333,4 +352,3 @@ class Transaction(BaseModel, SerializerMixin):
 
     def __repr__(self):
         return f'Transaction(id={self.id})'
-    

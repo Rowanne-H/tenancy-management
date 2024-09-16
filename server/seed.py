@@ -7,12 +7,12 @@ from random import randint, choice as rc
 from faker import Faker
 from datetime import datetime, timedelta, date
 
-
 # Local imports
 from app import app
 from models import db, User, Owner, Property, Tenant, Transaction, Creditor
 
 fake = Faker()
+
 
 def delete_records():
     User.query.delete()
@@ -23,24 +23,22 @@ def delete_records():
     Creditor.query.delete()
     db.session.commit()
 
+
 def generate_mobile_number():
     return f"04{randint(10000000, 99999999):08d}"
 
+
 def create_users():
     users = []
-    accounts = User(
-       email='admin@gmail.com',
-       name=fake.unique.name(),
-       mobile=generate_mobile_number(),
-       is_accounts=True
-    )
+    accounts = User(email='admin@gmail.com',
+                    name=fake.unique.name(),
+                    mobile=generate_mobile_number(),
+                    is_accounts=True)
     accounts.password_hash = '123'
     users.append(accounts)
-    test = User(
-       email='test@gmail.com',
-       name=fake.unique.name(),
-       mobile=generate_mobile_number()
-    )
+    test = User(email='test@gmail.com',
+                name=fake.unique.name(),
+                mobile=generate_mobile_number())
     test.password_hash = '123'
     users.append(test)
     for i in range(2):
@@ -55,6 +53,7 @@ def create_users():
     db.session.commit()
     return users
 
+
 def generate_a_date():
     #generate a random day within the current month
     today = datetime.today()
@@ -62,52 +61,52 @@ def generate_a_date():
     next_month = first_day_of_month.replace(day=28) + timedelta(days=4)
     first_day_of_next_month = next_month.replace(day=1)
     last_day_of_month = first_day_of_next_month - timedelta(days=1)
-    return fake.date_between(start_date=first_day_of_month - timedelta(days=15), end_date=last_day_of_month)
+    return fake.date_between(start_date=first_day_of_month -
+                             timedelta(days=15),
+                             end_date=last_day_of_month)
+
 
 def create_owners():
-    owners = []    
-    property_managers = [user for user in users if user.is_accounts==False]
-    #management has been terminated    
+    owners = []
+    property_managers = [user for user in users if user.is_accounts == False]
+    #management has been terminated
     inactive_owner = Owner(
         ref=fake.word(),
-        name=fake.unique.name(),        
+        name=fake.unique.name(),
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         address=fake.unique.address(),
-        management_start_date=generate_a_date()-timedelta(days=30),
+        management_start_date=generate_a_date() - timedelta(days=30),
         management_end_date=datetime.today() - timedelta(days=7),
         is_active=False,
-        user=rc(property_managers)
-    )
+        user=rc(property_managers))
     owners.append(inactive_owner)
     for i in range(5):
-        owner = Owner(
-            name=fake.unique.name(),
-            ref=fake.word(),
-            email=fake.unique.email(),
-            mobile=generate_mobile_number(),
-            address=fake.unique.address(),
-            management_start_date=generate_a_date()-timedelta(days=60),
-            user=rc(property_managers)
-        )
+        owner = Owner(name=fake.unique.name(),
+                      ref=fake.word(),
+                      email=fake.unique.email(),
+                      mobile=generate_mobile_number(),
+                      address=fake.unique.address(),
+                      management_start_date=generate_a_date() -
+                      timedelta(days=60),
+                      user=rc(property_managers))
         owners.append(owner)
     db.session.add_all(owners)
     db.session.commit()
     return owners
 
+
 def create_properties(users, owners):
     properties = []
-    active_owners = [owner for owner in owners if owner.is_active==True]
+    active_owners = [owner for owner in owners if owner.is_active == True]
     inactive_owner = owners[0]
-    inactive_property = Property(
-        ref=fake.word(),
-        address=fake.unique.address(),
-        commission=0.05,
-        letting_fee=1,
-        owner=inactive_owner, 
-        user_id=inactive_owner.user_id, 
-        is_active=False
-    )
+    inactive_property = Property(ref=fake.word(),
+                                 address=fake.unique.address(),
+                                 commission=0.05,
+                                 letting_fee=1,
+                                 owner=inactive_owner,
+                                 user_id=inactive_owner.user_id,
+                                 is_active=False)
     properties.append(inactive_property)
     for owner in active_owners:
         property = Property(
@@ -123,9 +122,12 @@ def create_properties(users, owners):
     db.session.commit()
     return properties
 
+
 def create_tenants(properties):
     tenants = []
-    active_properties = [property for property in properties if property.is_active==True]
+    active_properties = [
+        property for property in properties if property.is_active == True
+    ]
     inactive_property = properties[0]
     inactive_tenant = Tenant(
         name=fake.unique.name(),
@@ -133,107 +135,99 @@ def create_tenants(properties):
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         rent=500,
-        lease_term=12,        
-        lease_start_date=datetime.today()+timedelta(days=10),
-        lease_end_date=datetime.today()+timedelta(days=375),
+        lease_term=12,
+        lease_start_date=datetime.today() + timedelta(days=10),
+        lease_end_date=datetime.today() + timedelta(days=375),
         property=inactive_property,
         owner_id=inactive_property.owner_id,
         user_id=inactive_property.user_id,
-        is_active=False
-    )
+        is_active=False)
     tenants.append(inactive_tenant)
     for property in active_properties:
         date = generate_a_date()
-        tenant = Tenant(
-            name=fake.unique.name(),
-            ref=fake.word(),
-            email=fake.unique.email(),
-            mobile=generate_mobile_number(),
-            rent=randint(3, 10)*100,
-            lease_term=12,
-            lease_start_date=date,
-            lease_end_date=date+timedelta(days=365),
-            property=property,
-            owner_id=property.owner_id,
-            user_id=property.user_id
-        )
+        tenant = Tenant(name=fake.unique.name(),
+                        ref=fake.word(),
+                        email=fake.unique.email(),
+                        mobile=generate_mobile_number(),
+                        rent=randint(3, 10) * 100,
+                        lease_term=12,
+                        lease_start_date=date,
+                        lease_end_date=date + timedelta(days=365),
+                        property=property,
+                        owner_id=property.owner_id,
+                        user_id=property.user_id)
         tenants.append(tenant)
     db.session.add_all(tenants)
     db.session.commit()
     return tenants
 
+
 def create_creditors():
     creditors = []
-    agent = Creditor(
-        name='Real Estate Agent',
-    )
+    agent = Creditor(name='Real Estate Agent', )
     creditors.append(agent)
-    others = Creditor(
-        name='Others',
-    )
+    others = Creditor(name='Others', )
     creditors.append(others)
     for i in range(2):
-        tradesman = Creditor(
-            name=fake.unique.name(),
-        )
+        tradesman = Creditor(name=fake.unique.name(), )
         creditors.append(tradesman)
     db.session.add_all(creditors)
     db.session.commit()
     return creditors
 
+
 def create_transactions(tenants, properties, owners):
     transactions = []
     now = date.today()
-    active_tenants = [tenant for tenant in tenants if tenant.is_active==True]
-    for tenant in active_tenants:  
+    active_tenants = [tenant for tenant in tenants if tenant.is_active == True]
+    for tenant in active_tenants:
         payment_date = tenant.lease_start_date
-        property = [property for property in properties if property.id==tenant.property_id][0]
-        owner = [owner for owner in owners if owner.id==property.owner_id][0]
+        property = [
+            property for property in properties
+            if property.id == tenant.property_id
+        ][0]
+        owner = [owner for owner in owners if owner.id == property.owner_id][0]
         if payment_date < now:
             letting_fee = Transaction(
                 category='Expense',
                 amount=-tenant.rent,
                 pay_from=owner.name,
                 pay_to='Real Estate Agent',
-                created_at=payment_date+timedelta(days=1),
-                payment_date=payment_date+timedelta(days=1),
+                created_at=payment_date + timedelta(days=1),
+                payment_date=payment_date + timedelta(days=1),
                 description='Letting fee',
                 property_id=property.id,
-                owner_id=owner.id
-            )
+                owner_id=owner.id)
             transactions.append(letting_fee)
             db.session.add(letting_fee)
         while payment_date < now:
-            rental = Transaction(
-                category='Rent',
-                amount=tenant.rent,
-                created_at=payment_date,
-                payment_date=payment_date,
-                pay_from=tenant.name,
-                pay_to=owner.name,
-                description='Rent',
-                tenant_id=tenant.id,
-                property_id=property.id,
-                owner_id=owner.id
-            )
+            rental = Transaction(category='Rent',
+                                 amount=tenant.rent,
+                                 created_at=payment_date,
+                                 payment_date=payment_date,
+                                 pay_from=tenant.name,
+                                 pay_to=owner.name,
+                                 description='Rent',
+                                 tenant_id=tenant.id,
+                                 property_id=property.id,
+                                 owner_id=owner.id)
             transactions.append(rental)
             db.session.add(rental)
-            commission = Transaction(
-                category='Expense',
-                amount=-tenant.rent*0.05,
-                created_at=payment_date,
-                payment_date=payment_date,
-                pay_from=owner.name,
-                pay_to='Real Estate Agent',
-                description='Commission',
-                property_id=property.id,
-                owner_id=owner.id
-            )
-            transactions.append(commission )
-            db.session.add(commission )
+            commission = Transaction(category='Expense',
+                                     amount=-tenant.rent * 0.05,
+                                     created_at=payment_date,
+                                     payment_date=payment_date,
+                                     pay_from=owner.name,
+                                     pay_to='Real Estate Agent',
+                                     description='Commission',
+                                     property_id=property.id,
+                                     owner_id=owner.id)
+            transactions.append(commission)
+            db.session.add(commission)
             payment_date += timedelta(days=7)
-    db.session.commit()  
+    db.session.commit()
     return transactions
+
 
 if __name__ == '__main__':
     with app.app_context():
@@ -246,4 +240,3 @@ if __name__ == '__main__':
         tenants = create_tenants(properties)
         creditors = create_creditors()
         transactions = create_transactions(tenants, properties, owners)
-
