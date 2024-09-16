@@ -11,19 +11,21 @@ function Transactions({
   user,
 }) {
   let items = transactions;
-  const fields = FIELD_MAPPINGS["transactions"];
+  let fields = FIELD_MAPPINGS["transactions"];
   const { id } = useParams();
   if (view === "owner") {
     const ownerTransactions = transactions.filter(
       (transaction) => transaction.owner_id == id,
     );
     items = ownerTransactions;
+    fields = fields.slice(2);
   }
   if (view === "tenant") {
     const tenantTransactions = transactions.filter(
       (transaction) => transaction.tenant_id == id,
     );
     items = tenantTransactions;
+    fields = fields.slice(2);
   }
 
   return (
