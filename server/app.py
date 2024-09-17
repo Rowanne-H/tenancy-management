@@ -487,9 +487,6 @@ class Tenants(Resource):
                     jsonify(
                         {"message":
                          "Please select a property that is vacant"}), 404)
-            auth_response = user_authorization(property.user_id)
-            if auth_response:
-                return auth_response
             owner_id = property.owner_id
         lease_start_date = getDate(data["lease_start_date"])
         lease_end_date = getDate(data["lease_end_date"])

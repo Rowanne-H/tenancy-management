@@ -30,16 +30,17 @@ def generate_mobile_number():
 
 def create_users():
     users = []
+    # create an accounts to manage users
     accounts = User(email='admin@gmail.com',
                     name=fake.unique.name(),
                     mobile=generate_mobile_number(),
                     is_accounts=True)
-    accounts.password_hash = '123'
+    accounts.password_hash = '1'
     users.append(accounts)
     test = User(email='test@gmail.com',
                 name=fake.unique.name(),
                 mobile=generate_mobile_number())
-    test.password_hash = '123'
+    test.password_hash = '1'
     users.append(test)
     for i in range(2):
         user = User(
@@ -96,7 +97,7 @@ def create_owners():
     return owners
 
 
-def create_properties(users, owners):
+def create_properties(owners):
     properties = []
     active_owners = [owner for owner in owners if owner.is_active == True]
     inactive_owner = owners[0]
@@ -236,7 +237,7 @@ if __name__ == '__main__':
         delete_records()
         users = create_users()
         owners = create_owners()
-        properties = create_properties(users, owners)
+        properties = create_properties(owners)
         tenants = create_tenants(properties)
         creditors = create_creditors()
         transactions = create_transactions(tenants, properties, owners)

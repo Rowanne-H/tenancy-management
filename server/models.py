@@ -110,8 +110,8 @@ class User(BaseModel, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String)
-    name = db.Column(db.String, nullable=False)
-    mobile = db.Column(db.String(10), nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
+    mobile = db.Column(db.String(10), unique=True, nullable=False)
     is_accounts = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
@@ -155,9 +155,9 @@ class Owner(BaseModel, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     ref = db.Column(db.String, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False)
-    mobile = db.Column(db.String(10), nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    mobile = db.Column(db.String(10), unique=True, nullable=False)
     address = db.Column(db.String, nullable=False)
     note = db.Column(db.String)
     management_start_date = db.Column(db.Date, nullable=False)
@@ -241,9 +241,9 @@ class Tenant(BaseModel, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     ref = db.Column(db.String, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False)
-    mobile = db.Column(db.String(15), nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    mobile = db.Column(db.String(15), unique=True, nullable=False)
     note = db.Column(db.String)
     lease_term = db.Column(db.Float, nullable=False)
     lease_start_date = db.Column(db.Date, nullable=False)
@@ -297,7 +297,7 @@ class Creditor(BaseModel, SerializerMixin):
     __tablename__ = 'creditors'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):

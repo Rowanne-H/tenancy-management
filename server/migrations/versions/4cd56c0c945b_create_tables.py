@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 58c0a66cafb6
+Revision ID: 4cd56c0c945b
 Revises: 
-Create Date: 2024-09-14 23:41:59.878703
+Create Date: 2024-09-17 20:49:15.166772
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '58c0a66cafb6'
+revision = '4cd56c0c945b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -33,7 +34,9 @@ def upgrade():
     sa.Column('is_accounts', sa.Boolean(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('mobile'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('owners',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -48,7 +51,10 @@ def upgrade():
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_owners_user_id_users')),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('mobile'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('properties',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -82,12 +88,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['owner_id'], ['owners.id'], name=op.f('fk_tenants_owner_id_owners')),
     sa.ForeignKeyConstraint(['property_id'], ['properties.id'], name=op.f('fk_tenants_property_id_properties')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_tenants_user_id_users')),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('mobile'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('payment_date', sa.Date(), nullable=False),
+    sa.Column('payment_date', sa.Date(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.Column('category', sa.String(), nullable=False),
     sa.Column('pay_from', sa.String(), nullable=False),
     sa.Column('pay_to', sa.String(), nullable=False),
