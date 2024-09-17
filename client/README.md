@@ -1,70 +1,178 @@
-# Getting Started with Create React App
+# Tenancy Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+### Front end
 
-In the project directory, you can run:
 
-### `npm start`
+### Back end
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- A tenancy management database with six tables which are users, owners, properties, tenants, creditors and transactions.
+- A seed.py to seed data.
+- A app.py for routes and handle requests from front end to send or update data in database.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Directory structure
 
-### `npm test`
+```console
+.
+├── CONTRIBUTING.md
+├── LICENSE.md
+├── Pipfile
+├── README.md
+├── client
+│   ├── public
+|   ├── src
+│   ├── .gitignore
+│   └── package.json
+└── server
+    ├── migrations
+    ├── app.py
+    ├── config.py
+    ├── models.py
+    └── seed.py
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+***
 
-### `npm run build`
+## BACK END 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+***
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### tenancy management database
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This database is set up when running SQLAlchemy migrations. All files are connected to this database. In this database, there are six tables which are users, owners, properties, tenants, creditors and transactions.
 
-### `npm run eject`
+#### table users
+This table stores id, email, hashed password, name, mobile, authorization (administrator) and status for users.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### table owners
+This table stores id, reference, name, email, mobile, address, note, management start date, management end date and status(active or inactive), user id for owners.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### table properties
+This table stores id, reference, address, commission, letting fee, user id, owner id and status(active or inactive) for properties.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### table tenants
+This table stores id, reference, name, email, mobile, note, lease_term, rent, lease start date, lease end date, vacating date, property id, owner id, user idand status(active or inactive) for tenants.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### table creditors
+This table stores id, name, and status for users.
 
-## Learn More
+#### table transactions
+This table stores id, payment amount, record date, payment date, category, payer, payee, description as well as relevant tenant id, property id, owner id and creditor id for expenses payments.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+*** 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### models.py and relationships
 
-### Code Splitting
+There are seven models in models.py which are Base Model (mainly for validations on same attributes such as name, email, mobile etc..) User Model, Onwer Model, Property Model, Tenant Model, Creditor Model and Transaction Model. Each model generates a table with their name in plural and they are related to each other. Validations and constraints are set up in this file.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### User Model
 
-### Analyzing the Bundle Size
+User Model is used to create table users and it has one to many relationships to Owner, and its related Property and Tenant.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Owner Model
 
-### Making a Progressive Web App
+Owner Model is used to create table owners and one Onwer has only one User.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Property Model
 
-### Advanced Configuration
+Property Model is used to create table properties and each property belongs to one Owner and then related User. It has many to many relationships to Tenant but only have one active tenant at a time. It has one to many relationship to Transaction.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### Tenant Model
 
-### Deployment
+Tenant Model is used to create table tenants and it has one to many relationships to Property (in real life, a tenant might rent several properties, but in this tenancy management system, a new tenant record will be created as the lease term is diffferent) and then related Onwer and User. It has one to many relationships to Transaction.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### Creditor Model
 
-### `npm run build` fails to minify
+Creditor Model is used to create table creditors and it has one to many relationships to Transaction.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Transaction Model
+
+Transaction Model is used to create table transactions and it has one to  to many relationships to Tenant, Owner, Property and Creditor.
+
+***
+
+### app.py
+
+There are 16 endpoints (urls) related to Models and database so that front end client can retrive, read, create, update and delete data. Authentication and authorization are implemented as follows:
+1. Access Control:
+   Data is available for registered user only
+2. Account Authorization (for accounts role)
+   - delete any inactive user (excluding the account owner)
+   - modify a user's status (is_accounts, is_active)
+   - change user id for a owner as well as related properties and tenants
+   - create, update or delete a creditor
+   - create, update and delete a transaction
+3. User Authorization
+   - sign up and modify their profile information and change the password
+   - create and udpate managing properties as well as associated owners and tenants. (except change of user id)
+   - archive or delete any inactive owners, properties and tenants
+
+#### Sign up - /signup
+It has one route, post(). post() creates a new user in database and log in the user authomatically to access the database.
+
+#### CheckSession - /check_session
+It has one route, get(). get() retrieves the user_id value from the session. If the session has a user_id, database is available for the user. If the session does not have a user_id, user is required to log in or sign up.
+
+#### Login - /login
+It has one route, post(). It gets an email and a password from request's JSON. If email and password are correct, it retrieves the user and sets the session's user_id so the user can access the dababase. 
+
+#### Logout - /logout
+It has one route, delete(). it removes the user_id value from the session.
+
+#### Users - /users
+It has one routes, get(). get() returns all users.
+
+#### UserById - /users/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the user. patch() updates the user based on data from request's JSON. delete() deletes the user.
+
+#### Onwers - /owners
+It has two routes, get() and post(). get() returns all owners. post() creates a new owner.
+
+#### OwnerById - /owners/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the owner. patch() updates the owner based on data from request's JSON. delete() deletes the owner.
+
+#### Properties - /properties
+It has two routes, get() and post(). get() returns all owners. post() creates a new owner.
+
+#### PropertyById - /properties/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the property. patch() updates the property based on data from request's JSON. delete() deletes the property.
+
+#### Tenants - /tenants
+It has two routes, get() and post(). get() returns all tenants. post() creates a new tenant.
+
+#### TenantByID - /tenants/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the owner. patch() updates the tenant based on data from request's JSON. delete() deletes the tenant.
+
+#### Creditors - /creditors
+It has two routes, get() and post(). get() returns all creditors. post() creates a new creditor.
+
+#### CreditorByID - /creditors/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the creditor. patch() updates the creditor based on data from request's JSON. delete() deletes the creditor.
+
+#### Transactions - /transactions
+It has two routes, get() and post(). get() returns all transactions. post() creates a new transaction.
+
+#### TransactionByID - /transactionss/<int:id>
+It has three routes, get(), patch() and delete(). get() returns the transaction. patch() updates the transaction based on data from request's JSON. delete() deletes the transaction.
+
+***
+
+### seed.py
+
+Functions in seed.py is to seed database. 
+
+***
+
+#### References
+1. Academic learning materials
+2. Google
+3. StackOverflow
+4. W3Schools
+5. ChatGPT
+
+
+
+
+
+
