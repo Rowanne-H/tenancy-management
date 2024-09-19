@@ -73,7 +73,8 @@ i {
   margin-left: 5px;
 }
 
-.navbar:hover {
+.navbar:hover,
+.people-menu:hover {
   color: var(--user-icon-color);
 }
 
