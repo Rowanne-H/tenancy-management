@@ -42,41 +42,61 @@ function Navbar({ user, setUser }) {
           className="people-menu"
           onClick={() => setPeopleDropDownMenu(!peopleDropDownMenu)}
         >
-        <i className="fas fa-user-friends"></i> 
+          <i className="fas fa-user-friends"></i>
           People
-        <i className="fas fa-angle-down"></i>
+          <i className="fas fa-angle-down"></i>
           {peopleDropDownMenu ? (
             <div className="people-dropdown-menu">
-              <NavLink className="navbar people-dropdown-item" to="/users" exact>
+              <NavLink
+                className="navbar people-dropdown-item"
+                to="/users"
+                exact
+              >
                 Users
               </NavLink>
-              <NavLink className="navbar people-dropdown-item" to="/owners" exact>
+              <NavLink
+                className="navbar people-dropdown-item"
+                to="/owners"
+                exact
+              >
                 Owners
               </NavLink>
-              <NavLink className="navbar people-dropdown-item" to="/tenants" exact>
+              <NavLink
+                className="navbar people-dropdown-item"
+                to="/tenants"
+                exact
+              >
                 Tenants
               </NavLink>
-              <NavLink className="navbar people-dropdown-item" to="/creditors" exact>
+              <NavLink
+                className="navbar people-dropdown-item"
+                to="/creditors"
+                exact
+              >
                 Creditors
               </NavLink>
             </div>
           ) : null}
         </div>
         <NavLink className="navbar" to="/properties" exact>
-        
-        <i className="fas fa-home"></i>
+          <i className="fas fa-home"></i>
           Properties
         </NavLink>
         <NavLink className="navbar" to="/transactions" exact>
-        
-        <i className="fas fa-dollar"></i>
+          <i className="fas fa-dollar"></i>
           Transactions
         </NavLink>
       </div>
-      <div className={`nav-search-bar ${isFocused ? 'focused' : ''}`}>
-        <i className="fas fa-search"></i><input type="text" placeholder="Search by ref, name, address, email or mobile" onFocus={()=>setIsFocused(true)} 
-        onBlur={() => setIsFocused(false)}/></div>
-        
+      <div className={`nav-search-bar ${isFocused ? "focused" : ""}`}>
+        <i className="fas fa-search"></i>
+        <input
+          type="text"
+          placeholder="Search by ref, name, address, email or mobile"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+      </div>
+
       <div
         className="user-menu"
         onClick={() => setUserDropDownMenu(!userDropDownMenu)}
@@ -93,7 +113,7 @@ function Navbar({ user, setUser }) {
               Edit my profile
             </p>
             <p className="user-dropdown-item link" onClick={handleLogoutClick}>
-              Logout
+              <i className="fas fa-sign-out"></i>Sign out
             </p>
           </div>
         ) : null}

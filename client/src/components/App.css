@@ -1,19 +1,19 @@
 :root {
-  --primary-color:rgb(0,0,0);
+  --primary-color: rgb(0, 0, 0);
   --primary-bg-color: rgb(233, 244, 247);
-  --hover-color:rgb(58, 58, 246);
+  --hover-color: rgb(58, 58, 246);
   --hover-bg-color: rgb(241, 241, 248);
-  --dropdown-bg-color: rgb(255,255,255);
+  --dropdown-bg-color: rgb(255, 255, 255);
   --dropdown-border-color: #e9f4f7;
   --dropdown-box-shadow-color: rgba(0, 0, 0, 0.15);
-  --nav-search-bar-bg-color:rgb(233, 244, 247);
+  --nav-search-bar-bg-color: rgb(233, 244, 247);
   --nav-search-border-color: rgb(173, 216, 230);
   --user-icon-color: rgb(58, 58, 246);
   --user-icon-bg-color: rgb(218, 218, 248);
   --link-underline-color: rgb(136, 136, 243);
-  --error-text-color: rgb(255,0,0);
+  --error-text-color: rgb(255, 0, 0);
   --link-color: rgb(210, 210, 244);
-  --nav-bar-border-bottom-color:rgb(211, 242, 252);
+  --nav-bar-border-bottom-color: rgb(211, 242, 252);
 }
 
 body {
@@ -38,7 +38,7 @@ nav {
   top: 0;
   display: flex;
   font-size: 20pt;
-  padding: 10px; 
+  padding: 10px;
   border-radius: 1px;
   border-bottom: 1px solid var(--nav-bar-border-bottom-color);
 }
@@ -51,18 +51,27 @@ nav {
 .people-menu {
   margin-right: 10px;
   border-radius: 1px;
-  color:var(--primary-color);
+  color: var(--primary-color);
   text-decoration: none;
   cursor: pointer;
 }
 
-i { 
-  margin-right:5px;  
-  font-size: 16pt;
+i {
+  margin-right: 5px;
+  font-size: 15pt;
+}
+
+.fa-search {
+  padding: 6px;
+  font-size: 13pt;
+}
+
+.fa-sign-out {
+  font-size: 13pt;
 }
 
 .fa-angle-down {
-  margin-left:5px;
+  margin-left: 5px;
 }
 
 .navbar:hover {
@@ -76,8 +85,30 @@ tr:hover {
   background-color: var(--hover-bg-color);
 }
 
+.nav-search-bar {
+  display: flex;
+  margin-left: 10px;
+  flex-grow: 1;
+  border: 2px solid var(--nav-search-border-color);
+  border-radius: 4px;
+}
+
+.focused {
+  border: 2px solid var(--hover-color);
+}
+
+.nav-search-bar > input {
+  flex-grow: 1;
+  background-color: var(--nav-search-bar-bg-color);
+  border: none;
+}
+
+.nav-search-bar > input:focus {
+  outline: none;
+}
+
 .user-menu {
-  margin-left:20px;
+  margin-left: 20px;
 }
 
 .user-icon {
@@ -85,39 +116,28 @@ tr:hover {
   color: var(--user-icon-color);
   background-color: var(--user-icon-bg-color);
   cursor: pointer;
-  padding:7px;
+  padding: 7px;
   font-size: 14pt;
   font-weight: bold;
 }
 
-.user-dropdown-menu { 
+.user-dropdown-menu {
   right: 0;
 }
 
-.nav-search-bar  {
-  display: flex;
-  margin-left:10px;
-  flex-grow: 1;
-  border: 2px solid var(--nav-search-border-color);
-  border-radius: 4px;
+.user-dropdown-item {
+  margin: auto;
+  padding: 0px 10px;
+  font-size: 13pt;
 }
 
-.focused {
-  border: 2px solid var(--hover-color)
+.link {
+  cursor: pointer;
+  margin-top: 5px;
 }
 
-.nav-search-bar > input {
-  flex-grow: 1; 
-  background-color: var(--nav-search-bar-bg-color);
-  border: none;
-}
-
-.nav-search-bar > input:focus {
-  outline:none;
-}
-
-.nav-search-bar > i {
-  padding:3px;
+.link:hover {
+  border-bottom: 2px solid var(--link-underline-color);
 }
 
 .people-dropdown-menu,
@@ -131,34 +151,19 @@ tr:hover {
   z-index: 10;
   background-color: var(--dropdown-bg-color);
   margin-top: 10px;
-  padding:5px;
+  padding: 5px;
 }
 
 .people-dropdown-item,
 .link {
-  width:100%;
+  width: 100%;
   padding: 3px 10px;
   font-size: 15pt;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--nav-bar-border-bottom-color)
+  border-bottom: 1px solid var(--nav-bar-border-bottom-color);
 }
 
 .people-dropdown-item:hover,
-.link:hover {
-  border-bottom: 2px solid var(--link-underline-color);
-}
-
-.user-dropdown-item {
-  margin:auto;
-  padding: 0px 10px; 
-  font-size: 12pt; 
-}
-
-.link {
-  cursor: pointer;
-  margin-top: 5px;
-}
-
 .link:hover {
   border-bottom: 2px solid var(--link-underline-color);
 }
@@ -230,5 +235,3 @@ li {
 .page-item {
   margin: 10px;
 }
-
-
