@@ -1,19 +1,18 @@
 :root {
-  --primary-color: rgb(0, 0, 0);
   --primary-bg-color: rgb(233, 244, 247);
-  --hover-color: rgb(58, 58, 246);
-  --hover-bg-color: rgb(241, 241, 248);
-  --dropdown-bg-color: rgb(255, 255, 255);
-  --dropdown-border-color: #e9f4f7;
-  --dropdown-box-shadow-color: rgba(0, 0, 0, 0.15);
-  --nav-search-bar-bg-color: rgb(233, 244, 247);
-  --nav-search-border-color: rgb(173, 216, 230);
+  --nav-bar-border-bottom-color: rgb(211, 242, 252);
+  --primary-color: rgb(0, 0, 0);
   --user-icon-color: rgb(58, 58, 246);
   --user-icon-bg-color: rgb(218, 218, 248);
+  --hover-color: rgb(58, 58, 246);
+  --hover-bg-color: rgb(241, 241, 248);
+  --nav-search-border-color: rgb(173, 216, 230);
+  --nav-search-bar-bg-color: rgb(233, 244, 247);
   --link-underline-color: rgb(136, 136, 243);
+  --dropdown-border-color: #e9f4f7;
+  --dropdown-box-shadow-color: rgba(0, 0, 0, 0.15);
+  --dropdown-bg-color: rgb(255, 255, 255);
   --error-text-color: rgb(255, 0, 0);
-  --link-color: rgb(210, 210, 244);
-  --nav-bar-border-bottom-color: rgb(211, 242, 252);
 }
 
 body {
