@@ -59,7 +59,7 @@ function DisplayTableRow({
   }
 
   return (
-    <tr>
+    <tr onClick={() => history.push(`/${type}/${item.id}`)}>
       <td>{item.id}</td>
       {fields.map((field) => (
         <td key={field}>
@@ -85,12 +85,7 @@ function DisplayTableRow({
       ))}
       {view === "owner" || view === "tenant" || view === "user" ? null : (
         <td>
-          <button
-            className="link-button"
-            onClick={() => history.push(`/${type}/${item.id}`)}
-          >
-            View
-          </button>
+          
           <button className="link-button" onClick={handleEditClick}>
             Edit
           </button>
