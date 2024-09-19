@@ -90,26 +90,30 @@ function DisplayTable({
   };
 
   return (
-    <div>
-      <div>
+    <div className="display-table-container">
+      <div className="display-table-header">
         {view === "owner" || view === "tenant" || view === "user" ? (
-          <span>
+          <p className="display-table-description-text">
             {view === "user"
               ? `List of Owners for Properties Managed by Propety Manager ${managingAgent}`
               : view.charAt(0).toUpperCase() + view.slice(1) + " Statement"}
-          </span>
+          </p>
         ) : type === "users" ? null : (
-          <button className="link-button" onClick={handleNewDataClick}>
-            + New{" "}
-            {type === "properties"
-              ? "Property"
-              : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
-          </button>
+          <div className="add-new">
+            <button onClick={handleNewDataClick}>
+              + New{" "}
+              {type === "properties"
+                ? "Property"
+                : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}
+            </button>
+          </div>
         )}
-        <div>
+        <div className="search-section">
+          <span>{type.charAt(0).toUpperCase() + type.slice(1)} </span>
+          &nbsp;&nbsp;
           <input
             type="text"
-            placeholder="Search..."
+            placeholder={"Filter " + type}
             value={searchQuery}
             onChange={handleSearchChange}
           />

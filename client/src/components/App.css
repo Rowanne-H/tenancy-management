@@ -167,6 +167,22 @@ tr:hover {
   border-bottom: 2px solid var(--link-underline-color);
 }
 
+.display-table-header {
+  margin: 2px;
+}
+
+.add-new {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+  font-size: 15pt;
+}
+
+.display-table-description-text {
+  font-size: 20pt;
+  margin: 20px;
+}
+
 table {
   border-collapse: collapse;
   width: 99%;
