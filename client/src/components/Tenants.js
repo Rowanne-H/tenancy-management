@@ -1,9 +1,15 @@
 import React from "react";
 import DisplayTable from "./DisplayTable";
-import { FIELD_MAPPINGS } from "./DataMappingFields";
 
 function Tenants({ tenants, deleteTenant, user }) {
-  const fields = FIELD_MAPPINGS["tenants"];
+  const fields = [
+    "ref",
+    "name",
+    "email",
+    "property_id",
+    "user_id",
+    "is_active",
+  ];
 
   return (
     <DisplayTable

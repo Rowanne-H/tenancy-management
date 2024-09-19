@@ -29,7 +29,7 @@ function DisplayTable({
   managingAgent = "",
 }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(10);
 
   const [sortBy, setSortBy] = useState(defaultSortBy);
   const [sortOrder, setSortOrder] = useState(defaultSortOrder);

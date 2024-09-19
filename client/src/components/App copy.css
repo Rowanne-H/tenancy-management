@@ -1,0 +1,140 @@
+.App {
+  text-align: center;
+  font-family: "Roboto";
+  font-size: 12pt;
+  box-sizing: border-box;
+}
+
+nav {
+  position: relative;
+  display: flex;
+  font-size: 15pt;
+}
+
+.user-icon {
+  position: absolute;
+  right: 0;
+  border-radius: 100%;
+  background-color: #337a2c;
+  color: whitesmoke;
+}
+
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  background-color: (152, 255, 152);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+nav,
+form,
+th,
+.navbar-button {
+  background-color: rgb(233, 244, 247);
+}
+
+.navbar,
+.navbar-button {
+  color: black;
+  text-decoration: none;
+}
+
+.link-button {
+  font-size: 12pt;
+  color: whitesmoke;
+  text-decoration: none;
+}
+
+a {
+  display: inline-block;
+}
+
+.navbar:hover,
+.navbar-button:hover {
+  color: #337a2c;
+}
+
+.navbar.active,
+button,
+.active {
+  background-color: #4b7248;
+}
+
+form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  margin-top: 100px;
+}
+
+form > label {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+label > input {
+  line-height: 2;
+  padding: 0 5px 0 5px;
+  margin: 10px;
+  border: none;
+  flex-grow: 1;
+  margin-left: 5px;
+}
+
+button {
+  border: none;
+  margin: 5px;
+  padding: 2px 10px 2px 10px;
+  border-radius: 5px;
+  font-size: 15pt;
+}
+
+table,
+span,
+.navbar {
+  margin: 10px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #ddd;
+  padding: 2px;
+  text-align: left;
+}
+
+tr:hover {
+  background-color: rgb(242, 247, 248);
+}
+
+.errorsMessages {
+  color: red;
+  margin: 0px;
+  min-height: 15pt;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center; /* Center the pagination items horizontally */
+  list-style: none; /* Remove default list styles */
+}
+
+.page-item {
+  margin: 10px;
+}
