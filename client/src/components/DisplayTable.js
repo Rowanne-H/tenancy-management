@@ -57,6 +57,7 @@ function DisplayTable({
       );
     });
   const sortedItems = sortItems(filteredItems, sortBy, sortOrder);
+  const totalPages = Math.ceil(filteredItems.length / pageSize);
   const paginatedItems = sortedItems.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize,
@@ -163,7 +164,7 @@ function DisplayTable({
         previousLabel={"Previous"}
         nextLabel={"Next"}
         breakLabel={"..."}
-        pageCount={Math.ceil(items.length / pageSize)}
+        pageCount={totalPages}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
