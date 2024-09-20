@@ -236,7 +236,12 @@ class UserByID(Resource):
         user = User.query.filter_by(id=id).first()
         if user is None:
             return make_response(jsonify({"message": "User not found"}), 404)
-        return make_response(jsonify(user.to_dict()), 200)
+        return make_response(jsonify({
+            **user.to_dict(),
+            "owners": [owner.to_dict() for owner in user.owners],  
+            "properties": [property.to_dict() for property in user.properties],  
+            "tenants": [tenant.to_dict() for tenant in user.tenants] 
+        }), 200)
 
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
@@ -300,7 +305,14 @@ class UserByID(Resource):
 class Owners(Resource):
 
     def get(self):
-        owners = [owner.to_dict() for owner in Owner.query.all()]
+        owners = []
+        for owner in Owner.query.all():
+            owners.append({
+                **owner.to_dict(), 
+                "properties": [property.to_dict() for property in owner.properties],  
+                "tenants": [tenant.to_dict() for tenant in owner.tenants],
+                "transactions": [transaction.to_dict() for transaction in owner.transactions]
+            }) 
         return make_response(jsonify(owners), 200)
 
     def post(self):

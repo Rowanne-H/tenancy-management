@@ -160,9 +160,9 @@ class Owner(BaseModel, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     properties = db.relationship('Property', backref='owner')
-    tenants = association_proxy('properties',
-                                'tenant',
-                                creator=lambda te: Property(tenant=te))
+    tenants = db.relationship('Tenant', backref='owner')
+    transactions = db.relationship('Transaction', backref='owner')
+
 
     def to_dict(self):
         return {
