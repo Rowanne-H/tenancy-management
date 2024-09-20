@@ -85,7 +85,6 @@ function DisplayTableRow({
       ))}
       {view === "owner" || view === "tenant" || view === "user" ? null : (
         <td>
-          
           <button className="link-button" onClick={handleEditClick}>
             Edit
           </button>

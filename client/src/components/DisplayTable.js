@@ -34,6 +34,7 @@ function DisplayTable({
   const [sortBy, setSortBy] = useState(defaultSortBy);
   const [sortOrder, setSortOrder] = useState(defaultSortOrder);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
 
   const filteredItems = items
@@ -109,14 +110,18 @@ function DisplayTable({
           </div>
         )}
         <div className="search-section">
-          <span>{type.charAt(0).toUpperCase() + type.slice(1)} </span>
-          &nbsp;&nbsp;
-          <input
-            type="text"
-            placeholder={"Filter " + type}
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
+          <span>{type.charAt(0).toUpperCase() + type.slice(1)}: </span>
+          <span className={`search-bar ${isFocused ? "focused" : ""}`}>
+            <i className="fas fa-search"></i>
+            <input
+              type="text"
+              placeholder={"Filter " + type}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+          </span>
           &nbsp;&nbsp;
           {type === "users" ||
           type === "owners" ||
@@ -126,6 +131,7 @@ function DisplayTable({
             <label>
               Show Inactive {type.charAt(0).toUpperCase() + type.slice(1)}
               <input
+                className="check-box"
                 type="checkbox"
                 checked={showInactive}
                 onChange={() => setShowInactive(!showInactive)}
