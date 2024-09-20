@@ -6,6 +6,7 @@
 from flask import Flask, request, jsonify, make_response, session
 from flask_migrate import Migrate
 from flask_restful import Resource
+from sqlalchemy.orm import joinedload
 from datetime import date, datetime
 from flask_cors import CORS
 from functools import wraps
@@ -218,7 +219,14 @@ class Logout(Resource):
 class Users(Resource):
 
     def get(self):
-        users = [user.to_dict() for user in User.query.all()]
+        users = []
+        for user in User.query.all():
+            users.append({
+                **user.to_dict(), # Use ** to unpack the dictionary returned by to_dict()
+                "owners": [owner.to_dict() for owner in user.owners],  
+                "properties": [property.to_dict() for property in user.properties],  
+                "tenants": [tenant.to_dict() for tenant in user.tenants] 
+            })
         return make_response(jsonify(users), 200)
 
 
