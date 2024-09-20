@@ -504,7 +504,13 @@ class PropertyByID(Resource):
 class Tenants(Resource):
 
     def get(self):
-        tenants = [tenant.to_dict() for tenant in Tenant.query.all()]
+        tenants = []
+        for tenant in Tenant.query.all():
+            tenants.append({
+                **tenant.to_dict(), 
+                "transactions": [transaction.to_dict() for transaction in tenant.transactions]
+            })
+        
         return make_response(jsonify(tenants), 200)
 
     def post(self):
@@ -555,7 +561,10 @@ class TenantByID(Resource):
         tenant = Tenant.query.filter_by(id=id).first()
         if tenant is None:
             return make_response(jsonify({"message": "Tenant not found"}), 404)
-        return make_response(jsonify(tenant.to_dict()), 200)
+        return make_response(jsonify({
+                **tenant.to_dict(), 
+                "transactions": [transaction.to_dict() for transaction in tenant.transactions]
+            }), 200)
 
     def patch(self, id):
         tenant = Tenant.query.filter_by(id=id).first()

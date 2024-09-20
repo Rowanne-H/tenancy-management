@@ -249,6 +249,8 @@ class Tenant(BaseModel, SerializerMixin):
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    transactions = db.relationship('Transaction', backref='tenant')
+
     @validates('lease_term')
     def validate_lease_term(self, key, value):
         value = float(value)
