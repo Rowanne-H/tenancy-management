@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 4cd56c0c945b
+Revision ID: 62200b395503
 Revises: 
-Create Date: 2024-09-17 20:49:15.166772
+Create Date: 2024-09-20 22:42:19.977247
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4cd56c0c945b'
+revision = '62200b395503'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,10 +28,10 @@ def upgrade():
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
-    sa.Column('_password_hash', sa.String(), nullable=True),
+    sa.Column('_password_hash', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('mobile', sa.String(length=10), nullable=False),
-    sa.Column('is_accounts', sa.Boolean(), nullable=True),
+    sa.Column('is_accounts', sa.Boolean(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
@@ -74,7 +74,7 @@ def upgrade():
     sa.Column('ref', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
-    sa.Column('mobile', sa.String(length=15), nullable=False),
+    sa.Column('mobile', sa.String(), nullable=False),
     sa.Column('note', sa.String(), nullable=True),
     sa.Column('lease_term', sa.Float(), nullable=False),
     sa.Column('lease_start_date', sa.Date(), nullable=False),
@@ -95,8 +95,8 @@ def upgrade():
     )
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('payment_date', sa.Date(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('payment_date', sa.Date(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('category', sa.String(), nullable=False),
     sa.Column('pay_from', sa.String(), nullable=False),
     sa.Column('pay_to', sa.String(), nullable=False),

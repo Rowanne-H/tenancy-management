@@ -39,7 +39,7 @@ def validate_mobile(value):
 def validate_address(value):
     if not value or len(value) < 10:
         raise ValueError(
-            "Name must be at least 10 characters long and not empty.")
+            "Address must be at least 10 characters long and not empty.")
     return value
 
 
@@ -88,18 +88,15 @@ class BaseModel(db.Model):
     @validates('lease_start_date')
     @validates('lease_end_date')
     @validates('payment_date')
+    @validates('created_at')
     def validate_date(self, key, value):
         return validate_date(value)
 
     def validate_date_format(self, key, value):
         return validate_date_format(value)
 
-    @validates('management_end_date')
-    @validates('vacating_date')
-    def validate_date_format(self, key, value):
-        return validate_date_format(value)
-
     @validates('ref')
+    @validates('description')
     def validate_ref(self, key, value):
         return validate_ref(value)
 
@@ -109,19 +106,15 @@ class User(BaseModel, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
-    _password_hash = db.Column(db.String)
+    _password_hash = db.Column(db.String, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
     mobile = db.Column(db.String(10), unique=True, nullable=False)
-    is_accounts = db.Column(db.Boolean, default=False)
+    is_accounts = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     owners = db.relationship('Owner', backref='user')
-    properties = association_proxy('owners',
-                                   'property',
-                                   creator=lambda pr: Property(property=pr))
-    tenants = association_proxy('properties',
-                                'tenant',
-                                creator=lambda te: Property(tenant=te))
+    properties = db.relationship('Property', backref='user')
+    tenants = db.relationship('Tenant', backref='user')
 
     @hybrid_property
     def password_hash(self):
@@ -180,8 +173,8 @@ class Owner(BaseModel, SerializerMixin):
             'mobile': self.mobile,
             'address': self.address,
             'note': self.note,
-            'management_end_date': self.management_end_date,
             'management_start_date': self.management_start_date,
+            'management_end_date': self.management_end_date,
             'is_active': self.is_active,
             'user_id': self.user_id
         }
@@ -243,7 +236,7 @@ class Tenant(BaseModel, SerializerMixin):
     ref = db.Column(db.String, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
-    mobile = db.Column(db.String(15), unique=True, nullable=False)
+    mobile = db.Column(db.String(), unique=True, nullable=False)
     note = db.Column(db.String)
     lease_term = db.Column(db.Float, nullable=False)
     lease_start_date = db.Column(db.Date, nullable=False)
@@ -259,8 +252,8 @@ class Tenant(BaseModel, SerializerMixin):
     @validates('lease_term')
     def validate_lease_term(self, key, value):
         value = float(value)
-        if not value or value <= 0 or value > 12:
-            raise ValueError("Lease term must be between 0 and 12")
+        if not value or value <= 0:
+            raise ValueError("Lease term can not be negative or None")
         return value
 
     @validates('rent')
@@ -301,15 +294,19 @@ class Creditor(BaseModel, SerializerMixin):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        return f'Creditor {self.name}, ID {self.id}'
+        return f'Creditor(id={self.id})'
 
 
 class Transaction(BaseModel, SerializerMixin):
     __tablename__ = 'transactions'
 
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    payment_date = db.Column(db.Date, server_default=db.func.now())
+    created_at = db.Column(db.DateTime,
+                           server_default=db.func.now(),
+                           nullable=False)
+    payment_date = db.Column(db.Date,
+                             server_default=db.func.now(),
+                             nullable=False)
     category = db.Column(db.String, nullable=False)
     pay_from = db.Column(db.String, nullable=False)
     pay_to = db.Column(db.String, nullable=False)
@@ -324,7 +321,9 @@ class Transaction(BaseModel, SerializerMixin):
     @validates('category')
     def validate_category(self, key, value):
         if value != 'Rent' and value != 'Expense' and value != 'Others':
-            raise ValueError("Failed simple category validation")
+            raise ValueError(
+                "The category must be one of the following: Rent, Expense, or Others."
+            )
         return value
 
     @validates('amount')
