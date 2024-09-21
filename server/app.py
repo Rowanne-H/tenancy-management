@@ -219,15 +219,7 @@ class Logout(Resource):
 class Users(Resource):
 
     def get(self):
-        users = []
-        for user in User.query.all():
-            users.append({
-                **user.to_dict(),  # Use ** to unpack the dictionary returned by to_dict()
-                "owners": [owner.to_dict() for owner in user.owners],
-                "properties":
-                [property.to_dict() for property in user.properties],
-                "tenants": [tenant.to_dict() for tenant in user.tenants]
-            })
+        users = [user.to_dict() for user in User.query.all()]
         return make_response(jsonify(users), 200)
 
 
@@ -317,17 +309,7 @@ class UserByID(Resource):
 class Owners(Resource):
 
     def get(self):
-        owners = []
-        for owner in Owner.query.all():
-            owners.append({
-                **owner.to_dict(), "user":
-                owner.user.to_dict(),
-                "properties":
-                [property.to_dict() for property in owner.properties],
-                "tenants": [tenant.to_dict() for tenant in owner.tenants],
-                "transactions":
-                [transaction.to_dict() for transaction in owner.transactions]
-            })
+        owners = [owner.to_dict() for owner in Owner.query.all()]
         return make_response(jsonify(owners), 200)
 
     def post(self):
@@ -425,20 +407,7 @@ class OwnerByID(Resource):
 class Properties(Resource):
 
     def get(self):
-        properties = []
-        for property in Property.query.all():
-            properties.append({
-                **property.to_dict(), "user":
-                property.user.to_dict(),
-                "owner":
-                property.owner.to_dict(),
-                "tenants": [tenant.to_dict() for tenant in property.tenants],
-                "transactions": [
-                    transaction.to_dict()
-                    for transaction in property.transactions
-                ]
-            })
-
+        properties = [property.to_dict() for property in Property.query.all()]
         return make_response(jsonify(properties), 200)
 
     def post(self):
@@ -536,19 +505,7 @@ class PropertyByID(Resource):
 class Tenants(Resource):
 
     def get(self):
-        tenants = []
-        for tenant in Tenant.query.all():
-            tenants.append({
-                **tenant.to_dict(), "user":
-                tenant.user.to_dict(),
-                "owner":
-                tenant.owner.to_dict(),
-                "property":
-                tenant.property.to_dict(),
-                "transactions":
-                [transaction.to_dict() for transaction in tenant.transactions]
-            })
-
+        tenants = [tenant.to_dict() for tenant in Tenant.query.all()]
         return make_response(jsonify(tenants), 200)
 
     def post(self):
