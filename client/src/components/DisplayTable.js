@@ -65,12 +65,22 @@ function DisplayTable({
       return true;
     })
     .filter((item) => {
-      return fields.some((field) =>
-        item[field]
+      return fields.some((field) => {
+        let searchItem = item[field];
+        if (field === "user_id") {
+          searchItem = getIdValue(users, field, item[field]);
+        }
+        if (field === "owner_id") {
+          searchItem = getIdValue(owners, field, item[field]);
+        }
+        if (field === "property_id") {
+          searchItem = getIdValue(properties, field, item[field]);
+        }
+        return searchItem
           ?.toString()
           .toLowerCase()
-          .includes(searchQuery.toLowerCase()),
-      );
+          .includes(searchQuery.toLowerCase());
+      });
     });
   const sortItems = (items, sortBy, sortOrder) => {
     return [...items].sort((a, b) => {
