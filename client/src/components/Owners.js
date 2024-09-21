@@ -1,28 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import DisplayTable from "./DisplayTable";
+import { ENDPOINTS } from "./DataMappingFields";
 
-function Owners({ owners, deleteOwner, user, view = "", users = [] }) {
+function Owners({ owners, user, view = "" }) {
   const fields = ["ref", "name", "email", "user_id", "is_active"];
+  const [item, setItem] = useState();
+  const [items, setItems] = useState(owners);
+
   const { id } = useParams();
-  let items = owners;
-  let managingAgent = "";
-  if (view === "user") {
-    const filteredOwners = owners.filter((owner) => owner.user_id == id);
-    items = filteredOwners;
-    const user = users.filter((user) => user.id == id)[0];
-  }
+  useEffect(() => {
+    if (id && view) {
+      fetch(ENDPOINTS[view + "s"] + id)
+        .then((r) => {
+          if (!r.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return r.json();
+        })
+        .then((data) => {
+          setItem(data);
+          setItems(data.owners);
+        });
+    }
+  }, [id, view]);
 
   return (
     <DisplayTable
       items={items}
-      deleteItem={deleteOwner}
       fields={fields}
       defaultSortBy="id"
       type="owners"
       user={user}
       view={view}
-      managingAgent={managingAgent}
+      item={item}
     />
   );
 }

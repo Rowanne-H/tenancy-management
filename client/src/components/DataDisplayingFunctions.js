@@ -21,6 +21,37 @@ export const getDate = (value) => {
   return date;
 };
 
+export const formatTitleValue = (field) => {
+  if (field === "properties") {
+    return "Property";
+  }
+  if (field === "letting_fee") {
+    return "Letting Fee(week/s)";
+  }
+  if (field === "commission") {
+    return "Commission (%)";
+  }
+  if (field === "lease_term") {
+    return "Lease Term (months)";
+  }
+  if (field === "user_id") {
+    return "Property Manager";
+  }
+  if (field.includes("_id")) {
+    return field.charAt(0).toUpperCase() + field.slice(1, field.length - 3);
+  }
+  if (field.includes("_")) {
+    let words = field.split("_");
+    let title = "";
+    for (let i = 0; i < words.length; i++) {
+      let word = words[i];
+      title += word.charAt(0).toUpperCase() + word.slice(1) + " ";
+    }
+    return title.slice(0, title.length - 1);
+  }
+  return field.charAt(0).toUpperCase() + field.slice(1);
+};
+
 export const formatValue = (field, value) => {
   if (field === "is_accounts" || field === "is_active") {
     return value ? "Yes" : "No";

@@ -268,7 +268,7 @@ class UserByID(Resource):
                     return make_response(
                         jsonify({
                             "message":
-                            "Accounts can not change status himself/herself"
+                            "Accounts cannot change their own status"
                         }),
                         403,
                     )
@@ -297,7 +297,7 @@ class UserByID(Resource):
         if user.id == session.get("user_id"):
             return make_response(
                 jsonify({"message":
-                         "Accounts can not delete himself/herself"}), 400)
+                         "Accounts can not delete their own record"}), 400)
         owner = Owner.query.filter_by(user_id=id).first()
         if owner:
             return make_response(

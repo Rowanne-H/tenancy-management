@@ -65,8 +65,6 @@ function App() {
     });
   }, [user]);
 
-  console.log(tenants)
-
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
@@ -168,14 +166,18 @@ function App() {
             <Route
               exact
               path="/users"
-              render={() => (
-                <Users users={users} user={user} deleteUser={deleteUser} />
-              )}
+              render={() => <Users users={users} user={user} />}
             />
             <Route
               exact
               path="/users/:id"
-              render={() => <DisplayData type="users" />}
+              render={() => (
+                <DisplayData
+                  type="users"
+                  user={user}
+                  onDeleteItem={deleteUser}
+                />
+              )}
             />
             <Route
               exact
@@ -193,21 +195,13 @@ function App() {
               exact
               path="/users/:id/owners"
               render={() => (
-                <Owners
-                  owners={owners}
-                  users={users}
-                  deleteOwner={deleteOwner}
-                  user={user}
-                  view="user"
-                />
+                <Owners owners={owners} users={users} user={user} view="user" />
               )}
             />
             <Route
               exact
               path="/owners"
-              render={() => (
-                <Owners owners={owners} deleteOwner={deleteOwner} user={user} />
-              )}
+              render={() => <Owners owners={owners} user={user} />}
             />
             <Route
               exact
@@ -219,7 +213,13 @@ function App() {
             <Route
               exact
               path="/owners/:id"
-              render={() => <DisplayData type="owners" />}
+              render={() => (
+                <DisplayData
+                  type="owners"
+                  user={user}
+                  onDeleteItem={deleteOwner}
+                />
+              )}
             />
             <Route
               exact
@@ -245,25 +245,17 @@ function App() {
             <Route
               exact
               path="/owners/:id/transactions"
-              render={() => (
-                <Transactions
-                  transactions={transactions}
-                  deleteTransaction={deleteTransaction}
-                  view="owner"
-                  properties={properties}
-                />
-              )}
+              render={() => <Transactions user={user} view="owner" />}
+            />
+            <Route
+              exact
+              path="/owners/:id/properties"
+              render={() => <Properties user={user} view="owner" />}
             />
             <Route
               exact
               path="/properties"
-              render={() => (
-                <Properties
-                  properties={properties}
-                  deleteProperty={deleteProperty}
-                  user={user}
-                />
-              )}
+              render={() => <Properties properties={properties} user={user} />}
             />
             <Route
               exact
@@ -279,7 +271,13 @@ function App() {
             <Route
               exact
               path="/properties/:id"
-              render={() => <DisplayData type="properties" />}
+              render={() => (
+                <DisplayData
+                  type="properties"
+                  user={user}
+                  onDeleteItem={deleteProperty}
+                />
+              )}
             />
             <Route
               exact
@@ -295,13 +293,7 @@ function App() {
             <Route
               exact
               path="/tenants"
-              render={() => (
-                <Tenants
-                  tenants={tenants}
-                  deleteTenant={deleteTenant}
-                  user={user}
-                />
-              )}
+              render={() => <Tenants tenants={tenants} user={user} />}
             />
             <Route
               exact
@@ -318,7 +310,13 @@ function App() {
             <Route
               exact
               path="/tenants/:id"
-              render={() => <DisplayData type="tenants" />}
+              render={() => (
+                <DisplayData
+                  type="tenants"
+                  user={user}
+                  onDeleteItem={deleteTenant}
+                />
+              )}
             />
             <Route
               exact
@@ -336,25 +334,12 @@ function App() {
             <Route
               exact
               path="/tenants/:id/transactions"
-              render={() => (
-                <Transactions
-                  transactions={transactions}
-                  deleteTransaction={deleteTransaction}
-                  view="tenant"
-                  properties={properties}
-                />
-              )}
+              render={() => <Transactions user={user} view="tenant" />}
             />
             <Route
               exact
               path="/creditors"
-              render={() => (
-                <Creditors
-                  creditors={creditors}
-                  deleteCreditor={deleteCreditor}
-                  user={user}
-                />
-              )}
+              render={() => <Creditors creditors={creditors} user={user} />}
             />
             <Route
               exact
@@ -366,7 +351,13 @@ function App() {
             <Route
               exact
               path="/creditors/:id"
-              render={() => <DisplayData type="creditors" />}
+              render={() => (
+                <DisplayData
+                  type="creditors"
+                  user={user}
+                  onDeleteItem={deleteCreditor}
+                />
+              )}
             />
             <Route
               exact
@@ -379,11 +370,7 @@ function App() {
               exact
               path="/transactions"
               render={() => (
-                <Transactions
-                  transactions={transactions}
-                  deleteTransaction={deleteTransaction}
-                  user={user}
-                />
+                <Transactions transactions={transactions} user={user} />
               )}
             />
             <Route
@@ -403,7 +390,13 @@ function App() {
             <Route
               exact
               path="/transactions/:id"
-              render={() => <DisplayData type="transactions" />}
+              render={() => (
+                <DisplayData
+                  type="transactions"
+                  user={user}
+                  onDeleteItem={deleteTransaction}
+                />
+              )}
             />
             <Route
               exact

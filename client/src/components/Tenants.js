@@ -1,7 +1,7 @@
 import React from "react";
 import DisplayTable from "./DisplayTable";
 
-function Tenants({ tenants, deleteTenant, user }) {
+function Tenants({ tenants, user }) {
   const fields = [
     "ref",
     "name",
@@ -14,7 +14,6 @@ function Tenants({ tenants, deleteTenant, user }) {
   return (
     <DisplayTable
       items={tenants}
-      deleteItem={deleteTenant}
       fields={fields}
       defaultSortBy="id"
       type="tenants"

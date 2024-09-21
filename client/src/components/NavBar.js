@@ -49,13 +49,6 @@ function Navbar({ user, setUser }) {
             <div className="people-dropdown-menu">
               <NavLink
                 className="navbar people-dropdown-item"
-                to="/users"
-                exact
-              >
-                Users
-              </NavLink>
-              <NavLink
-                className="navbar people-dropdown-item"
                 to="/owners"
                 exact
               >
@@ -74,6 +67,13 @@ function Navbar({ user, setUser }) {
                 exact
               >
                 Creditors
+              </NavLink>
+              <NavLink
+                className="navbar people-dropdown-item"
+                to="/users"
+                exact
+              >
+                Users
               </NavLink>
             </div>
           ) : null}

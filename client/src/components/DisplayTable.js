@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import DisplayTableRow from "./DisplayTableRow";
-import { isDate } from "./DataDisplayingFunctions";
+import { formatTitleValue, isDate } from "./DataDisplayingFunctions";
 
 const sortItems = (items, sortBy, sortOrder) => {
   return [...items].sort((a, b) => {
@@ -19,14 +19,13 @@ const sortItems = (items, sortBy, sortOrder) => {
 
 function DisplayTable({
   items,
-  deleteItem,
   fields,
   defaultSortBy = "id",
   defaultSortOrder = "asc",
   type,
   view = "",
+  item = {},
   user,
-  managingAgent = "",
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -36,6 +35,9 @@ function DisplayTable({
   const [searchQuery, setSearchQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const filteredItems = items
     .filter((item) => {
@@ -48,6 +50,23 @@ function DisplayTable({
       } else {
         return true;
       }
+    })
+    .filter((item) => {
+      if (startDate || endDate) {
+        const itemDate = new Date(item.payment_date);
+        if (startDate && endDate) {
+          return (
+            itemDate >= new Date(startDate) && itemDate <= new Date(endDate)
+          );
+        }
+        if (startDate) {
+          return itemDate >= new Date(startDate);
+        }
+        if (endDate) {
+          return itemDate <= new Date(endDate);
+        }
+      }
+      return true;
     })
     .filter((item) => {
       return fields.some((field) =>
@@ -96,10 +115,14 @@ function DisplayTable({
         {view === "owner" || view === "tenant" || view === "user" ? (
           <p className="display-table-description-text">
             {view === "user"
-              ? `List of Owners for Properties Managed by Propety Manager ${managingAgent}`
-              : view.charAt(0).toUpperCase() + view.slice(1) + " Statement"}
+              ? `Owners of Properties Managed by ${item.name}`
+              : type === "transactions"
+                ? item.name + "'s " + formatTitleValue(view) + " Statement"
+                : "Properties Owned by " + item.name}
           </p>
-        ) : type === "users" ? null : (
+        ) : type === "users" ? (
+          <div className="users-space"></div>
+        ) : (
           <div className="add-new">
             <button onClick={handleNewDataClick}>
               + New{" "}
@@ -109,51 +132,66 @@ function DisplayTable({
             </button>
           </div>
         )}
-        <div className="search-section">
-          <span>{type.charAt(0).toUpperCase() + type.slice(1)}: </span>
-          <span className={`search-bar ${isFocused ? "focused" : ""}`}>
-            <i className="fas fa-search"></i>
-            <input
-              type="text"
-              placeholder={"Filter " + type}
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-          </span>
-          &nbsp;&nbsp;
-          {type === "users" ||
-          type === "owners" ||
-          type === "properties" ||
-          type === "tenants" ||
-          type === "creditors" ? (
-            <label>
-              Show Inactive {type.charAt(0).toUpperCase() + type.slice(1)}
-              <input
-                className="check-box"
-                type="checkbox"
-                checked={showInactive}
-                onChange={() => setShowInactive(!showInactive)}
-              />
-            </label>
-          ) : null}
-        </div>
+        {
+          <div className="search-section">
+            <div className="search-by">
+              <span>{formatTitleValue(type)}: </span>
+              <span className={`search-bar ${isFocused ? "focused" : ""}`}>
+                <i className="fas fa-search"></i>
+                <input
+                  type="text"
+                  placeholder={"Filter " + type}
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+              </span>
+            </div>
+            &nbsp;&nbsp;
+            {type === "transactions" ? (
+              <div className="search-by">
+                <label className="search-date">
+                  Payment From
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </label>
+                <label className="search-date">
+                  To
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="search-by">
+                <label>
+                  Show Inactive {formatTitleValue(type)}
+                  <input
+                    className="check-box"
+                    type="checkbox"
+                    checked={showInactive}
+                    onChange={() => setShowInactive(!showInactive)}
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+        }
       </div>
       <table>
         <thead>
           <tr>
-            <th onClick={() => handleSort("id")}>Id</th>
             {fields.map((field) => (
               <th key={field} onClick={() => handleSort(field)}>
-                {field.charAt(0).toUpperCase() + field.slice(1)}
+                {formatTitleValue(field)}
               </th>
             ))}
-            <th>
-              {view === "owner" || view === "tenant" || view === "user"
-                ? null
-                : "More"}
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -161,11 +199,9 @@ function DisplayTable({
             <DisplayTableRow
               key={item.id}
               item={item}
-              onDeleteItem={deleteItem}
               fields={fields}
               type={type}
               view={view}
-              user={user}
             />
           ))}
         </tbody>
