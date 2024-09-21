@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { ENDPOINTS } from "./DataMappingFields";
 import { formatValue } from "./DataDisplayingFunctions";
 
 function DisplayTableRow({ item, fields, type }) {

@@ -65,6 +65,8 @@ function App() {
     });
   }, [user]);
 
+  console.log(owners)
+
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),

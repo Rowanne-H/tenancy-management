@@ -319,7 +319,9 @@ class Owners(Resource):
         owners = []
         for owner in Owner.query.all():
             owners.append({
-                **owner.to_dict(), "properties":
+                **owner.to_dict(), 
+                "user": owner.user.to_dict(), 
+                "properties":
                 [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
                 "transactions":
@@ -361,7 +363,9 @@ class OwnerByID(Resource):
             return make_response(jsonify({"message": "Owner not found"}), 404)
         return make_response(
             jsonify({
-                **owner.to_dict(), "properties":
+                **owner.to_dict(),
+                "user": owner.user.to_dict(), 
+                "properties":
                 [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
                 "transactions":
