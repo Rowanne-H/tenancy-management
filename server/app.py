@@ -222,10 +222,11 @@ class Users(Resource):
         users = []
         for user in User.query.all():
             users.append({
-                **user.to_dict(), # Use ** to unpack the dictionary returned by to_dict()
-                "owners": [owner.to_dict() for owner in user.owners],  
-                "properties": [property.to_dict() for property in user.properties],  
-                "tenants": [tenant.to_dict() for tenant in user.tenants] 
+                **user.to_dict(),  # Use ** to unpack the dictionary returned by to_dict()
+                "owners": [owner.to_dict() for owner in user.owners],
+                "properties":
+                [property.to_dict() for property in user.properties],
+                "tenants": [tenant.to_dict() for tenant in user.tenants]
             })
         return make_response(jsonify(users), 200)
 
@@ -236,12 +237,14 @@ class UserByID(Resource):
         user = User.query.filter_by(id=id).first()
         if user is None:
             return make_response(jsonify({"message": "User not found"}), 404)
-        return make_response(jsonify({
-            **user.to_dict(),
-            "owners": [owner.to_dict() for owner in user.owners],  
-            "properties": [property.to_dict() for property in user.properties],  
-            "tenants": [tenant.to_dict() for tenant in user.tenants] 
-        }), 200)
+        return make_response(
+            jsonify({
+                **user.to_dict(), "owners":
+                [owner.to_dict() for owner in user.owners],
+                "properties":
+                [property.to_dict() for property in user.properties],
+                "tenants": [tenant.to_dict() for tenant in user.tenants]
+            }), 200)
 
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
@@ -258,6 +261,14 @@ class UserByID(Resource):
                         jsonify({
                             "message":
                             "You do not have permission to change user status."
+                        }),
+                        403,
+                    )
+                if current_user.id == user.id:
+                    return make_response(
+                        jsonify({
+                            "message":
+                            "Accounts can not change status himself/herself"
                         }),
                         403,
                     )
@@ -308,11 +319,12 @@ class Owners(Resource):
         owners = []
         for owner in Owner.query.all():
             owners.append({
-                **owner.to_dict(), 
-                "properties": [property.to_dict() for property in owner.properties],  
+                **owner.to_dict(), "properties":
+                [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
-                "transactions": [transaction.to_dict() for transaction in owner.transactions]
-            }) 
+                "transactions":
+                [transaction.to_dict() for transaction in owner.transactions]
+            })
         return make_response(jsonify(owners), 200)
 
     def post(self):
@@ -347,11 +359,13 @@ class OwnerByID(Resource):
         owner = Owner.query.filter_by(id=id).first()
         if owner is None:
             return make_response(jsonify({"message": "Owner not found"}), 404)
-        return make_response(jsonify({
-                **owner.to_dict(), 
-                "properties": [property.to_dict() for property in owner.properties],  
+        return make_response(
+            jsonify({
+                **owner.to_dict(), "properties":
+                [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
-                "transactions": [transaction.to_dict() for transaction in owner.transactions]
+                "transactions":
+                [transaction.to_dict() for transaction in owner.transactions]
             }), 200)
 
     def patch(self, id):
@@ -409,11 +423,14 @@ class Properties(Resource):
         properties = []
         for property in Property.query.all():
             properties.append({
-                **property.to_dict(), 
-                "tenants": [tenant.to_dict() for tenant in property.tenants],
-                "transactions": [transaction.to_dict() for transaction in property.transactions]
+                **property.to_dict(), "tenants":
+                [tenant.to_dict() for tenant in property.tenants],
+                "transactions": [
+                    transaction.to_dict()
+                    for transaction in property.transactions
+                ]
             })
-        
+
         return make_response(jsonify(properties), 200)
 
     def post(self):
@@ -446,10 +463,14 @@ class PropertyByID(Resource):
         if property is None:
             return make_response(jsonify({"message": "Property not found"}),
                                  404)
-        return make_response(jsonify({
-                **property.to_dict(), 
-                "tenants": [tenant.to_dict() for tenant in property.tenants],
-                "transactions": [transaction.to_dict() for transaction in property.transactions]
+        return make_response(
+            jsonify({
+                **property.to_dict(), "tenants":
+                [tenant.to_dict() for tenant in property.tenants],
+                "transactions": [
+                    transaction.to_dict()
+                    for transaction in property.transactions
+                ]
             }), 200)
 
     def patch(self, id):
@@ -507,10 +528,10 @@ class Tenants(Resource):
         tenants = []
         for tenant in Tenant.query.all():
             tenants.append({
-                **tenant.to_dict(), 
-                "transactions": [transaction.to_dict() for transaction in tenant.transactions]
+                **tenant.to_dict(), "transactions":
+                [transaction.to_dict() for transaction in tenant.transactions]
             })
-        
+
         return make_response(jsonify(tenants), 200)
 
     def post(self):
@@ -561,9 +582,10 @@ class TenantByID(Resource):
         tenant = Tenant.query.filter_by(id=id).first()
         if tenant is None:
             return make_response(jsonify({"message": "Tenant not found"}), 404)
-        return make_response(jsonify({
-                **tenant.to_dict(), 
-                "transactions": [transaction.to_dict() for transaction in tenant.transactions]
+        return make_response(
+            jsonify({
+                **tenant.to_dict(), "transactions":
+                [transaction.to_dict() for transaction in tenant.transactions]
             }), 200)
 
     def patch(self, id):
