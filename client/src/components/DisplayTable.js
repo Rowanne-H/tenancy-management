@@ -122,6 +122,7 @@ function DisplayTable({
     }
   };
 
+
   return (
     <div className="display-table-container">
       <div className="display-table-header">

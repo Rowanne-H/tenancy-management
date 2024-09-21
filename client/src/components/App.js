@@ -247,12 +247,7 @@ function App() {
             <Route
               exact
               path="/owners/:id/transactions"
-              render={() => <Transactions user={user} view="owner" />}
-            />
-            <Route
-              exact
-              path="/owners/:id/properties"
-              render={() => <Properties user={user} view="owner" />}
+              render={() => <Transactions transactions={transactions} user={user} view="owner" />}
             />
             <Route
               exact
@@ -336,7 +331,7 @@ function App() {
             <Route
               exact
               path="/tenants/:id/transactions"
-              render={() => <Transactions user={user} view="tenant" />}
+              render={() => <Transactions transactions={transactions} user={user} view="tenant" />}
             />
             <Route
               exact

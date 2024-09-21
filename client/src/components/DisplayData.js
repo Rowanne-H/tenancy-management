@@ -107,12 +107,6 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
           : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
         Details
       </h2>
-      {type === "owners" ? (
-        <NavLink className="more" to={`/${type}/${id}/properties`}>
-          {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
-          properties{"        "}
-        </NavLink>
-      ) : null}
       {type === "owners" || type === "tenants" ? (
         <NavLink className="more" to={`/${type}/${id}/transactions`}>
           {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}

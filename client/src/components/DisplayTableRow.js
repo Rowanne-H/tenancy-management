@@ -4,6 +4,10 @@ import { formatValue } from "./DataDisplayingFunctions";
 
 function DisplayTableRow({ item, fields, type }) {
   const history = useHistory();
+  
+  console.log("ownersProperties")
+
+  console.log(item)
 
   return (
     <tr onClick={() => history.push(`/${type}/${item.id}`)}>

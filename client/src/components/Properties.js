@@ -9,7 +9,8 @@ function Properties({ properties = [], user, view = "" }) {
   const [items, setItems] = useState(properties);
 
   const { id } = useParams();
-  console.log(items);
+  console.log("start")
+  console.log(properties);
   console.log(view);
   console.log(id);
   useEffect(() => {
@@ -31,7 +32,7 @@ function Properties({ properties = [], user, view = "" }) {
         });
     }
   }, [id, view]);
-  console.log(items);
+  console.log(items)
 
   return (
     <DisplayTable
