@@ -65,7 +65,7 @@ function App() {
     });
   }, [user]);
 
-  console.log(properties)
+  console.log(tenants);
 
   function updateUser(updatedUser) {
     setUsers(
