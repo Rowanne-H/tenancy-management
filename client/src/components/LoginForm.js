@@ -39,7 +39,8 @@ function LoginForm({ onLogin }) {
   });
 
   return (
-    <div>
+    <div className="form-container">
+      <h2>Sign In</h2>
       <form onSubmit={formik.handleSubmit}>
         <label>
           Email

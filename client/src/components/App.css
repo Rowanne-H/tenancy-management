@@ -257,15 +257,19 @@ th {
   border-bottom: 1px solid var(--table-border-color);
 }
 
+.login {
+  margin: 30px;
+}
+
 /* to check*/
 
-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.form-container {
+  margin: auto;
   width: 30%;
-  margin-top: 100px;
+}
+
+form {
+  padding: 10px;
 }
 
 form > label {

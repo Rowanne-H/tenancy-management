@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 
 function Navbar({ user, setUser }) {
-  const [errorMessage, setErrorMessage] = useState("");
   const [peopleDropDownMenu, setPeopleDropDownMenu] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -27,7 +26,7 @@ function Navbar({ user, setUser }) {
       if (r.ok) {
         setUser(null);
       } else {
-        r.json().then((err) => setErrorMessage(err.message));
+        r.json().then((err) => alert(err.message));
       }
     });
   }

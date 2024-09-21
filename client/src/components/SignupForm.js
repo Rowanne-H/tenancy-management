@@ -66,8 +66,8 @@ function SignupForm({ onLogin }) {
   });
 
   return (
-    <div>
-      <h1>Sign Up</h1>
+    <div className="form-container">
+      <h2>Sign Up</h2>
       <form onSubmit={formik.handleSubmit}>
         <label>
           Email Address

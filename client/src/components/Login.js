@@ -6,23 +6,23 @@ function Login({ onAddNewUser, onLogin }) {
   const [showLogin, setShowLogin] = useState(true);
 
   return (
-    <div>
-      <h1>Tenancy Management</h1>
+    <div className="login">
+      <h1>Tenancy Management System</h1>
       {showLogin ? (
         <div>
-          <LoginForm onLogin={onLogin} />
           <p>
             Don't have an account? &nbsp;
             <button onClick={() => setShowLogin(false)}>Sign Up</button>
           </p>
+          <LoginForm onLogin={onLogin} />
         </div>
       ) : (
         <div>
-          <SignupForm onLogin={onLogin} onAddNewUser={onAddNewUser} />
           <p>
             Already have an account? &nbsp;
             <button onClick={() => setShowLogin(true)}>Sign In</button>
           </p>
+          <SignupForm onLogin={onLogin} onAddNewUser={onAddNewUser} />
         </div>
       )}
     </div>
