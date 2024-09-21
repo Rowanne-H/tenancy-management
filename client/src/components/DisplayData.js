@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
-import { formatValue } from "./DataDisplayingFunctions";
+import {
+  formatTitleValue,
+  formatValue,
+  getIdValue,
+} from "./DataDisplayingFunctions";
 
 const DisplayData = ({ type, user, onDeleteItem }) => {
   const [data, setData] = useState(null);
@@ -47,7 +51,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
     if (user.is_accounts) {
       history.push(`/${type}/${id}/changeuser`);
     } else {
-      alert("User not authorized to change status");
+      alert("Only accounts can change managing property manager");
     }
   }
 
@@ -55,7 +59,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
     if (user.is_accounts) {
       history.push(`/${type}/${id}/changestatus`);
     } else {
-      alert("User not authorized to change status");
+      alert("Only accounts can change status");
     }
   }
 
@@ -78,20 +82,19 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
-  console.log(data);
 
   return (
     <div>
-      <div className="">
+      <div className="crud-actions">
         {type === "users" && user.is_accounts ? (
           <button className="link-button" onClick={handleChangeStatusClick}>
             Change Status
           </button>
-        ) : (
+        ) : type != "users" ? (
           <button className="link-button" onClick={handleEditClick}>
             Edit
           </button>
-        )}
+        ) : null}
         <button className="link-button" onClick={handleDeleteClick}>
           Delete
         </button>
@@ -101,35 +104,36 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
           </button>
         ) : null}
       </div>
-      <h2>
-        {type === "properties"
-          ? "Property"
-          : type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
-        Details
-      </h2>
-      {type === "owners" || type === "tenants" ? (
-        <NavLink className="more" to={`/${type}/${id}/transactions`}>
-          {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
-          Statement
-        </NavLink>
-      ) : type === "users" ? (
-        <NavLink className="more" to={`/${type}/${id}/owners`}>
-          View Owners of Managed Properties
-        </NavLink>
-      ) : null}
-      <ul>
-        <li>
-          <strong>Id:</strong>
-          {id}
-        </li>
+      <div className="display-header">
+        <h2>
+          {type === "properties"
+            ? "Property"
+            : type.charAt(0).toUpperCase() +
+              type.slice(1, type.length - 1)}{" "}
+          Details
+        </h2>
+        {type === "owners" || type === "tenants" ? (
+          <NavLink className="more" to={`/${type}/${id}/transactions`}>
+            {type.charAt(0).toUpperCase() + type.slice(1, type.length - 1)}{" "}
+            Statement
+          </NavLink>
+        ) : type === "users" ? (
+          <NavLink className="more" to={`/${type}/${id}/owners`}>
+            View Owners of Managed Properties
+          </NavLink>
+        ) : null}
+      </div>
+      <div className="details-container">
         {fields.map((field) => (
-          <li key={field}>
-            <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong>{" "}
+          <div className="details-item" key={field}>
+            <p>
+              <strong>{formatTitleValue(field)}:</strong>{" "}
+            </p>
             {field === "property_id" ||
             field === "user_id" ||
             field === "owner_id" ? (
               <NavLink
-                className="ids"
+                className="more"
                 to={
                   field === "property_id"
                     ? `/properties/${data[field]}`
@@ -138,14 +142,18 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
                       : `/owners/${data[field]}`
                 }
               >
-                {formatValue(field, data[field])} <label>View details</label>
+                {field === "property_id"
+                  ? data["property"]["address"]
+                  : field === "user_id"
+                    ? data["user"]["name"]
+                    : data["owner"]["name"]}
               </NavLink>
             ) : (
               formatValue(field, data[field])
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

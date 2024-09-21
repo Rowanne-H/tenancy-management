@@ -261,7 +261,20 @@ th {
   margin: 30px;
 }
 
-/* to check*/
+button {
+  border: none;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12pt;
+  background-color: var(--nav-search-color);
+  cursor: pointer;
+}
+
+button:hover {
+  color: white;
+  background-color: var(--user-icon-color);
+}
 
 .form-container {
   margin: auto;
@@ -287,14 +300,36 @@ label > input {
   margin-left: 5px;
 }
 
-button {
-  border: none;
-  margin: 5px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12pt;
-  background-color: var(--user-icon-color);
-  color: white;
+/* to check*/
+.display-header {
+  margin: 30px;
+}
+
+.display-header > h2 {
+  margin: 0;
+}
+
+.details-container {
+  margin: auto;
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Two columns */
+}
+
+.details-item {
+  display: block;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--primary-bg-color); /* Subtle border */
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.more:hover {
+  text-decoration: underline;
 }
 
 .errorsMessages {
