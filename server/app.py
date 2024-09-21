@@ -427,7 +427,10 @@ class Properties(Resource):
         properties = []
         for property in Property.query.all():
             properties.append({
-                **property.to_dict(), "tenants":
+                **property.to_dict(), 
+                "user": property.user.to_dict(), 
+                "owner": property.owner.to_dict(), 
+                "tenants":
                 [tenant.to_dict() for tenant in property.tenants],
                 "transactions": [
                     transaction.to_dict()
@@ -469,7 +472,10 @@ class PropertyByID(Resource):
                                  404)
         return make_response(
             jsonify({
-                **property.to_dict(), "tenants":
+                **property.to_dict(), 
+                "user": property.user.to_dict(), 
+                "owner": property.owner.to_dict(), 
+                "tenants":
                 [tenant.to_dict() for tenant in property.tenants],
                 "transactions": [
                     transaction.to_dict()
