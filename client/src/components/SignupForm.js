@@ -23,7 +23,6 @@ function SignupForm({ onLogin }) {
         'Mobile number must start with "04" and be exactly 10 digits',
       )
       .required("Must enter a mobile"),
-    is_accounts: yup.boolean(),
   });
 
   const formik = useFormik({
@@ -33,8 +32,6 @@ function SignupForm({ onLogin }) {
       confirmPassword: "",
       name: "",
       mobile: "",
-      is_accounts: false,
-      is_active: true,
     },
     validationSchema: formSchema,
     enableReinitialize: true,
@@ -49,8 +46,6 @@ function SignupForm({ onLogin }) {
           password: values.password,
           name: values.name,
           mobile: values.mobile,
-          is_accounts: values.is_accounts,
-          is_active: values.is_active,
         }),
       }).then((r) => {
         if (r.ok) {
