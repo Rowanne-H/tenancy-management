@@ -6,13 +6,26 @@ import { formatTitleValue, isDate } from "./DataDisplayingFunctions";
 
 const sortItems = (items, sortBy, sortOrder) => {
   return [...items].sort((a, b) => {
+    let aValue = a[sortBy];
+    let bValue = b[sortBy];
     if (isDate(sortBy)) {
-      const dateA = new Date(a[sortBy]);
-      const dateB = new Date(b[sortBy]);
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      aValue = new Date(aValue);
+      bValue = new Date(bValue);
     }
-    if (a[sortBy] < b[sortBy]) return sortOrder === "asc" ? -1 : 1;
-    if (a[sortBy] > b[sortBy]) return sortOrder === "asc" ? 1 : -1;
+    if (sortBy === "user_id") {
+      aValue = a["user"].name;
+      bValue = b["user"].name;
+    }
+    if (sortBy === "owner_id") {
+      aValue = a["owner"].name;
+      bValue = b["owner"].name;
+    }
+    if (sortBy === "property_id") {
+      aValue = a["property"].address;
+      bValue = b["property"].address;
+    }
+    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
     return 0;
   });
 };
