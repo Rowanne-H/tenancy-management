@@ -203,7 +203,9 @@ function App() {
             <Route
               exact
               path="/owners"
-              render={() => <Owners owners={owners} user={user} />}
+              render={() => (
+                <Owners owners={owners} users={users} user={user} />
+              )}
             />
             <Route
               exact
@@ -247,12 +249,25 @@ function App() {
             <Route
               exact
               path="/owners/:id/transactions"
-              render={() => <Transactions transactions={transactions} user={user} view="owner" />}
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  user={user}
+                  view="owner"
+                />
+              )}
             />
             <Route
               exact
               path="/properties"
-              render={() => <Properties properties={properties} user={user} />}
+              render={() => (
+                <Properties
+                  properties={properties}
+                  owners={owners}
+                  users={users}
+                  user={user}
+                />
+              )}
             />
             <Route
               exact
@@ -290,7 +305,15 @@ function App() {
             <Route
               exact
               path="/tenants"
-              render={() => <Tenants tenants={tenants} user={user} />}
+              render={() => (
+                <Tenants
+                  tenants={tenants}
+                  properties={properties}
+                  owners={owners}
+                  users={users}
+                  user={user}
+                />
+              )}
             />
             <Route
               exact
@@ -331,7 +354,13 @@ function App() {
             <Route
               exact
               path="/tenants/:id/transactions"
-              render={() => <Transactions transactions={transactions} user={user} view="tenant" />}
+              render={() => (
+                <Transactions
+                  transactions={transactions}
+                  user={user}
+                  view="tenant"
+                />
+              )}
             />
             <Route
               exact

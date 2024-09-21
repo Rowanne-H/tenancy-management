@@ -3,21 +3,14 @@ import { useParams } from "react-router-dom";
 import DisplayTable from "./DisplayTable";
 import { FIELD_MAPPINGS, ENDPOINTS } from "./DataMappingFields";
 
-function Properties({ properties = [], user, view = "" }) {
+function Properties({ properties = [], user, view = "", owners, users }) {
   const fields = FIELD_MAPPINGS["properties"];
   const [item, setItem] = useState();
   const [items, setItems] = useState(properties);
 
   const { id } = useParams();
-  console.log("start")
-  console.log(properties);
-  console.log(view);
-  console.log(id);
   useEffect(() => {
     if (id && view) {
-      console.log("fecth");
-      console.log(ENDPOINTS[view + "s"] + id);
-
       fetch(ENDPOINTS[view + "s"] + id)
         .then((r) => {
           if (!r.ok) {
@@ -26,13 +19,11 @@ function Properties({ properties = [], user, view = "" }) {
           return r.json();
         })
         .then((data) => {
-          console.log(data);
           setItem(data);
           setItems(data.properties);
         });
     }
   }, [id, view]);
-  console.log(items)
 
   return (
     <DisplayTable
@@ -43,6 +34,8 @@ function Properties({ properties = [], user, view = "" }) {
       user={user}
       view={view}
       item={item}
+      owners={owners}
+      users={users}
     />
   );
 }

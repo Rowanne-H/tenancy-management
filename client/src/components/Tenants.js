@@ -1,7 +1,7 @@
 import React from "react";
 import DisplayTable from "./DisplayTable";
 
-function Tenants({ tenants, user }) {
+function Tenants({ tenants, user, properties, owners, users }) {
   const fields = [
     "ref",
     "name",
@@ -18,6 +18,9 @@ function Tenants({ tenants, user }) {
       defaultSortBy="id"
       type="tenants"
       user={user}
+      properties={properties}
+      owners={owners}
+      users={users}
     />
   );
 }

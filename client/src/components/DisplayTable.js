@@ -2,33 +2,11 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import DisplayTableRow from "./DisplayTableRow";
-import { formatTitleValue, isDate } from "./DataDisplayingFunctions";
-
-const sortItems = (items, sortBy, sortOrder) => {
-  return [...items].sort((a, b) => {
-    let aValue = a[sortBy];
-    let bValue = b[sortBy];
-    if (isDate(sortBy)) {
-      aValue = new Date(aValue);
-      bValue = new Date(bValue);
-    }
-    if (sortBy === "user_id") {
-      aValue = a["user"].name;
-      bValue = b["user"].name;
-    }
-    if (sortBy === "owner_id") {
-      aValue = a["owner"].name;
-      bValue = b["owner"].name;
-    }
-    if (sortBy === "property_id") {
-      aValue = a["property"].address;
-      bValue = b["property"].address;
-    }
-    if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-    if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-    return 0;
-  });
-};
+import {
+  formatTitleValue,
+  isDate,
+  getIdValue,
+} from "./DataDisplayingFunctions";
 
 function DisplayTable({
   items,
@@ -39,7 +17,12 @@ function DisplayTable({
   view = "",
   item = {},
   user,
+  users = [],
+  properties = [],
+  owners = [],
 }) {
+  console.log("Table");
+  console.log(users);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
@@ -89,6 +72,31 @@ function DisplayTable({
           .includes(searchQuery.toLowerCase()),
       );
     });
+  const sortItems = (items, sortBy, sortOrder) => {
+    return [...items].sort((a, b) => {
+      let aValue = a[sortBy];
+      let bValue = b[sortBy];
+      if (isDate(sortBy)) {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      }
+      if (sortBy === "user_id") {
+        aValue = getIdValue(users, "user_id", a["user_id"]);
+        bValue = getIdValue(users, "user_id", b["user_id"]);
+      }
+      if (sortBy === "owner_id") {
+        aValue = getIdValue(owners, "owner_id", a["owner_id"]);
+        bValue = getIdValue(owners, "owner_id", b["owner_id"]);
+      }
+      if (sortBy === "property_id") {
+        aValue = getIdValue(properties, "property_id", a["property_id"]);
+        bValue = getIdValue(properties, "property_id", b["property_id"]);
+      }
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
   const sortedItems = sortItems(filteredItems, sortBy, sortOrder);
   const totalPages = Math.ceil(filteredItems.length / pageSize);
   const paginatedItems = sortedItems.slice(
@@ -121,7 +129,6 @@ function DisplayTable({
       history.push(`/${type}/new`);
     }
   };
-
 
   return (
     <div className="display-table-container">
@@ -216,6 +223,9 @@ function DisplayTable({
               fields={fields}
               type={type}
               view={view}
+              users={users}
+              properties={properties}
+              owners={owners}
             />
           ))}
         </tbody>

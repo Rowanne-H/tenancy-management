@@ -1,24 +1,27 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { formatValue } from "./DataDisplayingFunctions";
+import { formatValue, getIdValue } from "./DataDisplayingFunctions";
 
-function DisplayTableRow({ item, fields, type }) {
+function DisplayTableRow({
+  item,
+  fields,
+  type,
+  users = [],
+  properties = [],
+  owners = [],
+}) {
   const history = useHistory();
-  
-  console.log("ownersProperties")
-
-  console.log(item)
 
   return (
     <tr onClick={() => history.push(`/${type}/${item.id}`)}>
       {fields.map((field) => (
         <td key={field}>
           {field === "property_id"
-            ? item["property"].address
+            ? getIdValue(properties, field, item[field])
             : field === "user_id"
-              ? item["user"].name
+              ? getIdValue(users, field, item[field])
               : field === "owner_id"
-                ? item["owner"].name
+                ? getIdValue(owners, field, item[field])
                 : formatValue(field, item[field])}
         </td>
       ))}
