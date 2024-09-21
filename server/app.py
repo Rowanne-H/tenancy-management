@@ -296,8 +296,9 @@ class UserByID(Resource):
             return make_response(jsonify({"message": "User not found"}), 404)
         if user.id == session.get("user_id"):
             return make_response(
-                jsonify({"message":
-                         "Accounts can not delete their own record"}), 400)
+                jsonify(
+                    {"message": "Accounts can not delete their own record"}),
+                400)
         owner = Owner.query.filter_by(user_id=id).first()
         if owner:
             return make_response(
@@ -319,8 +320,8 @@ class Owners(Resource):
         owners = []
         for owner in Owner.query.all():
             owners.append({
-                **owner.to_dict(), 
-                "user": owner.user.to_dict(), 
+                **owner.to_dict(), "user":
+                owner.user.to_dict(),
                 "properties":
                 [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
@@ -363,8 +364,8 @@ class OwnerByID(Resource):
             return make_response(jsonify({"message": "Owner not found"}), 404)
         return make_response(
             jsonify({
-                **owner.to_dict(),
-                "user": owner.user.to_dict(), 
+                **owner.to_dict(), "user":
+                owner.user.to_dict(),
                 "properties":
                 [property.to_dict() for property in owner.properties],
                 "tenants": [tenant.to_dict() for tenant in owner.tenants],
@@ -427,11 +428,11 @@ class Properties(Resource):
         properties = []
         for property in Property.query.all():
             properties.append({
-                **property.to_dict(), 
-                "user": property.user.to_dict(), 
-                "owner": property.owner.to_dict(), 
-                "tenants":
-                [tenant.to_dict() for tenant in property.tenants],
+                **property.to_dict(), "user":
+                property.user.to_dict(),
+                "owner":
+                property.owner.to_dict(),
+                "tenants": [tenant.to_dict() for tenant in property.tenants],
                 "transactions": [
                     transaction.to_dict()
                     for transaction in property.transactions
@@ -472,11 +473,11 @@ class PropertyByID(Resource):
                                  404)
         return make_response(
             jsonify({
-                **property.to_dict(), 
-                "user": property.user.to_dict(), 
-                "owner": property.owner.to_dict(), 
-                "tenants":
-                [tenant.to_dict() for tenant in property.tenants],
+                **property.to_dict(), "user":
+                property.user.to_dict(),
+                "owner":
+                property.owner.to_dict(),
+                "tenants": [tenant.to_dict() for tenant in property.tenants],
                 "transactions": [
                     transaction.to_dict()
                     for transaction in property.transactions
@@ -538,7 +539,13 @@ class Tenants(Resource):
         tenants = []
         for tenant in Tenant.query.all():
             tenants.append({
-                **tenant.to_dict(), "transactions":
+                **tenant.to_dict(), "user":
+                tenant.user.to_dict(),
+                "owner":
+                tenant.owner.to_dict(),
+                "property":
+                tenant.property.to_dict(),
+                "transactions":
                 [transaction.to_dict() for transaction in tenant.transactions]
             })
 
