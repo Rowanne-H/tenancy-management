@@ -125,8 +125,8 @@ input:focus {
   color: var(--user-icon-color);
   background-color: var(--user-icon-bg-color);
   cursor: pointer;
-  padding: 7px;
-  font-size: 10pt;
+  padding: 3pt;
+  font-size: 12pt;
   font-weight: bold;
 }
 
