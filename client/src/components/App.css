@@ -96,6 +96,7 @@ tr:hover {
 }
 
 .focused {
+  color: var(--hover-color);
   border: 2px solid var(--hover-color);
 }
 
@@ -205,15 +206,23 @@ input:focus {
   border: 1.3px solid var(--search-color);
   border-radius: 2px;
   box-sizing: border-box;
+  margin:0;
+  padding:1px;
 }
 
 .search-bar > .fa-search {
   font-size: 12pt;
-  padding: 3px;
+  padding: 1px;
+}
+
+.search-bar > input {
+  margin:0px;
+  padding:0px;
 }
 
 .search-bar.focused {
-  border: 2px solid var(--hover-color);
+  color: var(--hover-color);
+  border: 1px solid var(--hover-color);
 }
 
 table {
