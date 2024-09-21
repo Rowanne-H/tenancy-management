@@ -28,6 +28,7 @@ const DisplayData = ({ type }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
+  console.log(data)
 
   return (
     <div>

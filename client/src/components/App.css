@@ -117,12 +117,16 @@ input:focus {
 }
 
 .user-icon {
+  aspect-ratio: 1;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
   border-radius: 50%;
   color: var(--user-icon-color);
   background-color: var(--user-icon-bg-color);
   cursor: pointer;
   padding: 7px;
-  font-size: 14pt;
+  font-size: 10pt;
   font-weight: bold;
 }
 
@@ -253,7 +257,7 @@ label > input {
 button {
   border: none;
   margin: 5px;
-  padding: 2px 10px;
+  padding: 5px 10px;
   border-radius: 5px;
   font-size: 12pt;
   background-color: var(--user-icon-color);

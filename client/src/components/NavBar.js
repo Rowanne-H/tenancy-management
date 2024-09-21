@@ -101,7 +101,7 @@ function Navbar({ user, setUser }) {
         className="user-menu"
         onClick={() => setUserDropDownMenu(!userDropDownMenu)}
       >
-        <span className="user-icon">{userIcon}</span>
+        <div className="user-icon">{userIcon}</div>
         {userDropDownMenu ? (
           <div className="user-dropdown-menu">
             <p className="user-dropdown-item">{user ? user.name : null}</p>
