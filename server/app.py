@@ -391,20 +391,34 @@ class OwnerByID(Resource):
         for attr, value in data.items():
             if attr == "user_id":
                 user = User.query.filter_by(id=value).first()
-                if user is None:
+                if user is None or user.is_active == False:
                     return make_response(
-                        jsonify({"message": "Please input a valid user id"}),
-                        404)
+                        jsonify({
+                            "message":
+                            "Please select a Property Manager is currently employed"
+                        }), 404)
                 owner.user_id = value
             else:
                 auth_response = user_authorization(owner.user_id)
                 if auth_response:
                     return auth_response
+                if attr == "is_active" and value == False:
+                    active_property_exists = any(
+                        property.is_active for property in owner.properties)
+                    if active_property_exists:
+                        return make_response(
+                            jsonify({
+                                "message":
+                                "The property manager currently managing properties cannot be archived"
+                            }), 404)
                 if attr == "management_start_date" or attr == "management_end_date":
                     if value == "":
                         value = None
                     else:
                         value = getDate(value)
+                if attr in ["user", 'properties', 'tenants',
+                            'transactions']:  # Exclude relationships
+                    continue
                 setattr(owner, attr, value)
         db.session.add(owner)
         db.session.commit()
