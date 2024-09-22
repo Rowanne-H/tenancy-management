@@ -580,7 +580,13 @@ class TenantByID(Resource):
             return make_response(jsonify({"message": "Tenant not found"}), 404)
         return make_response(
             jsonify({
-                **tenant.to_dict(), "transactions":
+                **tenant.to_dict(), "property":
+                tenant.property.to_dict(),
+                "owner":
+                tenant.owner.to_dict(),
+                "user":
+                tenant.user.to_dict(),
+                "transactions":
                 [transaction.to_dict() for transaction in tenant.transactions]
             }), 200)
 
