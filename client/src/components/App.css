@@ -169,7 +169,7 @@ input:focus {
 .link {
   width: 100%;
   padding: 3px 10px;
-  font-size: 1rem;
+  font-size: 1.5rem;
   box-sizing: border-box;
   border-bottom: 1px solid var(--nav-bar-border-bottom-color);
 }
@@ -300,7 +300,10 @@ label > input {
   margin-left: 5px;
 }
 
-/* to check*/
+tr {
+  cursor: pointer;
+}
+
 .display-header {
   margin: 30px;
 }

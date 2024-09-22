@@ -70,7 +70,7 @@ function FormNewData({
   });
 
   return (
-    <div>
+    <div className="form-container">
       <h1>
         New{" "}
         {type === "properties"

@@ -570,8 +570,7 @@ class Tenants(Resource):
         data = request.get_json()
         user = User.query.filter_by(id=session.get("user_id")).first()
         if user is None:
-            return make_response(
-                jsonify({"message": "Unauthorized"}), 401)
+            return make_response(jsonify({"message": "Unauthorized"}), 401)
         property = Property.query.filter_by(id=data["property_id"]).first()
         owner_id = ""
         if property:
@@ -649,15 +648,18 @@ class TenantByID(Resource):
                         property = Property.query.filter_by(id=value).first()
                         if property is None:
                             return make_response(
-                                jsonify(
-                                    {"message": "Please select current or vacant property"}),
-                                404)
-                        active_tenant = Tenant.query.filter_by(property_id=property.id).first()
+                                jsonify({
+                                    "message":
+                                    "Please select current or vacant property"
+                                }), 404)
+                        active_tenant = Tenant.query.filter_by(
+                            property_id=property.id).first()
                         if active_tenant:
                             return make_response(
-                                jsonify(
-                                    {"message": "Please select current or vacant property"}),
-                                404)
+                                jsonify({
+                                    "message":
+                                    "Please select current or vacant property"
+                                }), 404)
                         tenant.property_id = property.id
                         tenant.owner_id = property.owner_id
                 else:
@@ -667,7 +669,9 @@ class TenantByID(Resource):
                             value = None
                         else:
                             value = getDate(value)
-                    if attr not in ["property", "owner", "user", "transactions"]:
+                    if attr not in [
+                            "property", "owner", "user", "transactions"
+                    ]:
                         setattr(tenant, attr, value)
         db.session.add(tenant)
         db.session.commit()

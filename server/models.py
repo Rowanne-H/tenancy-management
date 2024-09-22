@@ -163,7 +163,6 @@ class Owner(BaseModel, SerializerMixin):
     tenants = db.relationship('Tenant', backref='owner')
     transactions = db.relationship('Transaction', backref='owner')
 
-
     def to_dict(self):
         return {
             'id': self.id,
