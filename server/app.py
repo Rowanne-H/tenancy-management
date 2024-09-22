@@ -10,6 +10,7 @@ from sqlalchemy.orm import joinedload
 from datetime import date, datetime
 from flask_cors import CORS
 from functools import wraps
+from sqlalchemy.exc import IntegrityError
 
 # Local imports
 from config import app, db, api
@@ -35,6 +36,19 @@ CORS(app)
 def getDate(value):
     """Convert a date string in 'YYYY-MM-DD' format to a datetime.date object."""
     return datetime.strptime(value, "%Y-%m-%d").date()
+
+
+def commit_with_error_handling(f):
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except IntegrityError as e:
+            db.session.rollback()
+            return make_response(jsonify({"message": str(e.orig)}), 400)
+
+    return decorated_function
 
 
 def require_account_role(f):
@@ -158,6 +172,7 @@ def check_if_logged_in():
 
 class Signup(Resource):
 
+    @commit_with_error_handling
     def post(self):
         data = request.get_json()
         existing_user = User.query.filter_by(email=data["email"]).first()
@@ -190,6 +205,7 @@ class CheckSession(Resource):
 
 class Login(Resource):
 
+    @commit_with_error_handling
     def post(self):
         data = request.get_json()
         if not data or "email" not in data or "password" not in data:
@@ -238,6 +254,7 @@ class UserByID(Resource):
                 "tenants": [tenant.to_dict() for tenant in user.tenants]
             }), 200)
 
+    @commit_with_error_handling
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
         if user is None:
@@ -312,6 +329,7 @@ class Owners(Resource):
         owners = [owner.to_dict() for owner in Owner.query.all()]
         return make_response(jsonify(owners), 200)
 
+    @commit_with_error_handling
     def post(self):
         data = request.get_json()
         user = User.query.filter_by(id=session.get("user_id")).first()
@@ -355,6 +373,7 @@ class OwnerByID(Resource):
                 [transaction.to_dict() for transaction in owner.transactions]
             }), 200)
 
+    @commit_with_error_handling
     def patch(self, id):
         owner = Owner.query.filter_by(id=id).first()
         if owner is None:
@@ -410,6 +429,7 @@ class Properties(Resource):
         properties = [property.to_dict() for property in Property.query.all()]
         return make_response(jsonify(properties), 200)
 
+    @commit_with_error_handling
     def post(self):
         data = request.get_json()
         owner = Owner.query.filter_by(id=data["owner_id"]).first()
@@ -453,6 +473,7 @@ class PropertyByID(Resource):
                 ]
             }), 200)
 
+    @commit_with_error_handling
     def patch(self, id):
         property = Property.query.filter_by(id=id).first()
         if property is None:
@@ -508,6 +529,7 @@ class Tenants(Resource):
         tenants = [tenant.to_dict() for tenant in Tenant.query.all()]
         return make_response(jsonify(tenants), 200)
 
+    @commit_with_error_handling
     def post(self):
         data = request.get_json()
         user = User.query.filter_by(id=session.get("user_id")).first()
@@ -562,6 +584,7 @@ class TenantByID(Resource):
                 [transaction.to_dict() for transaction in tenant.transactions]
             }), 200)
 
+    @commit_with_error_handling
     def patch(self, id):
         tenant = Tenant.query.filter_by(id=id).first()
         if tenant is None:
@@ -619,6 +642,7 @@ class Creditors(Resource):
         creditors = [creditor.to_dict() for creditor in Creditor.query.all()]
         return make_response(jsonify(creditors), 200)
 
+    @commit_with_error_handling
     @require_account_role
     def post(self):
         data = request.get_json()
@@ -640,6 +664,7 @@ class CreditorByID(Resource):
                                  404)
         return make_response(jsonify(creditor.to_dict()), 200)
 
+    @commit_with_error_handling
     @require_account_role
     def patch(self, id):
         creditor = Creditor.query.filter_by(id=id).first()
@@ -673,6 +698,7 @@ class Transactions(Resource):
         ]
         return make_response(jsonify(transactions), 200)
 
+    @commit_with_error_handling
     @require_account_role
     def post(self):
         data = request.get_json()
@@ -716,6 +742,7 @@ class TransactionByID(Resource):
                                  404)
         return make_response(jsonify(transaction.to_dict()), 200)
 
+    @commit_with_error_handling
     @require_account_role
     def patch(self, id):
         transaction = Transaction.query.filter_by(id=id).first()
