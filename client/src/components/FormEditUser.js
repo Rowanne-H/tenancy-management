@@ -125,7 +125,7 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
   }
 
   return (
-    <div>
+    <div className="form-container">
       <h1>
         {changeStatus
           ? "Change Status"
@@ -134,7 +134,7 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
             : "Edit User Form"}
       </h1>
       {changeStatus ? (
-        <p>User email: {userToEdit.email}</p>
+        <p>User Name: {userToEdit.name}</p>
       ) : (
         <button
           className="link-button"
