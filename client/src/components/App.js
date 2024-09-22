@@ -64,11 +64,15 @@ function App() {
       }
     });
   }, [user]);
+  console.log(user);
 
   function updateUser(updatedUser) {
     setUsers(
       users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
     );
+    if (updatedUser.id === user.id) {
+      setUser(updatedUser);
+    }
   }
   function deleteUser(id) {
     setUsers(users.filter((user) => user.id !== id));

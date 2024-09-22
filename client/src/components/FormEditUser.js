@@ -21,21 +21,49 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
 
   const formSchema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Must enter email"),
-    password: yup.string().when("$editPassword", {
-      is: true, // When editPassword is true
-      then: yup.string().required("Must enter a password"),
-    }),
-    confirmPassword: yup.string().when("$editPassword", {
-      is: true, // When editPassword is true
-      then: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Passwords must match")
-        .required("Must confirm password"),
-    }),
+    password: yup
+      .string()
+      .nullable()
+      .test(
+        "is-required",
+        "Must enter a password if the user is changing password",
+        function (value) {
+          const { editPassword } = this.parent; // Access other fields in the current form
+          if (editPassword && !value) {
+            return false;
+          }
+          if (!editPassword && !value) {
+            return true;
+          }
+          return value; // Return true if not editing password
+        },
+      ),
+    confirmPassword: yup
+      .string()
+      .nullable()
+      .test("passwords-match", "Passwords must match", function (value) {
+        const { password, editPassword } = this.parent; // Access other fields in the current form
+        console.log(editPassword);
+        console.log("Confirm Password:", value, "Password:", password);
+        if (editPassword) {
+          console.log("is checking");
+          if (!value) {
+            return false;
+          }
+          if (value !== password) {
+            return false;
+          }
+        }
+        if (!editPassword && !value) {
+          return true;
+        }
+        return value; // Check match only if editing password
+      }),
     name: yup
       .string()
       .required("Must enter a name")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(3, "Name must be at least 3 characters long")
+      .matches(/.*\s+.*/, "Name must contain at least one space between words"),
     mobile: yup
       .string(10)
       .matches(
@@ -56,6 +84,7 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
       mobile: userToEdit?.mobile || "",
       is_accounts: userToEdit?.is_accounts || false,
       is_active: userToEdit?.is_active,
+      editPassword: false,
     },
     validationSchema: formSchema,
     enableReinitialize: true,
@@ -109,8 +138,10 @@ function UserForm({ onUpdateUser, changeStatus = "" }) {
       ) : (
         <button
           className="link-button"
-          value={editPassword}
-          onClick={() => setEditPassword(!editPassword)}
+          onClick={() => {
+            setEditPassword(!editPassword);
+            formik.setFieldValue("editPassword", !editPassword);
+          }}
         >
           {editPassword ? "Edit User" : "Change Password"}
         </button>

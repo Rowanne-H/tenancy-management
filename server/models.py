@@ -18,9 +18,9 @@ db = SQLAlchemy(metadata=metadata)
 
 # Models go here!
 def validate_name(value):
-    if not value or len(value) < 2:
+    if not value or len(value) < 3:
         raise ValueError(
-            "Name must be at least 2 characters long and not empty.")
+            "Name must be at least 3 characters long and not empty.")
     return value
 
 
@@ -202,14 +202,14 @@ class Property(BaseModel, SerializerMixin):
     @validates('commission')
     def validate_comission(self, key, value):
         value = float(value)
-        if not value or value <= 0 or value >= 0.1:
+        if not value or value < 0 or value > 0.1:
             raise ValueError("comission must be between 0 and 0.1")
         return value
 
     @validates('letting_fee')
     def validate_letting_fee(self, key, value):
         value = float(value)
-        if not value or value <= 0 or value >= 2:
+        if not value or value < 0 or value > 2:
             raise ValueError("letting fee must be between 0 and 2")
         return value
 

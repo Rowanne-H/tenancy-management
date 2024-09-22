@@ -6,8 +6,7 @@ function Navbar({ user, setUser }) {
   const [isFocused, setIsFocused] = useState(false);
 
   const [userDropDownMenu, setUserDropDownMenu] = useState(false);
-  const userName = user.name.split(" ");
-  const userIcon = userName[0][0] + userName[1][0];
+  const userIcon = user.name.split(" ")[0][0] + user.name.split(" ")[1][0];
 
   const history = useHistory();
 

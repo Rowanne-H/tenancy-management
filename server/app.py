@@ -47,6 +47,8 @@ def commit_with_error_handling(f):
         except IntegrityError as e:
             db.session.rollback()
             return make_response(jsonify({"message": str(e.orig)}), 400)
+        except ValueError as e:
+            return make_response(jsonify({"message": str(e)}), 400)
 
     return decorated_function
 
@@ -515,6 +517,14 @@ class PropertyByID(Resource):
                 auth_response = user_authorization(property.user_id)
                 if auth_response:
                     return auth_response
+                if attr == "is_active" and value==False:
+                    active_tenant_exists = any(tenant.is_active
+                                       for tenant in property.tenants)
+                    if active_tenant_exists:
+                        return make_response(
+                            jsonify(
+                                {"message":
+                                "Property that is currently tenanted can not be archived"}), 404)
                 if attr == "owner_id":
                     owner = Owner.query.filter_by(id=value).first()
                     if owner is None:
@@ -522,6 +532,8 @@ class PropertyByID(Resource):
                             jsonify(
                                 {"message": "Please input a valid owner id"}),
                             404)
+                if attr in ["user", "owner", "tenants", "transactions"]:
+                    continue
                 setattr(property, attr, value)
         db.session.add(property)
         db.session.commit()

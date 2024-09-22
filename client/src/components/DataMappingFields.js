@@ -66,7 +66,7 @@ export const validations = {
     name: yup
       .string()
       .required("Must enter a name")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(3, "Name must be at least 3 characters long"),
     mobile: yup
       .string(10)
       .matches(
@@ -84,7 +84,7 @@ export const validations = {
     name: yup
       .string()
       .required("Must enter a name")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(3, "Name must be at least 3 characters long"),
     email: yup.string().email("Invalid email").required("Must enter email"),
     mobile: yup
       .string(10)
@@ -206,7 +206,7 @@ export const validations = {
         "A recipient must be selected if category is not rent",
         function (value) {
           const { category } = this.parent;
-          if (category == "Rent" && !value) return true;
+          if (category === "Rent" && !value) return true;
           return value;
         },
       ),

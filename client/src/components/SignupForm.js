@@ -15,7 +15,8 @@ function SignupForm({ onLogin }) {
     name: yup
       .string()
       .required("Must enter a name")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(3, "Name must be at least 3 characters long")
+      .matches(/.*\s+.*/, "Name must contain at least one space between words"),
     mobile: yup
       .string(10)
       .matches(

@@ -23,21 +23,24 @@ function EditDataForm({
 
   useEffect(() => {
     if (id && type && ENDPOINTS[type]) {
-      fetch(ENDPOINTS[type] + id)
-        .then((r) => {
-          if (!r.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return r.json();
-        })
-        .then((data) => {
-          setDataToEdit(data);
-          if (data.category) {
-            setCategory(data.category);
-            categoryChange(data.category);
-          }
-        });
+      fetch(ENDPOINTS[type] + id).then((r) => {
+        if (r.ok) {
+          r.json().then((data) => {
+            setDataToEdit(data);
+            if (data.category) {
+              setCategory(data.category);
+              categoryChange(data.category);
+            }
+          });
+        } else {
+          r.json().then((err) => {
+            console.log(err.message);
+            setErrorMessage(err.message);
+          });
+        }
+      });
     }
+    // eslint-disable-next-line
   }, [id]);
 
   const fields = FIELD_MAPPINGS[type];
@@ -190,7 +193,7 @@ function EditDataForm({
                     ))}
                   </select>
                 )
-              ) : field == "is_active" ? (
+              ) : field === "is_active" ? (
                 <input
                   type="checkbox"
                   id={field}
