@@ -9,6 +9,7 @@ function Owners({ owners, user, view = "", users }) {
   const [items, setItems] = useState(owners);
 
   const { id } = useParams();
+
   useEffect(() => {
     if (id && view) {
       fetch(ENDPOINTS[view + "s"] + id)
@@ -22,6 +23,8 @@ function Owners({ owners, user, view = "", users }) {
           setItem(data);
           setItems(data.owners);
         });
+    } else {
+      setItems(owners);
     }
   }, [id, view]);
 

@@ -319,12 +319,12 @@ class UserByID(Resource):
                 jsonify(
                     {"message": "Accounts can not delete their own record"}),
                 400)
-        owner = Owner.query.filter_by(user_id=id).first()
-        if owner:
+        active_owner_exists = any(owner.is_active for owner in user.owners)
+        if active_owner_exists:
             return make_response(
                 jsonify({
                     "message":
-                    "User who manage zero or more properties for an owner cannot be deleted"
+                    "The property manager currently managing properties cannot be archived"
                 }),
                 400,
             )
@@ -517,14 +517,15 @@ class PropertyByID(Resource):
                 auth_response = user_authorization(property.user_id)
                 if auth_response:
                     return auth_response
-                if attr == "is_active" and value==False:
+                if attr == "is_active" and value == False:
                     active_tenant_exists = any(tenant.is_active
-                                       for tenant in property.tenants)
+                                               for tenant in property.tenants)
                     if active_tenant_exists:
                         return make_response(
-                            jsonify(
-                                {"message":
-                                "Property that is currently tenanted can not be archived"}), 404)
+                            jsonify({
+                                "message":
+                                "Property that is currently tenanted can not be archived"
+                            }), 404)
                 if attr == "owner_id":
                     owner = Owner.query.filter_by(id=value).first()
                     if owner is None:

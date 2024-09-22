@@ -23,6 +23,8 @@ function Transactions({ transactions = [], view = "", user }) {
           setItems(data.transactions);
           setFields(fields.slice(2));
         });
+    } else {
+      setItems(transactions);
     }
   }, [id, view]);
 
