@@ -59,11 +59,11 @@ nav {
 
 i {
   margin-right: 5px;
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 .nav-search-bar > .fa-search {
-  font-size: 1rem;
+  font-size: 1.3rem;
   padding: 6px;
 }
 
@@ -336,6 +336,10 @@ a {
   color: var(--error-text-color);
   margin: 0px;
   min-height: 1rem;
+}
+
+ul {
+  padding: 0; /* Optional: Remove default padding */
 }
 
 li {

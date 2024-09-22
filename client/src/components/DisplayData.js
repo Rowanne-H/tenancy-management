@@ -125,9 +125,9 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
             <p>
               <strong>{formatTitleValue(field)}:</strong>{" "}
             </p>
-            {field === "property_id" ||
+            {(field === "property_id" && data[field]) ||
             field === "user_id" ||
-            field === "owner_id" ? (
+            (field === "owner_id" && data[field]) ? (
               <NavLink
                 className="more"
                 to={
@@ -149,6 +149,56 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
             )}
           </div>
         ))}
+        {type === "properties" ? (
+          <div className="details-item" key="property">
+            <p>
+              <strong>Tenant:</strong>{" "}
+            </p>
+            {data["tenants"] && data["tenants"].length > 0 ? (
+              <ul>
+                {data["tenants"].map((tenant) => (
+                  <li key={tenant.id}>
+                    <NavLink className="more" to={`/tenants/${tenant.id}`}>
+                      {tenant.name}
+                    </NavLink>
+                    {tenant.is_active ? (
+                      <div>(Active: Yes)</div>
+                    ) : (
+                      <div>(Active: No)</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No tenants assigned to this property.</p>
+            )}
+          </div>
+        ) : null}
+        {type === "owners" ? (
+          <div className="details-item" key="property">
+            <p>
+              <strong>Properties:</strong>{" "}
+            </p>
+            {data["properties"] && data["properties"].length > 0 ? (
+              <ul>
+                {data["properties"].map((property) => (
+                  <li key={property.id}>
+                    <NavLink className="more" to={`/properties/${property.id}`}>
+                      {property.address}
+                    </NavLink>
+                    {property.is_active ? (
+                      <div>(Active: Yes)</div>
+                    ) : (
+                      <div>(Active: No)</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No properties assigned to this property.</p>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   );

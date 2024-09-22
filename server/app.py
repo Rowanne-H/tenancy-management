@@ -571,7 +571,7 @@ class Tenants(Resource):
         user = User.query.filter_by(id=session.get("user_id")).first()
         if user is None:
             return make_response(
-                jsonify({"message": "Please input a valid user id"}), 404)
+                jsonify({"message": "Unauthorized"}), 401)
         property = Property.query.filter_by(id=data["property_id"]).first()
         owner_id = ""
         if property:
@@ -617,9 +617,9 @@ class TenantByID(Resource):
         return make_response(
             jsonify({
                 **tenant.to_dict(), "property":
-                tenant.property.to_dict(),
+                tenant.property.to_dict() if tenant.property else "",
                 "owner":
-                tenant.owner.to_dict(),
+                tenant.owner.to_dict() if tenant.owner else "",
                 "user":
                 tenant.user.to_dict(),
                 "transactions":
@@ -641,18 +641,25 @@ class TenantByID(Resource):
                         404)
                 tenant.user_id = value
             else:
-                auth_response = user_authorization(property.user_id)
+                auth_response = user_authorization(tenant.user_id)
                 if auth_response:
                     return auth_response
                 if attr == "property_id":
-                    property = Property.query.filter_by(id=value).first()
-                    if property is None:
-                        return make_response(
-                            jsonify(
-                                {"message": "Please input a valid owner id"}),
-                            404)
-                    tenant.property_id = property.id
-                    tenant.owner_id = property.owner_id
+                    if value:
+                        property = Property.query.filter_by(id=value).first()
+                        if property is None:
+                            return make_response(
+                                jsonify(
+                                    {"message": "Please select current or vacant property"}),
+                                404)
+                        active_tenant = Tenant.query.filter_by(property_id=property.id).first()
+                        if active_tenant:
+                            return make_response(
+                                jsonify(
+                                    {"message": "Please select current or vacant property"}),
+                                404)
+                        tenant.property_id = property.id
+                        tenant.owner_id = property.owner_id
                 else:
                     if (attr == "lease_start_date" or attr == "lease_end_date"
                             or attr == "vacating_date"):
@@ -660,7 +667,8 @@ class TenantByID(Resource):
                             value = None
                         else:
                             value = getDate(value)
-                    setattr(tenant, attr, value)
+                    if attr not in ["property", "owner", "user", "transactions"]:
+                        setattr(tenant, attr, value)
         db.session.add(tenant)
         db.session.commit()
         return make_response(tenant.to_dict(), 200)

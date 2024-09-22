@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import { ENDPOINTS, FIELD_MAPPINGS, validations } from "./DataMappingFields";
-import { generateFormikValues, inputType } from "./DataDisplayingFunctions";
+import {
+  generateFormikValues,
+  inputType,
+  formatTitleValue,
+} from "./DataDisplayingFunctions";
 
 function EditDataForm({
   onUpdateData,
@@ -34,7 +38,6 @@ function EditDataForm({
           });
         } else {
           r.json().then((err) => {
-            console.log(err.message);
             setErrorMessage(err.message);
           });
         }
@@ -101,7 +104,7 @@ function EditDataForm({
   });
 
   return (
-    <div>
+    <div className="form-container">
       <h1>
         Edit{" "}
         {type === "properties"
@@ -116,7 +119,7 @@ function EditDataForm({
               {field === "user_id" ||
               (field === "pay_to" && category === "Rent")
                 ? null
-                : field.charAt(0).toUpperCase() + field.slice(1) + ": "}
+                : formatTitleValue(field)}
               {field === "user_id" ? null : field === "owner_id" ||
                 field === "property_id" ||
                 field === "tenant_id" ? (

@@ -131,6 +131,9 @@ export const inputType = (field) => {
 
 export const getIdValue = (items, field, id) => {
   const itemById = items.filter((item) => item.id == id);
+  if (!itemById[0]) {
+    return "";
+  }
   if (field === "property_id") {
     return itemById[0].address;
   } else {
