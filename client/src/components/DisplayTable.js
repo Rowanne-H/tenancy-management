@@ -137,6 +137,7 @@ function DisplayTable({
       history.push(`/${type}/new`);
     }
   };
+  console.log(items);
 
   return (
     <div className="display-table-container">

@@ -25,6 +25,8 @@ function App() {
   const [creditors, setCreditors] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
+  console.log(creditors);
+
   useEffect(() => {
     // auto-login
     fetch("/check_session").then((r) => {
@@ -68,14 +70,14 @@ function App() {
 
   function updateUser(updatedUser) {
     setUsers(
-      users.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+      users.map((user) => (user.id == updatedUser.id ? updatedUser : user)),
     );
-    if (updatedUser.id === user.id) {
+    if (updatedUser.id == user.id) {
       setUser(updatedUser);
     }
   }
   function deleteUser(id) {
-    setUsers(users.filter((user) => user.id !== id));
+    setUsers(users.filter((user) => user.id != id));
   }
 
   function addNewOwner(newOwner) {
@@ -84,12 +86,12 @@ function App() {
   function updateOwner(updatedOwner) {
     setOwners(
       owners.map((owner) =>
-        owner.id === updatedOwner.id ? updatedOwner : owner,
+        owner.id == updatedOwner.id ? updatedOwner : owner,
       ),
     );
   }
   function deleteOwner(id) {
-    setOwners(owners.filter((owner) => owner.id !== id));
+    setOwners(owners.filter((owner) => owner.id != id));
   }
 
   function addNewProperty(newProperty) {
@@ -98,12 +100,12 @@ function App() {
   function updateProperty(updatedProperty) {
     setProperties(
       properties.map((property) =>
-        property.id === updatedProperty.id ? updatedProperty : property,
+        property.id == updatedProperty.id ? updatedProperty : property,
       ),
     );
   }
   function deleteProperty(id) {
-    setProperties(properties.filter((property) => property.id !== id));
+    setProperties(properties.filter((property) => property.id != id));
   }
 
   const activeTenantPropertyIds = new Set(
@@ -120,12 +122,12 @@ function App() {
   function updateTenant(updatedTenant) {
     setTenants(
       tenants.map((tenant) =>
-        tenant.id === updatedTenant.id ? updatedTenant : tenant,
+        tenant.id == updatedTenant.id ? updatedTenant : tenant,
       ),
     );
   }
   function deleteTenant(id) {
-    setTenants(tenants.filter((tenant) => tenant.id !== id));
+    setTenants(tenants.filter((tenant) => tenant.id != id));
   }
 
   function addNewCreditor(newCreditor) {
@@ -134,12 +136,15 @@ function App() {
   function updateCreditor(updatedCreditor) {
     setCreditors(
       creditors.map((creditor) =>
-        creditor.id === updatedCreditor.id ? updatedCreditor : creditor,
+        creditor.id == updatedCreditor.id ? updatedCreditor : creditor,
       ),
     );
   }
   function deleteCreditor(id) {
-    setCreditors(creditors.filter((creditor) => creditor.id !== id));
+    let checki = creditors.filter((creditor) => creditor.id != id);
+    console.log("working", id, checki);
+
+    setCreditors(creditors.filter((creditor) => creditor.id != id));
   }
 
   function addNewTransaction(newTransaction) {
@@ -148,16 +153,14 @@ function App() {
   function updateTransaction(updatedTransaction) {
     setTransactions(
       transactions.map((transaction) =>
-        transaction.id === updatedTransaction.id
+        transaction.id == updatedTransaction.id
           ? updatedTransaction
           : transaction,
       ),
     );
   }
   function deleteTransaction(id) {
-    setTransactions(
-      transactions.filter((transaction) => transaction.id !== id),
-    );
+    setTransactions(transactions.filter((transaction) => transaction.id != id));
   }
 
   return (
