@@ -281,6 +281,15 @@ class UserByID(Resource):
                         }),
                         403,
                     )
+            if attr == "is_active" and value == False:
+                active_owner_exists = any(owner.is_active
+                                          for owner in user.owners)
+                if active_owner_exists:
+                    return make_response(
+                        jsonify({
+                            "message":
+                            "The property manager currently managing properties cannot be archived"
+                        }), 404)
             if attr in ["email", "name", "mobile", "password"]:
                 if current_user.id != user.id:
                     return make_response(
