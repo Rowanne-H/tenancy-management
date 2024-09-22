@@ -26,6 +26,7 @@ function FormChangeUser({
           formik.setValues({ user_id: owner.user_id });
         });
     }
+    // eslint-disable-next-line
   }, [id]);
 
   const formSchema = yup.object().shape({
@@ -39,7 +40,7 @@ function FormChangeUser({
     validationSchema: formSchema,
     onSubmit: (values) => {
       const filteredProperties = properties.filter(
-        (property) => property.owner_id == ownerToEdit.id,
+        (property) => property.owner_id === ownerToEdit.id,
       );
       filteredProperties.forEach((property) => {
         fetch(`/properties/${property.id}`, {
@@ -59,7 +60,7 @@ function FormChangeUser({
         });
       });
       const filteredTenants = tenants.filter(
-        (tenant) => tenant.owner_id == ownerToEdit.id,
+        (tenant) => tenant.owner_id === ownerToEdit.id,
       );
       filteredTenants.forEach((tenant) => {
         fetch(`/tenants/${tenant.id}`, {
@@ -99,7 +100,11 @@ function FormChangeUser({
   });
 
   return (
-    <div>
+    <div className="form-container">
+      <h2>
+        Change Property Manager for <br />
+        <i>{ownerToEdit.name}</i>
+      </h2>
       <form onSubmit={formik.handleSubmit}>
         <select
           id="user_id"

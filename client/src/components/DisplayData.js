@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { ENDPOINTS, FIELD_MAPPINGS } from "./DataMappingFields";
-import {
-  formatTitleValue,
-  formatValue,
-  getIdValue,
-} from "./DataDisplayingFunctions";
+import { formatTitleValue, formatValue } from "./DataDisplayingFunctions";
 
 const DisplayData = ({ type, user, onDeleteItem }) => {
   const [data, setData] = useState(null);
@@ -31,12 +27,12 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
 
   function handleEditClick() {
     if (type === "users" && user.id !== id) {
-      alert("User not authorized to to edit this file");
+      alert("User not authorized to edit this file");
     } else if (
       (type === "owners" || type === "tenants" || type === "properties") &&
-      user.id !== id
+      user.id !== data.user_id
     ) {
-      alert("User not authorized to to edit this file");
+      alert("User not authorized to edit this file");
     } else if (
       (type === "transactions" || type === "creditors") &&
       !user.is_accounts
@@ -82,6 +78,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
+  console.log(data);
 
   return (
     <div>
@@ -90,7 +87,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
           <button className="link-button" onClick={handleChangeStatusClick}>
             Change Status
           </button>
-        ) : type != "users" ? (
+        ) : type !== "users" ? (
           <button className="link-button" onClick={handleEditClick}>
             Edit
           </button>

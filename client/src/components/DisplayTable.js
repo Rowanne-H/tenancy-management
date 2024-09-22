@@ -21,8 +21,6 @@ function DisplayTable({
   properties = [],
   owners = [],
 }) {
-  console.log("Table");
-  console.log(users);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
