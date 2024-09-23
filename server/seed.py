@@ -71,9 +71,10 @@ def create_owners():
     owners = []
     property_managers = [user for user in users if user.is_accounts == False]
     #management has been terminated
+    name = fake.unique.name()
     inactive_owner = Owner(
-        ref=fake.word(),
-        name=fake.unique.name(),
+        ref=name[:5],
+        name=name,
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         address=fake.unique.address(),
@@ -82,9 +83,10 @@ def create_owners():
         is_active=False,
         user=rc(property_managers))
     owners.append(inactive_owner)
-    for i in range(5):
-        owner = Owner(name=fake.unique.name(),
-                      ref=fake.word(),
+    for i in range(6):
+        name = fake.unique.name()
+        owner = Owner(ref=name[:5],
+                      name=name,
                       email=fake.unique.email(),
                       mobile=generate_mobile_number(),
                       address=fake.unique.address(),
@@ -101,8 +103,9 @@ def create_properties(owners):
     properties = []
     active_owners = [owner for owner in owners if owner.is_active == True]
     inactive_owner = owners[0]
-    inactive_property = Property(ref=fake.word(),
-                                 address=fake.unique.address(),
+    address = fake.unique.address()
+    inactive_property = Property(ref=address[:5],
+                                 address=address,
                                  commission=0.05,
                                  letting_fee=1,
                                  owner=inactive_owner,
@@ -110,9 +113,10 @@ def create_properties(owners):
                                  is_active=False)
     properties.append(inactive_property)
     for owner in active_owners:
+        address = fake.unique.address()
         property = Property(
-            ref=fake.word(),
-            address=fake.unique.address(),
+            ref=address[:5],
+            address=address,
             commission=0.05,
             letting_fee=1,
             owner=owner,
@@ -130,9 +134,10 @@ def create_tenants(properties):
         property for property in properties if property.is_active == True
     ]
     inactive_property = properties[0]
+    name = fake.unique.name()
     inactive_tenant = Tenant(
-        name=fake.unique.name(),
-        ref=fake.word(),
+        ref=name[:5],
+        name=name,
         email=fake.unique.email(),
         mobile=generate_mobile_number(),
         rent=500,
@@ -146,8 +151,9 @@ def create_tenants(properties):
     tenants.append(inactive_tenant)
     for property in active_properties:
         date = generate_a_date()
-        tenant = Tenant(name=fake.unique.name(),
-                        ref=fake.word(),
+        name = fake.unique.name()
+        tenant = Tenant(ref=name[:5],
+                        name=name,
                         email=fake.unique.email(),
                         mobile=generate_mobile_number(),
                         rent=randint(3, 10) * 100,
