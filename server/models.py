@@ -187,7 +187,7 @@ class Property(BaseModel, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     ref = db.Column(db.String, nullable=False)
-    address = db.Column(db.String, nullable=False)
+    address = db.Column(db.String, unique=True, nullable=False)
     commission = db.Column(db.Float, default=0.05, nullable=False)
     letting_fee = db.Column(db.Float, default=1, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)

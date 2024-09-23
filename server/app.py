@@ -666,12 +666,13 @@ class TenantByID(Resource):
                                 404)
                         active_tenant = Tenant.query.filter_by(
                             property_id=property.id).first()
-                        if active_tenant.id != tenant.id:
-                            return make_response(
-                                jsonify({
-                                    "message":
-                                    "Please select current or vacant property"
-                                }), 404)
+                        if active_tenant:
+                            if active_tenant.id != tenant.id:
+                                return make_response(
+                                    jsonify({
+                                        "message":
+                                        "Please select current or vacant property"
+                                    }), 404)
                         tenant.property_id = property.id
                         tenant.owner_id = property.owner_id
                 else:
@@ -681,12 +682,13 @@ class TenantByID(Resource):
                             value = None
                         else:
                             value = getDate(value)
-                    if attr == "is_active" and value == True and not tenant.property.is_active:
-                        return make_response(
-                            jsonify({
-                                "message":
-                                "A tenant who is not associated with an actively managed property cannot be activated."
-                            }), 404)
+                    if attr == "is_active" and value == True:
+                        if tenant.property and not tenant.property.is_active:
+                            return make_response(
+                                jsonify({
+                                    "message":
+                                    "A tenant who is not associated with an actively managed property cannot be activated."
+                                }), 404)
                     if attr not in [
                             "property", "owner", "user", "transactions"
                     ]:
