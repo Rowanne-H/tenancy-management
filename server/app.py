@@ -345,8 +345,7 @@ class Owners(Resource):
         data = request.get_json()
         user = User.query.filter_by(id=session.get("user_id")).first()
         if user is None:
-            return make_response(
-                jsonify({"message": "Please input a valid user id"}), 404)
+            return make_response(jsonify({"message": "Unauthorized"}), 401)
         management_start_date = getDate(data["management_start_date"])
         management_end_date = (getDate(data.get("management_end_date"))
                                if data.get("management_end_date") else None)
@@ -438,7 +437,7 @@ class OwnerByID(Resource):
             return make_response(
                 jsonify({
                     "message":
-                    "Owner who hasnot terminated management cannot be deleted"
+                    "An owner who has a history of managing properties cannot be deleted; instead, it should be archived."
                 }),
                 400,
             )
@@ -510,22 +509,32 @@ class PropertyByID(Resource):
                 user = User.query.filter_by(id=value).first()
                 if user is None:
                     return make_response(
-                        jsonify({"message": "Please input a valid user id"}),
-                        404)
+                        jsonify({
+                            "message":
+                            "Please select a property manager who is currently employed"
+                        }), 404)
                 property.user_id = value
             else:
                 auth_response = user_authorization(property.user_id)
                 if auth_response:
                     return auth_response
-                if attr == "is_active" and value == False:
-                    active_tenant_exists = any(tenant.is_active
-                                               for tenant in property.tenants)
-                    if active_tenant_exists:
+                if attr == "is_active":
+                    if value == False:
+                        active_tenant_exists = any(
+                            tenant.is_active for tenant in property.tenants)
+                        if active_tenant_exists:
+                            return make_response(
+                                jsonify({
+                                    "message":
+                                    "Property that is currently tenanted can not be archived"
+                                }), 404)
+                    if value == True and not property.owner.is_active:
                         return make_response(
                             jsonify({
                                 "message":
-                                "Property that is currently tenanted can not be archived"
+                                "A property without an owner in an active contract cannot be activated."
                             }), 404)
+
                 if attr == "owner_id":
                     owner = Owner.query.filter_by(id=value).first()
                     if owner is None:
@@ -551,8 +560,10 @@ class PropertyByID(Resource):
         tenant = Tenant.query.filter_by(property_id=id).first()
         if tenant:
             return make_response(
-                jsonify({"message": "Tenanted property cannot be deleted"}),
-                400)
+                jsonify({
+                    "message":
+                    " A property that has tenant records in its history cannot be deleted; instead, it should be archived."
+                }), 400)
         db.session.delete(property)
         db.session.commit()
         return make_response(
@@ -636,8 +647,10 @@ class TenantByID(Resource):
                 user = User.query.filter_by(id=value).first()
                 if user is None:
                     return make_response(
-                        jsonify({"message": "Please input a valid user id"}),
-                        404)
+                        jsonify({
+                            "message":
+                            "Please select a property manager who is currently employed"
+                        }), 404)
                 tenant.user_id = value
             else:
                 auth_response = user_authorization(tenant.user_id)
@@ -648,13 +661,12 @@ class TenantByID(Resource):
                         property = Property.query.filter_by(id=value).first()
                         if property is None:
                             return make_response(
-                                jsonify({
-                                    "message":
-                                    "Please select current or vacant property"
-                                }), 404)
+                                jsonify(
+                                    {"message": "Please select a property"}),
+                                404)
                         active_tenant = Tenant.query.filter_by(
                             property_id=property.id).first()
-                        if active_tenant:
+                        if active_tenant.id != tenant.id:
                             return make_response(
                                 jsonify({
                                     "message":
@@ -669,6 +681,12 @@ class TenantByID(Resource):
                             value = None
                         else:
                             value = getDate(value)
+                    if attr == "is_active" and value == True and not tenant.property.is_active:
+                        return make_response(
+                            jsonify({
+                                "message":
+                                "A tenant who is not associated with an actively managed property cannot be activated."
+                            }), 404)
                     if attr not in [
                             "property", "owner", "user", "transactions"
                     ]:
@@ -684,6 +702,13 @@ class TenantByID(Resource):
         auth_response = user_authorization(tenant.user_id)
         if auth_response:
             return auth_response
+        transaction = Transaction.query.filter_by(tenant_id=tenant.id).first()
+        if transaction:
+            return make_response(
+                jsonify({
+                    "message":
+                    " A tenant that has transaction records in its history cannot be deleted; instead, it should be archived."
+                }), 400)
         db.session.delete(tenant)
         db.session.commit()
         return make_response(
