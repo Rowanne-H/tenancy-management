@@ -189,6 +189,10 @@ input:focus {
   padding: 5px;
 }
 
+.search-dropdown-menu > ul > li:hover {
+  background-color: var(--hover-bg-color);
+}
+
 .people-dropdown-item,
 .link {
   width: 100%;
