@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import { FIELD_MAPPINGS, validations } from "./DataMappingFields";
-import { getFormikValues, inputType } from "./DataDisplayingFunctions";
+import {
+  getFormikValues,
+  inputType,
+  formatTitleValue,
+} from "./DataDisplayingFunctions";
 
 function FormNewData({
   type,
@@ -86,10 +90,13 @@ function FormNewData({
             <div key={field}>
               <label>
                 {field === "user_id" ||
-                (field === "pay_to" && category === "Rent")
+                (field === "pay_to" && category === "Rent") ||
+                (type == "tenants" && field === "owner_id")
                   ? null
-                  : field.charAt(0).toUpperCase() + field.slice(1) + ": "}
-                {field === "user_id" ? null : field === "owner_id" ||
+                  : formatTitleValue(field) + ": "}
+                {field === "user_id" ||
+                (type == "tenants" && field === "owner_id") ? null : field ===
+                    "owner_id" ||
                   field === "property_id" ||
                   field === "tenant_id" ? (
                   <select

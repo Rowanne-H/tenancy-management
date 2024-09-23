@@ -78,7 +78,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
-  console.log(data)
+  console.log(data);
 
   return (
     <div>
@@ -122,7 +122,16 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
       </div>
       <div className="details-container">
         {fields.map((field) => (
-          <div className={field==="user_id" || field ==="owner_id" || field ==="property_id"?"details-item special":"details-item"} key={field}>
+          <div
+            className={
+              field === "user_id" ||
+              field === "owner_id" ||
+              field === "property_id"
+                ? "details-item special"
+                : "details-item"
+            }
+            key={field}
+          >
             <p>
               <strong>{formatTitleValue(field)}:</strong>{" "}
             </p>
@@ -174,8 +183,8 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
               <p>No properties assigned to this property.</p>
             )}
           </div>
-        ) : null}        
-        {type === "properties" || type === "owners"? (
+        ) : null}
+        {type === "properties" || type === "owners" ? (
           <div className="details-item special" key="tenant">
             <p>
               <strong>Tenants:</strong>{" "}

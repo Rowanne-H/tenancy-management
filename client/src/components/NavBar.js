@@ -1,22 +1,48 @@
 import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
+import { formatValue, getIdValue } from "./DataDisplayingFunctions";
 
-function Navbar({ user, setUser }) {
+function Navbar({ user, setUser, owners, properties, tenants }) {
   const [peopleDropDownMenu, setPeopleDropDownMenu] = useState(false);
+  const [search, setSearch] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-
   const [userDropDownMenu, setUserDropDownMenu] = useState(false);
   const userIcon = user.name.split(" ")[0][0] + user.name.split(" ")[1][0];
 
+  const ownersFields = ["ref", "name", "email", "mobile"];
+  const tenantsFields = ["ref", "name", "email"];
+  const propertiesFields = ["ref", "address", "owner_id", "tenant_id"];
+
+  const filteredOwners = owners.filter((item) => {
+    return ownersFields.some((field) => {
+      let searchItem = item[field];
+      return searchItem
+        ?.toString()
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+  });
+  const filteredTenants = tenants.filter((item) => {
+    return tenantsFields.some((field) => {
+      let searchItem = item[field];
+      return searchItem
+        ?.toString()
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+  });
+
+  const filteredProperties = properties.filter((item) => {
+    return propertiesFields.some((field) => {
+      let searchItem = item[field];
+      return searchItem
+        ?.toString()
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+  });
+
   const history = useHistory();
-
-  function handleViewClick() {
-    history.push(`/users/${user.id}`);
-  }
-
-  function handleEditClick() {
-    history.push(`/users/${user.id}/edit`);
-  }
 
   function handleLogoutClick() {
     fetch("/logout", {
@@ -29,6 +55,16 @@ function Navbar({ user, setUser }) {
       }
     });
   }
+
+  function getActiveTenant(items, id) {
+    let activeTenant = items.filter((item) => item.property_id == id);
+    if (activeTenant.length > 0) {
+      return activeTenant[0].name;
+    } else {
+      return "Null";
+    }
+  }
+  console.log(filteredOwners);
 
   return (
     <nav>
@@ -91,8 +127,58 @@ function Navbar({ user, setUser }) {
           type="text"
           placeholder="Search by ref, name, address, email or mobile"
           onFocus={() => setIsFocused(true)}
+          value={search}
           onBlur={() => setIsFocused(false)}
+          onChange={(e) => setSearch(e.target.value)}
         />
+        <i className="fas fa-remove" onClick={() => setSearch("")}></i>
+        {search ? (
+          <div className="search-dropdown-menu">
+            <ul>
+              {filteredOwners.map((item) => (
+                <li
+                  key={item.id}
+                  onClick={() => history.push(`/owners/${item.id}`)}
+                >
+                  <div>
+                    <strong>Owner: </strong>
+                    {item.name}
+                  </div>
+                  Ref: {item.ref} &nbsp;&nbsp;&nbsp; Mobile: {item.mobile}{" "}
+                  &nbsp;&nbsp;&nbsp; Email: {item.email}
+                </li>
+              ))}
+              {filteredTenants.map((item) => (
+                <li
+                  key={item.id}
+                  onClick={() => history.push(`/tenants/${item.id}`)}
+                >
+                  <div>
+                    <strong>Tenant: </strong>
+                    {item.name}
+                  </div>
+                  Ref: {item.ref} &nbsp;&nbsp;&nbsp; Mobile:{item.mobile}{" "}
+                  &nbsp;&nbsp;&nbsp; Email: {item.email}
+                </li>
+              ))}
+              {filteredProperties.map((item) => (
+                <li
+                  key={item.id}
+                  onClick={() => history.push(`/properties/${item.id}`)}
+                >
+                  <div>
+                    <strong>Property: </strong>
+                    {item.address}
+                  </div>
+                  Ref: {item.ref} &nbsp;&nbsp;&nbsp; Owner:{" "}
+                  {getIdValue(owners, "owner_id", item.owner_id)}{" "}
+                  &nbsp;&nbsp;&nbsp; Tenant: {getActiveTenant(tenants, item.id)}
+                  {item.tenant_id}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
 
       <div
@@ -104,10 +190,16 @@ function Navbar({ user, setUser }) {
           <div className="user-dropdown-menu">
             <p className="user-dropdown-item">{user ? user.name : null}</p>
             <p className="user-dropdown-item">{user ? user.email : null}</p>
-            <p className="user-dropdown-item link" onClick={handleViewClick}>
+            <p
+              className="user-dropdown-item link"
+              onClick={() => history.push(`/users/${user.id}`)}
+            >
               View my profile
             </p>
-            <p className="user-dropdown-item link" onClick={handleEditClick}>
+            <p
+              className="user-dropdown-item link"
+              onClick={() => history.push(`/users/${user.id}/edit`)}
+            >
               Edit my profile
             </p>
             <p className="user-dropdown-item link" onClick={handleLogoutClick}>

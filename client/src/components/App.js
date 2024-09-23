@@ -167,7 +167,13 @@ function App() {
     <Router>
       {user ? (
         <div className="App">
-          <NavBar user={user} setUser={setUser} />
+          <NavBar
+            user={user}
+            setUser={setUser}
+            owners={owners}
+            properties={properties}
+            tenants={tenants}
+          />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route
