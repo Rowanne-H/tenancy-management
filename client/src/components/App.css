@@ -316,14 +316,18 @@ tr {
   margin: auto;
   width: 50%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Two columns */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
 }
 
 .details-item {
   display: block;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--primary-bg-color); /* Subtle border */
+}
+
+.special {
+  grid-column: 1 / -1; 
 }
 
 a {

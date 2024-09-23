@@ -4,7 +4,7 @@ import DisplayTable from "./DisplayTable";
 import { ENDPOINTS } from "./DataMappingFields";
 
 function Owners({ owners, user, view = "", users }) {
-  const fields = ["ref", "name", "email", "user_id", "is_active"];
+  const fields = ["ref", "name", "email", "is_active", "user_id"];
   const [item, setItem] = useState();
   const [items, setItems] = useState(owners);
 

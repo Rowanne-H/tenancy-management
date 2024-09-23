@@ -78,6 +78,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   if (!data) return <p>Loading...</p>;
 
   const fields = FIELD_MAPPINGS[type];
+  console.log(data)
 
   return (
     <div>
@@ -121,7 +122,7 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
       </div>
       <div className="details-container">
         {fields.map((field) => (
-          <div className="details-item" key={field}>
+          <div className={field==="user_id" || field ==="owner_id" || field ==="property_id"?"details-item special":"details-item"} key={field}>
             <p>
               <strong>{formatTitleValue(field)}:</strong>{" "}
             </p>
@@ -149,33 +150,8 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
             )}
           </div>
         ))}
-        {type === "properties" ? (
-          <div className="details-item" key="property">
-            <p>
-              <strong>Tenant:</strong>{" "}
-            </p>
-            {data["tenants"] && data["tenants"].length > 0 ? (
-              <ul>
-                {data["tenants"].map((tenant) => (
-                  <li key={tenant.id}>
-                    <NavLink className="more" to={`/tenants/${tenant.id}`}>
-                      {tenant.name}
-                    </NavLink>
-                    {tenant.is_active ? (
-                      <div>(Active: Yes)</div>
-                    ) : (
-                      <div>(Active: No)</div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No tenants assigned to this property.</p>
-            )}
-          </div>
-        ) : null}
         {type === "owners" ? (
-          <div className="details-item" key="property">
+          <div className="details-item special" key="property">
             <p>
               <strong>Properties:</strong>{" "}
             </p>
@@ -196,6 +172,31 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
               </ul>
             ) : (
               <p>No properties assigned to this property.</p>
+            )}
+          </div>
+        ) : null}        
+        {type === "properties" || type === "owners"? (
+          <div className="details-item special" key="tenant">
+            <p>
+              <strong>Tenants:</strong>{" "}
+            </p>
+            {data["tenants"] && data["tenants"].length > 0 ? (
+              <ul>
+                {data["tenants"].map((tenant) => (
+                  <li key={tenant.id}>
+                    <NavLink className="more" to={`/tenants/${tenant.id}`}>
+                      {tenant.name}
+                    </NavLink>
+                    {tenant.is_active ? (
+                      <div>(Active: Yes)</div>
+                    ) : (
+                      <div>(Active: No)</div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No tenants assigned.</p>
             )}
           </div>
         ) : null}

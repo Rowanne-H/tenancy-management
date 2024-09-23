@@ -6,9 +6,9 @@ function Tenants({ tenants, user, properties, owners, users }) {
     "ref",
     "name",
     "email",
+    "is_active",
     "property_id",
     "user_id",
-    "is_active",
   ];
 
   return (
