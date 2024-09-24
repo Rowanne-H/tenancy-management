@@ -13,7 +13,7 @@ from sqlalchemy import MetaData
 # Local imports
 
 # Instantiate app, set attributes
-app = Flask(__name__, static_folder='../client/build', static_url_path='')
+app = Flask(__name__, static_folder='build/static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
@@ -32,4 +32,4 @@ bcrypt = Bcrypt(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})

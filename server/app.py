@@ -12,6 +12,7 @@ from datetime import date, datetime
 from flask_cors import CORS
 from functools import wraps
 from sqlalchemy.exc import IntegrityError
+from flask import send_from_directory
 
 # Local imports
 from config import app, db, api, migrate
@@ -26,8 +27,24 @@ app.config["SECRET_KEY"] = "my-very-secret-key"
 app.json.compact = False
 
 
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+@app.route('/<path:path>', methods=['GET'])
+def send_static(path):
+    return send_from_directory('build', path)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+    return send_from_directory('build', 'index.html')
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('build', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory('build', 'index.html')
 
 # Views go here!
 def getDate(value):
@@ -156,13 +173,10 @@ def getPayToAndPayFrom(data):
     return [pay_to, pay_from, owner_id, property_id, tenant_id, creditor_id]
 
 
-@app.route("/")
-def index():
-    return "<h1>Project Server</h1>"
-
-
 @app.before_request
 def check_if_logged_in():
+    if request.endpoint in ["static", "index", "favicon"]:
+        return
     if request.endpoint in ["signup", "login", "check_session"]:
         return
     if "user_id" not in session:
