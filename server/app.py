@@ -410,7 +410,7 @@ class OwnerByID(Resource):
                         return make_response(
                             jsonify({
                                 "message":
-                                "The property manager currently managing properties cannot be archived"
+                                "The owner who still has properties actively managed by a property manager cannot be archived."
                             }), 404)
                 if attr == "management_start_date" or attr == "management_end_date":
                     if value == "":
