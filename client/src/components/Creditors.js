@@ -8,7 +8,6 @@ function Creditors({ creditors, deleteCreditor, user }) {
   return (
     <DisplayTable
       items={creditors}
-      deleteItem={deleteCreditor}
       fields={fields}
       defaultSortBy="id"
       type="creditors"
