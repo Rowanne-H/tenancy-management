@@ -18,7 +18,7 @@ from config import app, db, api, migrate
 from flask_restful import Api, Resource
 
 # Add your model imports
-from .models import db, User, Owner, Property, Tenant, Transaction, Creditor
+from models import db, User, Owner, Property, Tenant, Transaction, Creditor
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
