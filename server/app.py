@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Standard library imports
+import os
 
 # Remote library imports
 from flask import Flask, request, jsonify, make_response, session
@@ -20,7 +21,7 @@ from flask_restful import Api, Resource
 from models import db, User, Owner, Property, Tenant, Transaction, Creditor
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tenancy_management.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "my-very-secret-key"
 app.json.compact = False
