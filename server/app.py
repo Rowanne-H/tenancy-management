@@ -14,7 +14,6 @@ from functools import wraps
 from sqlalchemy.exc import IntegrityError
 
 # Local imports
-from config import app, db, api
 from flask_restful import Api, Resource
 
 # Add your model imports
