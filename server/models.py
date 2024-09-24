@@ -5,15 +5,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from config import db, bcrypt
+from .config import db, bcrypt
 from datetime import date, datetime
-
-metadata = MetaData(
-    naming_convention={
-        "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-    })
-
-db = SQLAlchemy(metadata=metadata)
 
 
 # Models go here!

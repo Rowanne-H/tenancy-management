@@ -14,21 +14,18 @@ from functools import wraps
 from sqlalchemy.exc import IntegrityError
 
 # Local imports
+from .config import app, db, api, migrate
 from flask_restful import Api, Resource
 
 # Add your model imports
 from .models import db, User, Owner, Property, Tenant, Transaction, Creditor
 
-app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URI')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "my-very-secret-key"
 app.json.compact = False
 
-migrate = Migrate(app, db)
-db.init_app(app)
 
-api = Api(app)
 CORS(app)
 
 
