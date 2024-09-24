@@ -83,15 +83,15 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   return (
     <div>
       <div className="crud-actions">
-        {type === "users" && user.is_accounts ? (
+        {type === "users" ? (
           <button className="link-button" onClick={handleChangeStatusClick}>
             Change Status
           </button>
-        ) : type !== "users" ? (
+        ) : (
           <button className="link-button" onClick={handleEditClick}>
             Edit
           </button>
-        ) : null}
+        )}
         <button className="link-button" onClick={handleDeleteClick}>
           Delete
         </button>
