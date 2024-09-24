@@ -29,22 +29,20 @@ app.json.compact = False
 
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-@app.route('/<path:path>', methods=['GET'])
-def send_static(path):
-    return send_from_directory('build', path)
+BUILD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../client/build')
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
-    return send_from_directory('build', 'index.html')
+    return send_from_directory(BUILD_DIR, path) if path else send_from_directory(BUILD_DIR, 'index.html')
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory('build', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(BUILD_DIR, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.errorhandler(404)
 def not_found(e):
-    return send_from_directory('build', 'index.html')
+    return send_from_directory(BUILD_DIR, 'index.html')
 
 # Views go here!
 def getDate(value):
@@ -175,9 +173,7 @@ def getPayToAndPayFrom(data):
 
 @app.before_request
 def check_if_logged_in():
-    if request.endpoint in ["static", "index", "favicon"]:
-        return
-    if request.endpoint in ["signup", "login", "check_session"]:
+    if request.endpoint in ["static", "index", "favicon", "signup", "login", "check_session"]:
         return
     if "user_id" not in session:
         return make_response(jsonify({"message": "Unauthorized"}), 401)
