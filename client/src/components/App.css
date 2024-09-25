@@ -313,20 +313,29 @@ form {
   padding: 10px;
 }
 
+form > div> label,
 form > label {
-  margin-left: 10px;
-  display: flex;
+  display: flex; 
   align-items: center;
+  width:100%;
+  overflow: hidden; 
 }
 
 select {
-  flex: 2; /* Adjust this value as needed */
-  max-width: 100%; /* Prevent overflow */
   overflow: hidden; /* Hide overflow */
   white-space: nowrap; /* Prevent line breaks */
   text-overflow: ellipsis; /* Show ellipsis for overflow */
   padding: 5px; /* Add some padding */
   box-sizing: border-box; /* Ensure padding doesn't affect width */
+  border: none;
+  outline: none; 
+  margin: 10px;
+  flex-grow: 1;
+  line-height: 2;
+}
+
+select:focus {
+  border:none;
 }
 
 label > input {
@@ -335,7 +344,7 @@ label > input {
   margin: 10px;
   border: none;
   flex-grow: 1;
-  margin-left: 5px;
+  box-sizing: border-box;
 }
 
 tr {
