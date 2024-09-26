@@ -591,6 +591,8 @@ class Tenants(Resource):
             return make_response(jsonify({"message": "Unauthorized"}), 401)
         owner_id = None
         property_id = data["property_id"]
+        if property_id == '':  
+            property_id = None
         if data["property_id"]:
             property = Property.query.filter_by(id=data["property_id"]).first()
             if property is None:
@@ -880,7 +882,7 @@ class TransactionByID(Resource):
         db.session.delete(transaction)
         db.session.commit()
         return make_response(
-            jsonify({"message": "Rental successfully deleted"}), 200)
+            jsonify({"message": "Transaction successfully deleted"}), 200)
 
 
 api.add_resource(Signup, "/signup", endpoint="signup")
