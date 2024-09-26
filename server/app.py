@@ -672,6 +672,9 @@ class TenantByID(Resource):
                 if auth_response:
                     return auth_response
                 if attr == "property_id":
+                    if value == '':
+                        tenant.property_id = None
+                        tenant.owner_id = None
                     if value:
                         property = Property.query.filter_by(id=value).first()
                         if property is None:
@@ -705,7 +708,7 @@ class TenantByID(Resource):
                                     "A tenant who is not associated with an actively managed property cannot be activated."
                                 }), 404)
                     if attr not in [
-                            "property", "owner", "user", "transactions"
+                            "property", "owner", "user", "transactions", "owner_id"
                     ]:
                         setattr(tenant, attr, value)
         db.session.add(tenant)
