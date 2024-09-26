@@ -321,6 +321,10 @@ form > label {
   overflow: hidden; 
 }
 
+label > span {
+  margin-left:10px;
+}
+
 select {
   overflow: hidden; /* Hide overflow */
   white-space: nowrap; /* Prevent line breaks */
