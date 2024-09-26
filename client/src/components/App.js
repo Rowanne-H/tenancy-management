@@ -332,7 +332,9 @@ function App() {
               render={() => (
                 <FormNewData
                   type="tenants"
-                  properties={propertiesWithoutActiveTenants}
+                  properties={propertiesWithoutActiveTenants.filter(
+                    (property) => property.user_id == user.id,
+                  )}
                   tenants={tenants}
                   onAddNewData={addNewTenant}
                 />

@@ -81,7 +81,7 @@ export const validations = {
     ref: yup
       .string()
       .required("Must enter ref")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(2, "Ref must be at least 2 characters long"),
     name: yup
       .string()
       .required("Must enter a name")
@@ -96,8 +96,8 @@ export const validations = {
       .required("Must enter a mobile"),
     address: yup
       .string()
-      .required("Must enter ref")
-      .min(10, "Name must be at least 10 characters long"),
+      .required("Must enter postal address")
+      .min(10, "Address must be at least 10 characters long"),
     management_start_date: yup.string().required("Must enter a date"),
     management_end_date: yup
       .string()
@@ -117,11 +117,11 @@ export const validations = {
     ref: yup
       .string()
       .required("Must enter ref")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(2, "Ref must be at least 2 characters long"),
     address: yup
       .string()
-      .required("Must enter ref")
-      .min(10, "Name must be at least 10 characters long"),
+      .required("Must enter property address")
+      .min(10, "Address must be at least 10 characters long"),
     commission: yup
       .number()
       .required("Must enter a commission")
@@ -129,16 +129,17 @@ export const validations = {
       .max(0.1, "comission must be between 0 and 0.1"),
     letting_fee: yup
       .number()
-      .required("Must enter a  letting fee")
+      .required("Must enter a letting fee")
       .min(0, "letting fee must be between 0 and 2")
       .max(2, "letting fee must be between 0 and 2"),
     is_active: yup.boolean(),
+    owner_id: yup.string().required("Must select an owner"),
   }),
   tenants: yup.object().shape({
     ref: yup
       .string()
       .required("Must enter ref")
-      .min(2, "Name must be at least 2 characters long"),
+      .min(2, "Ref must be at least 2 characters long"),
     name: yup
       .string()
       .required("Must enter a name")
@@ -182,7 +183,7 @@ export const validations = {
       ),
     rent: yup
       .number()
-      .required("Must enter an amount")
+      .required("Must enter a rent amount")
       .min(0, "Amount must be more than 0"),
     is_active: yup.boolean(),
   }),

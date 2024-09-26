@@ -520,8 +520,8 @@ class PropertyByID(Resource):
                     return auth_response
                 if attr == "is_active":
                     if value == False:
-                        active_tenant_exists = any(
-                            tenant.is_active for tenant in property.tenants)
+                        active_tenant_exists = Tenant.query.filter_by(
+                            property_id=property.id, is_active=True).first()
                         if active_tenant_exists:
                             return make_response(
                                 jsonify({
@@ -585,8 +585,8 @@ class Tenants(Resource):
         property = Property.query.filter_by(id=data["property_id"]).first()
         owner_id = ""
         if property:
-            active_tenant_exists = any(tenant.is_active
-                                       for tenant in property.tenants)
+            active_tenant_exists = Tenant.query.filter_by(
+                property_id=property.id, is_active=True).first()
             if active_tenant_exists:
                 return make_response(
                     jsonify(
