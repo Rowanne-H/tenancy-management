@@ -26,23 +26,31 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "my-very-secret-key"
 app.json.compact = False
 
-
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-BUILD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../client/build')
+BUILD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                         '../client/build')
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
-    return send_from_directory(BUILD_DIR, path) if path else send_from_directory(BUILD_DIR, 'index.html')
+    return send_from_directory(BUILD_DIR,
+                               path) if path else send_from_directory(
+                                   BUILD_DIR, 'index.html')
+
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(BUILD_DIR, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(BUILD_DIR,
+                               'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
+
 
 @app.errorhandler(404)
 def not_found(e):
     return send_from_directory(BUILD_DIR, 'index.html')
+
 
 # Views go here!
 def getDate(value):
@@ -173,7 +181,9 @@ def getPayToAndPayFrom(data):
 
 @app.before_request
 def check_if_logged_in():
-    if request.endpoint in ["static", "index", "favicon", "signup", "login", "check_session"]:
+    if request.endpoint in [
+            "static", "index", "favicon", "signup", "login", "check_session"
+    ]:
         return
     if "user_id" not in session:
         return make_response(jsonify({"message": "Unauthorized"}), 401)
@@ -527,7 +537,8 @@ class PropertyByID(Resource):
                     return auth_response
                 if attr == "is_active":
                     if value == False:
-                        active_tenant_exists = Tenant.query.filter_by(property_id=property.id, is_active=True).first()
+                        active_tenant_exists = Tenant.query.filter_by(
+                            property_id=property.id, is_active=True).first()
                         if active_tenant_exists:
                             return make_response(
                                 jsonify({
@@ -590,16 +601,15 @@ class Tenants(Resource):
             return make_response(jsonify({"message": "Unauthorized"}), 401)
         owner_id = None
         property_id = data["property_id"]
-        if property_id == '':  
+        if property_id == '':
             property_id = None
         if data["property_id"]:
             property = Property.query.filter_by(id=data["property_id"]).first()
             if property is None:
                 return make_response(
-                    jsonify(
-                        {"message": "Please select a property"}),
-                    404)
-            active_tenant_exists = Tenant.query.filter_by(property_id=property.id, is_active=True).first()
+                    jsonify({"message": "Please select a property"}), 404)
+            active_tenant_exists = Tenant.query.filter_by(
+                property_id=property.id, is_active=True).first()
             if active_tenant_exists:
                 return make_response(
                     jsonify(
@@ -680,7 +690,8 @@ class TenantByID(Resource):
                                 jsonify(
                                     {"message": "Please select a property"}),
                                 404)
-                        active_tenant = Tenant.query.filter_by(property_id=property.id, is_active=True).first()
+                        active_tenant = Tenant.query.filter_by(
+                            property_id=property.id, is_active=True).first()
                         if active_tenant:
                             if active_tenant.id != tenant.id:
                                 return make_response(
@@ -705,7 +716,8 @@ class TenantByID(Resource):
                                     "A tenant who is not associated with an actively managed property cannot be activated."
                                 }), 404)
                     if attr not in [
-                            "property", "owner", "user", "transactions", "owner_id"
+                            "property", "owner", "user", "transactions",
+                            "owner_id"
                     ]:
                         setattr(tenant, attr, value)
         db.session.add(tenant)

@@ -133,9 +133,7 @@ export const validations = {
       .min(0, "letting fee must be between 0 and 2")
       .max(2, "letting fee must be between 0 and 2"),
     is_active: yup.boolean(),
-    owner_id: yup
-      .string()
-      .required("Must select an owner"),
+    owner_id: yup.string().required("Must select an owner"),
   }),
   tenants: yup.object().shape({
     ref: yup
