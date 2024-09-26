@@ -588,7 +588,7 @@ class Tenants(Resource):
         data = request.get_json()
         user = User.query.filter_by(id=session.get("user_id")).first()
         if user is None:
-            return make_response(jsonify({"message": "Unauthorized"}), 401
+            return make_response(jsonify({"message": "Unauthorized"}), 401)
         owner_id = ""
         if data["property_id"]:
             property = Property.query.filter_by(id=data["property_id"]).first()
