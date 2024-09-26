@@ -589,7 +589,8 @@ class Tenants(Resource):
         user = User.query.filter_by(id=session.get("user_id")).first()
         if user is None:
             return make_response(jsonify({"message": "Unauthorized"}), 401)
-        owner_id = ""
+        owner_id = None
+        property_id = data["property_id"]
         if data["property_id"]:
             property = Property.query.filter_by(id=data["property_id"]).first()
             if property is None:
@@ -621,7 +622,7 @@ class Tenants(Resource):
             vacating_date=vacating_date,
             rent=data["rent"],
             is_active=data.get("is_active", True),
-            property_id=data.get("property_id", ""),
+            property_id=property_id,
             owner_id=owner_id,
             user_id=user.id,
         )
