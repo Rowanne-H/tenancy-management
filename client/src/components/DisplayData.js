@@ -25,40 +25,6 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
     }
   }, [id, type]);
 
-  function handleEditClick() {
-    if (type === "users" && user.id !== id) {
-      alert("User not authorized to edit this file");
-    } else if (
-      (type === "owners" || type === "tenants" || type === "properties") &&
-      user.id !== data.user_id
-    ) {
-      alert("User not authorized to edit this file");
-    } else if (
-      (type === "transactions" || type === "creditors") &&
-      !user.is_accounts
-    ) {
-      alert("Only accounts can perform this action");
-    } else {
-      history.push(`/${type}/${id}/edit`);
-    }
-  }
-
-  function handleChangeUserClick() {
-    if (user.is_accounts) {
-      history.push(`/${type}/${id}/changeuser`);
-    } else {
-      alert("Only accounts can change managing property manager");
-    }
-  }
-
-  function handleChangeStatusClick() {
-    if (user.is_accounts) {
-      history.push(`/${type}/${id}/changestatus`);
-    } else {
-      alert("Only accounts can change status");
-    }
-  }
-
   function handleDeleteClick() {
     fetch(ENDPOINTS[type] + id, {
       method: "DELETE",
@@ -83,20 +49,36 @@ const DisplayData = ({ type, user, onDeleteItem }) => {
   return (
     <div>
       <div className="crud-actions">
-        {type === "users" ? (
-          <button className="link-button" onClick={handleChangeStatusClick}>
+        {type === "users" && user.is_accounts ? (
+          <button
+            className="link-button"
+            onClick={() => history.push(`/${type}/${id}/changestatus`)}
+          >
             Change Status
           </button>
-        ) : (
-          <button className="link-button" onClick={handleEditClick}>
+        ) : (!["users", "transactions", "creditors"].includes(type) &&
+            user.id == data.user_id) ||
+          (["transactions", "creditors"].includes(type) && user.is_accounts) ? (
+          <button
+            className="link-button"
+            onClick={() => history.push(`/${type}/${id}/edit`)}
+          >
             Edit
           </button>
-        )}
-        <button className="link-button" onClick={handleDeleteClick}>
-          Delete
-        </button>
-        {type === "owners" ? (
-          <button className="link-button" onClick={handleChangeUserClick}>
+        ) : null}
+        {(["users", "transactions", "creditors"].includes(type) &&
+          user.is_accounts) ||
+        (!["users", "transactions", "creditors"].includes(type) &&
+          user.id == data.user_id) ? (
+          <button className="link-button" onClick={handleDeleteClick}>
+            Delete
+          </button>
+        ) : null}
+        {type === "owners" && user.is_accounts ? (
+          <button
+            className="link-button"
+            onClick={() => history.push(`/${type}/${id}/changeuser`)}
+          >
             Change Property Manager
           </button>
         ) : null}
