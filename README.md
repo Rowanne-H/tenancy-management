@@ -1,12 +1,24 @@
 # Tenancy Management App
 
+### This application is deployed on Render
+### Feel free to explore the app by clicking the link: https://tenancy-management.onrender.com/
+
+***
+
 ## Introduction
 
-### Back end
+### Front end - React
+- A tenancy management application allows users to read, create, update and delete data stored in back end part.
 
-- A tenancy management database with six tables which are users, owners, properties, tenants, rentals and expenses.
+### Back end - Flask and SQLAlchemy
+- A models.py file defines classes that correspond to tables in the database and outlines the relationships between them.
 - A seed.py to seed data.
 - A app.py for routes and handle requests from front end to send and update data in database.
+
+### Database - PostgreSQL
+- A tenancy management database consist of six tables which are users, owners, properties, tenants, rentals and expenses.
+
+***
 
 ## Directory structure
 
@@ -31,37 +43,30 @@
 
 ***
 
-## BACK END 
+## FRONT END
+
+There are six main components which are Users, Owners, Properties, Tenants, Creditors and Transactions. The NavBar component has been added to facilitate easier navigation across different routes in the front end.
+
+### Users 
+#### 
+
+### Owners 
+
+###Properties
+
+###Tenants
+
+###Creditors
+
+###Transactions
 
 ***
 
-### tenancy management database
-
-This database is set up when running SQLAlchemy migrations. All files are connected to this database. In this database, there are six tables which are users, owners, properties, tenants, rentals and expenses.
-
-### table users
-This table stores id, email, hashed password, name, mobile and authorization (administrator) for users.
-
-### table owners
-This table stores id, reference, name, email, mobile, address, note, management start date, management end date and status(active or inactive) for owners.
-
-### table properties
-This table stores id, reference, address, commission, letting fee, user id, owner id and status(active or inactive) for properties.
-
-### table tenants
-This table stores id, reference, name, email, mobile, note, lease_term, rent, lease start date, lease end date, vacating date, property id and status(active or inactive) for tenants.
-
-### table rentals
-This table stores id, amount received, record date, received date, description and tenant id for rentals.
-
-### table expenses
-This table stores id, payment amount, record date, payment date, description and property id for expenses payments.
-
-*** 
+## BACK END 
 
 ### models.py and relationships
 
-There are six models in models.py which are User Model, Onwer Model, Property Model, Tenant Model, Rental Model and Expense Model. Each model generates a table with their name in plural and they are related to each other. Validations and constraints are set up in this file.
+There are six models in models.py which are User Model, Onwer Model, Property Model, Tenant Model, Rental Model and Expense Model. SQLAlchemy's ORM capabilities allow these classes to map directly to our database tables, simplifying data manipulation through Python objects. Validations and constraints are set up in this file.
 
 #### User Model
 
@@ -146,7 +151,32 @@ It has three routes, get(), patch() and delete(). get() returns the expense. pat
 ### seed.py
 
 Functions in seed.py is to seed database. 
+
 ***
+
+## Tenancy management database
+
+This database is set up when running SQLAlchemy migrations. All files are connected to this database. In this database, there are six tables which are users, owners, properties, tenants, rentals and expenses.
+
+### table users
+This table stores id, email, hashed password, name, mobile and authorization (administrator) for users.
+
+### table owners
+This table stores id, reference, name, email, mobile, address, note, management start date, management end date and status(active or inactive) for owners.
+
+### table properties
+This table stores id, reference, address, commission, letting fee, user id, owner id and status(active or inactive) for properties.
+
+### table tenants
+This table stores id, reference, name, email, mobile, note, lease_term, rent, lease start date, lease end date, vacating date, property id and status(active or inactive) for tenants.
+
+### table rentals
+This table stores id, amount received, record date, received date, description and tenant id for rentals.
+
+### table expenses
+This table stores id, payment amount, record date, payment date, description and property id for expenses payments.
+
+*** 
 
 #### References
 1. Academic learning materials
