@@ -71,7 +71,7 @@ There are six main components which are Users, Owners, Properties, Tenants, Cred
 
 ### models.py and relationships
 
-There are six models in models.py which are User Model, Onwer Model, Property Model, Tenant Model, Creditor Model and Transaction Model. SQLAlchemy's ORM capabilities allow these classes to map directly to database tables, simplifying data manipulation through Python objects. Validations and constraints are set up in this file.
+There are seven models in models.py which are Base Model (mainly for validations on same attributes such as name, email, mobile etc..) User Model, Owner Model, Property Model, Tenant Model, Creditor Model and Transaction Model. Each model generates a table with their name in plural and they are related to each other. Validations and constraints are set up in this file.
 
 #### User Model
 
@@ -101,7 +101,25 @@ Transaction Model is used to create table transactions; Each transaction must in
 
 ### app.py
 
-There are 16 endpoints (urls) related to Models and database so that front end users can retrive, read, create, update and delete data. 
+There are 16 endpoints (urls) related to Models and database so that front end client can retrive, read, create, update and delete data. 
+
+#### Authentication-Access Control
+Data is accessible only to users who have registered accounts.
+
+### Authorization:
+1. Account Authorization (for accounts role)
+   - delete any inactive user (excluding the account owner)
+   - modify a user's status (is_accounts, is_active, excluding the account owner)
+   - update user id for a owner as well as associated properties and tenants
+   - create, update or delete a creditor records
+   - create, update and delete a transaction records
+2. User Authorization
+   - sign up and modify their profile information and change the password
+   - create and udpate managing properties as well as associated tenants and owners (excluding change of user id).
+   - archive inactive owners, properties and tenants
+   - delete owners who do not have any associated properties, tenants, or transactions.
+   - delete delete properties that do not have any associated tenants or transactions.
+   - delete tenants who do not have any associated transactions.
 
 #### Sign up - /signup
 It has one method, post(). post() creates a new user in database and log in the user authomatically to access the database.
