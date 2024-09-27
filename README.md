@@ -169,7 +169,7 @@ Current user can only delete owner record that is under his management and does 
 There are six main parts which are Users, Owners, Properties, Tenants, Creditors and Transactions. The NavBar component has been added to facilitate easier navigation across different routes in the front end.
 
 ### URL
-https://tenancy-management.onrender.com/
+- https://tenancy-management.onrender.com/
 
 #### App.js
 Main component that includes the Login page or the main page (with a Navbar and different views) based on the user's login status.
@@ -190,15 +190,15 @@ This component, displayed at the top of the screen for logged-in users, features
 Homepage of this application.
 
 ### URL
-https://tenancy-management.onrender.com/users
-https://tenancy-management.onrender.com/users/id/owners
-https://tenancy-management.onrender.com/owners
-https://tenancy-management.onrender.com/owners/id/transactions
-https://tenancy-management.onrender.com/properties
-https://tenancy-management.onrender.com/tenants
-https://tenancy-management.onrender.com/tenants/id/transactions
-https://tenancy-management.onrender.com/creditors
-https://tenancy-management.onrender.com/transactions
+- https://tenancy-management.onrender.com/users
+- https://tenancy-management.onrender.com/users/id/owners
+- https://tenancy-management.onrender.com/owners
+- https://tenancy-management.onrender.com/owners/id/transactions
+- https://tenancy-management.onrender.com/properties
+- https://tenancy-management.onrender.com/tenants
+- https://tenancy-management.onrender.com/tenants/id/transactions
+- https://tenancy-management.onrender.com/creditors
+- https://tenancy-management.onrender.com/transactions
 
 #### Users.js (Owners.js, Properties.js, Tenants.js, Creditors.js and Transactions.js) 
 This component receives user data as props and set up mapping fields, type and sort order, and passes them down to DisplayTable.
