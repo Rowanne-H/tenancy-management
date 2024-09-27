@@ -318,13 +318,13 @@ Data is accessible only to users who have registered accounts.
    - delete tenants who do not have any associated transactions.
 
 #### Sign up - /signup
-It has one method, post(). post() creates a new user in database and log in the user authomatically to access the database.
+It has one method, post(). post() creates a new user in database and log in the user automatically to access the database.
 
 #### CheckSession - /check_session
 It has one method, get(). get() retrieves the user_id value from the session. If the session has a user_id, database is available for the user. If the session does not have a user_id, user is required to log in or sign up.
 
 #### Login - /login
-It has one method, post(). It gets an email and a password from request's JSON. If email and password are correct, it retrieves the user and sets the session's user_id so the user can access the dababase. 
+It has one method, post(). It gets an email and a password from request's JSON. If email and password are correct, it retrieves the user and sets the session's user_id so the user can access the database. 
 
 #### Logout - /logout
 It has one method, delete(). it removes the user_id value from the session.
@@ -332,19 +332,19 @@ It has one method, delete(). it removes the user_id value from the session.
 #### Users - /users
 It has one method, get(). get() returns all users.
 
-#### UserById - /users/<int:id>
+#### UserByID - /users/<int:id>
 It has three methods, get(), patch() and delete(). get() returns the user. patch() updates the user based on data from request's JSON. delete() deletes the user.
 
-#### Onwers - /owners
+#### Owners - /owners
 It has two methods, get() and post(). get() returns all owners. post() creates a new owner.
 
-#### OwnerById - /owners/<int:id>
+#### OwnerByID - /owners/<int:id>
 It has three methods, get(), patch() and delete(). get() returns the owner. patch() updates the owner based on data from request's JSON. delete() deletes the owner.
 
 #### Properties - /properties
 It has two methods, get() and post(). get() returns all owners. post() creates a new owner.
 
-#### PropertyById - /properties/<int:id>
+#### PropertyByID - /properties/<int:id>
 It has three methods, get(), patch() and delete(). get() returns the property. patch() updates the property based on data from request's JSON. delete() deletes the property.
 
 #### Tenants - /tenants
@@ -362,12 +362,12 @@ It has three methods, get(), patch() and delete(). get() returns the creditor. p
 #### Transactions - /transactions
 It has two methods, get() and post(). get() returns all transactions. post() creates a new transaction.
 
-#### TransactionID - /transactions/<int:id>
+#### TransactionByID - /transactions/<int:id>
 It has three methods, get(), patch() and delete(). get() returns the transaction. patch() updates the transaction based on data from request's JSON. delete() deletes the transaction.
 
 ### seed.py
 
-Functions in seed.py is to seed database. 
+Functions in seed.py are to seed database. 
 
 ***
 
