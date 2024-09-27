@@ -5,14 +5,14 @@
 ### Manual 
 
 #### Users
-- Staff (Property Managers, Adminstrators, Accountants etc..) from investment companies, RealEstates or Housing
-- Owners who have several investing properties in management.
+  - Staff (Property Managers, Adminstrators, Accountants etc..) from investment companies, RealEstates or Housing
+  - Owners who have several investing properties in management.
 
 #### Roles
 1. Accounts Management Users - Users with the "is_accounts" option checked
-- Users with the "is_accounts" option checked can manage users (delete or update user status), transfer ownership (change user for owners), and oversee financial accounts (creditors and transaction records).
+  - Users with the "is_accounts" option checked can manage users (delete or update user status), transfer ownership (change user for owners), and oversee financial accounts (creditors and transaction records).
 2. Standard Users
-- Users without the "is_accounts" option are primarily using the app to access data as well as manage owners, properties, and tenants under their management.
+  - Users without the "is_accounts" option are primarily using the app to access data as well as manage owners, properties, and tenants under their management.
   
 #### Sign in 
 1. Navigate to [Sign in](https://tenancy-management.onrender.com/)
@@ -21,46 +21,46 @@
   
 #### Sign up
 1. Navigate to [Sign up](https://tenancy-management.onrender.com/)
-- Click "Sign up" button to be directed to sign up page
+  - Click "Sign up" button to be directed to sign up page
 2. Fill out the Sign Up form
-- Enter your email address, password, name and mobile
+  - Enter your email address, password, name and mobile
 3. click "Submit" button, you will then be directed to the home page
 
 #### View user profile 
 Only the current user can perform this action
 1. Navigate to User Details Page
-- Click on the User Icon in the top right conor of the screen.
-- In the dropdown menu, select "View my profile" to be directed to Edit User Form page
+  - Click on the User Icon in the top right conor of the screen.
+  - In the dropdown menu, select "View my profile" to be directed to Edit User Form page
 
 #### Update user profile 
 Only the current user can perform this action
 1. Navigate to Edit User Page
-- Click on the User Icon in the top right conor of the screen.
-- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+  - Click on the User Icon in the top right conor of the screen.
+  - In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
 2. Fill out Edit User Form with your updated information
 3. Save changes
-- Click "submit" button to save changes
-- You will then be directly to User Details page
+  - Click "submit" button to save changes
+  - You will then be directly to User Details page
 
 #### Change user password - Only the account owner can perform this action
 1. Navigate to Edit User Page
-- Click on the User Icon in the top right conor of the screen.
-- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
-- in the Edit User Form page, click "Change Password" button
+  - Click on the User Icon in the top right conor of the screen.
+  - In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+  - in the Edit User Form page, click "Change Password" button
 2. Enter new password
 3. Save changes
-- Click "submit" button to save changes
-- You will then be directly to User Details page
+  - Click "submit" button to save changes
+  - You will then be directly to User Details page
 
 #### Change user status (accounts or active) - Only the account owner can perform this action
 1. Navigate to Edit User Page
-- Click on the User Icon in the top right conor of the screen.
-- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
-- in the Edit User Form page, click "Change Password" button
+  - Click on the User Icon in the top right conor of the screen.
+  - In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+  - in the Edit User Form page, click "Change Password" button
 2. Enter new password
 3. Save changes
-- Click "submit" button to save changes
-- You will then be directly to User Details page
+  - Click "submit" button to save changes
+  - You will then be directly to User Details page
 
 
 
