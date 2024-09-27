@@ -2,15 +2,71 @@
 
 ### Feel free to explore the app by clicking the link: [Tenancy Management Software](https://tenancy-management.onrender.com/)
 
+### Manual 
+
+#### Users
+- Staff (Property Managers, Adminstrators, Accountants etc..) from investment companies, RealEstates or Housing
+- Owners who have several investing properties in management.
+
+#### Roles
+1. Accounts Management Users - Users with the "is_accounts" option checked
+- Users with the "is_accounts" option checked can manage users (delete or update user status), transfer ownership (change user for owners), and oversee financial accounts (creditors and transaction records).
+2. Standard Users
+- Users without the "is_accounts" option are primarily using the app to access data as well as manage owners, properties, and tenants under their management.
+  
+#### Sign in 
+1. Navigate to [Sign in](https://tenancy-management.onrender.com/)
+2. Enter your email address and password
+3. click "Submit" button, you will be then directed to the home page
+  
+#### Sign up
+1. Navigate to [Sign up](https://tenancy-management.onrender.com/)
+- Click "Sign up" button to be directed to sign up page
+2. Fill out the Sign Up form
+- Enter your email address, password, name and mobile
+3. click "Submit" button, you will then be directed to the home page
+
+#### View user profile 
+Only the current user can perform this action
+1. Navigate to User Details Page
+- Click on the User Icon in the top right conor of the screen.
+- In the dropdown menu, select "View my profile" to be directed to Edit User Form page
+
+#### Update user profile 
+Only the current user can perform this action
+1. Navigate to Edit User Page
+- Click on the User Icon in the top right conor of the screen.
+- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+2. Fill out Edit User Form with your updated information
+3. Save changes
+- Click "submit" button to save changes
+- You will then be directly to User Details page
+
+#### Change user password - Only the account owner can perform this action
+1. Navigate to Edit User Page
+- Click on the User Icon in the top right conor of the screen.
+- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+- in the Edit User Form page, click "Change Password" button
+2. Enter new password
+3. Save changes
+- Click "submit" button to save changes
+- You will then be directly to User Details page
+
+#### Change user status (accounts or active) - Only the account owner can perform this action
+1. Navigate to Edit User Page
+- Click on the User Icon in the top right conor of the screen.
+- In the dropdown menu, select "Edit my profile" to be directed to Edit User Form page
+- in the Edit User Form page, click "Change Password" button
+2. Enter new password
+3. Save changes
+- Click "submit" button to save changes
+- You will then be directly to User Details page
+
+
+
 ***
 
-## Introduction
-
-### Tenancy Management Software
-#### Users
-Property Managers from RealEstates or Housing
-Companies or owners who have several investing properties in management.
--  
+## Introduction 
 
 ### Front end - React
 - A tenancy management application allows users to read, create, update and delete data stored in database.
@@ -97,7 +153,6 @@ Creditor Model is used to create table creditors and it has one to many relation
 
 Transaction Model is used to create table transactions; Each transaction must include both a 'Pay From' and a 'Pay To' field, which can be associated with an owner, a tenant, a property, or a creditor.
 
-***
 
 ### app.py
 
@@ -106,7 +161,7 @@ There are 16 endpoints (urls) related to Models and database so that front end c
 #### Authentication-Access Control
 Data is accessible only to users who have registered accounts.
 
-### Authorization:
+#### Authorization:
 1. Account Authorization (for accounts role)
    - delete any inactive user (excluding the account owner)
    - modify a user's status (is_accounts, is_active, excluding the account owner)
@@ -168,8 +223,6 @@ It has two methods, get() and post(). get() returns all transactions. post() cre
 
 #### TransactionID - /transactions/<int:id>
 It has three methods, get(), patch() and delete(). get() returns the transaction. patch() updates the transaction based on data from request's JSON. delete() deletes the transaction.
-
-***
 
 ### seed.py
 
