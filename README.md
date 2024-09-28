@@ -26,6 +26,10 @@
    - Enter your email address, password, name and mobile
 3. click "Submit" button, you will then be directed to the home page
 
+#### Search bar in the middle of the navigation bar
+1. Enter keywords such as reference, name, email, mobile, or address to search for an owner, property, or tenant.
+2. Hover over the desired result and click to be directed to the details page for the selected owner, property, or tenant.
+
 #### View current user profile 
 1. Navigate to User Details Page 
    - Click on the User Icon in the top right cornor of the screen.
