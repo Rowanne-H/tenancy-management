@@ -5,7 +5,7 @@
 ### Manual 
 
 #### Users
-  - Staff (Property Managers, Adminstrators, Accountants etc..) from investment companies, RealEstates or Housing
+  - Staff (Property Managers, Adminstrators, Accountants etc..) from property investment companies, RealEstates or Housing
   - Owners who have several investing properties in management.
 
 #### Roles
@@ -58,11 +58,19 @@
 2. Filter users
    - Use the search fields to find users by name, email, or mobile etc..
    - Check the box for "Show Inactive Users" to include inactive users in the page
+   - Note: can select a date range for Transactions
 
 #### Navigate to User (Owner, Property, Tenant, Creditor or Transaction) Details page
 1. Navigate to Users page
 2. Select the user you want to view to access User Details page
-3. Click lick "View Owners of Managed Properties" will be directed to Properties page with selected properties that is under management of selected user.
+3. View relative records
+   - Click link "View Owners of Managed Properties" will be directed to Properties page with selected properties that is under management of selected user.
+   - Note: Click link "Owner Statement" will be directed to Transactions page with selected transactions for the selected owner.
+   - Note: Click link "Tenant Statement" will be directed to Transactions page with selected transactions for the selected tenant.
+   - Note: Click name under "Property Manager" will be directed to selected Property Manager's Details page.
+   - Note: Click name under "Owner" will be directed to selected Property Manager's Details page.
+   - Note: Click property under "Properties" or "Property" will be directed to selected property's Details page.
+   - Note: Click name under "Tenants" will be directed to selected tenant's Details page.
    
 #### Change user status 
 Only Accounts Management Users can perform this action
@@ -293,7 +301,6 @@ Creditor Model is used to create table creditors and it has one to many relation
 #### Transaction
 
 Transaction Model is used to create table transactions; Each transaction must include both a 'Pay From' and a 'Pay To' field, which can be associated with an owner, a tenant, a property, or a creditor.
-
 
 ### app.py
 
