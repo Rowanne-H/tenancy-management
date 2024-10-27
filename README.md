@@ -1,6 +1,8 @@
 # Tenancy Management App
 
 ### Feel free to explore the app by clicking the link: [Tenancy Management Software](https://tenancy-management.onrender.com/)
+admin@gmail.com PIN: 1
+test@gmail.com PIN: 1
 
 ### Manual 
 
